@@ -1,0 +1,61 @@
+﻿@page "/match"
+
+@using Tournament.Client.Components.Match
+
+<PageTitle>Match</PageTitle>
+<MudText Typo="Typo.h4" GutterBottom="true">Match</MudText>
+
+<MudPaper Class="pa-5" Style="background-color: var(--color-court);">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudText Class="d-flex align-center justify-center mud-width-full py-2 white-text">@match.Team1Score - @match.Team2Score</MudText>
+        </MudItem>
+        <MudItem Class="my-auto" xs="2">
+            <MudElement Class="d-flex align-center justify-center">
+                <MudButton Class="mud-width-full py-2" Color="Color.Primary" Variant="Variant.Filled" @onclick="match.AddTeam1Score">Click me</MudButton>
+            </MudElement>
+        </MudItem>
+        <MudItem xs="4">
+            <MatchPlayerTag ShuttleVisible="match.ServeLocation == ServeLocation.NW" ShuttleAfter="false">@match.Player2</MatchPlayerTag>
+            <MatchPlayerTag ShuttleVisible="match.ServeLocation == ServeLocation.SW" ShuttleAfter="false">@match.Player1</MatchPlayerTag>
+            @if (match.Team1Score == 0 && match.Team2Score == 0) 
+            {
+                <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchTeam1Players">Switch</MudButton>
+            }
+        </MudItem>
+        <MudItem xs="4">
+            <MatchPlayerTag ShuttleVisible="match.ServeLocation == ServeLocation.NE" ShuttleAfter="true">@match.Player3</MatchPlayerTag>
+            <MatchPlayerTag ShuttleVisible="match.ServeLocation == ServeLocation.SE" ShuttleAfter="true">@match.Player4</MatchPlayerTag>
+            @if (match.Team1Score == 0 && match.Team2Score == 0) 
+            {
+                <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchTeam2Players">Switch</MudButton>
+            }
+        </MudItem>        
+        <MudItem Class="my-auto" xs="2">
+            <MudElement Class="d-flex align-center justify-center">
+                <MudButton Class="mud-width-full py-2" Color="Color.Primary" Variant="Variant.Filled" @onclick="match.AddTeam2Score">Click me</MudButton>
+            </MudElement>
+        </MudItem>
+        <MudItem xs="12">
+            <MudElement Class="d-flex align-left justify-center">
+                @if (match.Team1Score != 0 || match.Team2Score != 0)
+                {
+                    <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="match.ReturnPoint">Return</MudButton>
+                } else {
+                    <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.ChangeServeSide">Change Serve Side</MudButton>
+                    <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchTeams">Switch teams</MudButton>
+                }
+            </MudElement>
+        </MudItem>
+    </MudGrid>
+
+</MudPaper>
+
+@code {
+    private MatchViewModel match;
+
+    protected override async Task OnInitializedAsync()
+    {
+        match = new MatchViewModel();
+    }
+}   

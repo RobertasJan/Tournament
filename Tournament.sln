@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tournament.Server", "Tournament\Server\Tournament.Server.csproj", "{8A182FF2-0D9A-4C58-86C0-D44225F125F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tournament.Client", "Tournament\Client\Tournament.Client.csproj", "{0D14B401-6C55-4727-871C-6E3DA2E19771}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tournament.Shared", "Tournament\Shared\Tournament.Shared.csproj", "{0C502BAD-DA14-4DD7-9C4A-024E02F306AA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tournament.Infrastructure", "Tournament.Infrastructure\Tournament.Infrastructure.csproj", "{87FB00B2-106F-4115-B9A3-F3093CE8B75D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tournament.Domain", "Tournament.Domain\Tournament.Domain.csproj", "{E67297D0-5D3B-4227-94DD-A4ECF8E43AD2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tournament.Domain.Services", "Tournament.Domain.Services\Tournament.Domain.Services.csproj", "{D1D8124E-D112-43A4-83B4-F0C1DE2F9585}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A182FF2-0D9A-4C58-86C0-D44225F125F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A182FF2-0D9A-4C58-86C0-D44225F125F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A182FF2-0D9A-4C58-86C0-D44225F125F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A182FF2-0D9A-4C58-86C0-D44225F125F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D14B401-6C55-4727-871C-6E3DA2E19771}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D14B401-6C55-4727-871C-6E3DA2E19771}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D14B401-6C55-4727-871C-6E3DA2E19771}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D14B401-6C55-4727-871C-6E3DA2E19771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C502BAD-DA14-4DD7-9C4A-024E02F306AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C502BAD-DA14-4DD7-9C4A-024E02F306AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C502BAD-DA14-4DD7-9C4A-024E02F306AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C502BAD-DA14-4DD7-9C4A-024E02F306AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87FB00B2-106F-4115-B9A3-F3093CE8B75D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87FB00B2-106F-4115-B9A3-F3093CE8B75D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87FB00B2-106F-4115-B9A3-F3093CE8B75D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87FB00B2-106F-4115-B9A3-F3093CE8B75D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E67297D0-5D3B-4227-94DD-A4ECF8E43AD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E67297D0-5D3B-4227-94DD-A4ECF8E43AD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E67297D0-5D3B-4227-94DD-A4ECF8E43AD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E67297D0-5D3B-4227-94DD-A4ECF8E43AD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1D8124E-D112-43A4-83B4-F0C1DE2F9585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1D8124E-D112-43A4-83B4-F0C1DE2F9585}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1D8124E-D112-43A4-83B4-F0C1DE2F9585}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1D8124E-D112-43A4-83B4-F0C1DE2F9585}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {645C1AAB-F80A-4A54-A0B3-3CD796A982B3}
+	EndGlobalSection
+EndGlobal

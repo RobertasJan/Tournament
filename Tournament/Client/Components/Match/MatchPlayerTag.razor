@@ -1,0 +1,24 @@
+﻿<div>
+    <MudText Class="d-flex align-center justify-center mud-width-full pa-2 white-text h-50px">
+    @if (!ShuttleAfter && ShuttleVisible) 
+    {
+        <ShuttleIcon />
+    }
+    @ChildContent
+    @if (ShuttleAfter && ShuttleVisible)
+    {
+        <ShuttleIcon />
+    }
+    </MudText>
+</div>
+
+@code {
+    [Parameter]
+    public bool ShuttleVisible { get; set; } = false;
+   
+    [Parameter]
+    public bool ShuttleAfter { get; set; } = false;
+    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

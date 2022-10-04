@@ -1,0 +1,17 @@
+﻿@page "/counter"
+
+<PageTitle>Counter</PageTitle>
+
+<MudPaper>
+    <MudText Typo="Typo.h3" GutterBottom="true">Counter</MudText>
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="IncrementCount">Click me</MudButton>
+</MudPaper>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
