@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Tournament.Domain\Tournament.Domain.csproj" />
     <ProjectReference Include="..\Shared\Tournament.Shared.csproj" />
   </ItemGroup>
 

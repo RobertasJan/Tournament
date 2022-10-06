@@ -1,35 +1,39 @@
-﻿namespace Tournament.Client.Models
+﻿using Tournament.Domain.Games;
+using MatchType = Tournament.Domain.Games.MatchType;
+
+namespace Tournament.Client.Models
 {
     public class MatchViewModel
     {
-        public uint Team1Score { get; set; }
-        public uint Team2Score { get; set; }
-
         public string Player1 { get; set; } = "Player 1";
         public string Player2 { get; set; } = "Player 2";
         public string Player3 { get; set; } = "Player 3";
         public string Player4 { get; set; } = "Player 4";
 
+        public int GamesToWin { get; set; } // 2
+        public int PointsToWin { get; set; } // 21
+        public int PointsToFinalize { get; set; } // 30
+        public MatchType Type { get; set; }
+        public MatchRecord Record { get; set; } = MatchRecord.ToBePlayed;
+        public MatchResult Result { get; set; } = MatchResult.Undetermined;
+
         public ServeLocation ServeLocation { get; set; }
         private Stack<Point> _pointList { get; set; }
+        private ICollection<GameViewModel> _gameList { get; set; }
+        public GameViewModel CurrentGame { get; set; }
 
         public MatchViewModel()
         {
             _pointList = new Stack<Point>();
+            CurrentGame = new GameViewModel();
+            _gameList = new List<GameViewModel>() { CurrentGame };
+            
         }
-
-        private void SetDefaultValues()
-        {
-            ServeLocation = ServeLocation.SW;
-            Team1Score = 0;
-            Team2Score = 0;
-        }
-
 
         public void AddTeam1Score()
         {
-            Team1Score++;
-            this.ServeLocation = Team1Score % 2 == 0 ? ServeLocation.SW : ServeLocation.NW;
+            CurrentGame.Team1Score++;
+            this.ServeLocation = CurrentGame.Team1Score % 2 == 0 ? ServeLocation.SW : ServeLocation.NW;
             if (_pointList.TryPeek(out Point point))
             {
                 if (point.Scorer == Scorer.Team1)
@@ -42,8 +46,8 @@
 
         public void AddTeam2Score()
         {
-            Team2Score++;
-            this.ServeLocation = Team2Score % 2 == 0 ? ServeLocation.NE : ServeLocation.SE;
+            CurrentGame.Team2Score++;
+            this.ServeLocation = CurrentGame.Team2Score % 2 == 0 ? ServeLocation.NE : ServeLocation.SE;
             if (_pointList.TryPeek(out Point point))
             {
                 if (point.Scorer == Scorer.Team2)
@@ -59,16 +63,16 @@
             var lastPoint = _pointList.Peek();
             if (lastPoint.Scorer == Scorer.Team1)
             {
-                Team1Score--;
+                CurrentGame.Team1Score--;
             }
             else
             {
-                Team2Score--;
+                CurrentGame.Team2Score--;
             }
             _pointList.Pop();
             if (_pointList.Count == 0)
             {
-                SetDefaultValues();
+                ServeLocation = ServeLocation.SW;
             }
             else
             {
@@ -102,23 +106,6 @@
                 this.ServeLocation = ServeLocation.SW;
             }
         }
-
-        private class Point
-        {
-            public Point(ServeLocation serveLocation, Scorer scorer)
-            {
-                ServeLocation = serveLocation;
-                Scorer = scorer;
-            }
-            public ServeLocation ServeLocation { get; }
-            public Scorer Scorer { get; }
-        }
-
-        private enum Scorer
-        {
-            Team1,
-            Team2
-        }
     }
 }
 
@@ -128,4 +115,21 @@ public enum ServeLocation
     NW,
     NE,
     SE
+}
+
+public class Point
+{
+    public Point(ServeLocation serveLocation, Scorer scorer)
+    {
+        ServeLocation = serveLocation;
+        Scorer = scorer;
+    }
+    public ServeLocation ServeLocation { get; }
+    public Scorer Scorer { get; }
+}
+
+public enum Scorer
+{
+    Team1,
+    Team2
 }

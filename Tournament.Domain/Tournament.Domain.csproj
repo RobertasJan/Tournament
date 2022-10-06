@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Games\" />
+    <Folder Include="Games\NewFolder\" />
     <Folder Include="Players\" />
     <Folder Include="Tournaments\" />
   </ItemGroup>
