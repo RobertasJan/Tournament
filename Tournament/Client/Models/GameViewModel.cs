@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using Tournament.Domain.Games;
 
 namespace Tournament.Client.Models
 {
@@ -7,11 +7,5 @@ namespace Tournament.Client.Models
         public uint Team1Score { get; set; }
         public uint Team2Score { get; set; }
         public ServeLocation ServeLocation { get; set; }
-        private Stack<Point> _pointList { get; set; }
-
-        public GameViewModel()
-        {
-            _pointList = new Stack<Point>();
-        }
     }
 }

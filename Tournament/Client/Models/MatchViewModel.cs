@@ -1,4 +1,5 @@
 ﻿using Tournament.Domain.Games;
+using Tournament.Domain.Players;
 using MatchType = Tournament.Domain.Games.MatchType;
 
 namespace Tournament.Client.Models
@@ -27,7 +28,7 @@ namespace Tournament.Client.Models
             _pointList = new Stack<Point>();
             CurrentGame = new GameViewModel();
             _gameList = new List<GameViewModel>() { CurrentGame };
-            
+
         }
 
         public void AddTeam1Score()
@@ -36,12 +37,12 @@ namespace Tournament.Client.Models
             this.ServeLocation = CurrentGame.Team1Score % 2 == 0 ? ServeLocation.SW : ServeLocation.NW;
             if (_pointList.TryPeek(out Point point))
             {
-                if (point.Scorer == Scorer.Team1)
+                if (point.Scorer == Team.Team1)
                 {
                     SwitchTeam1Players();
                 }
             }
-            _pointList.Push(new Point(this.ServeLocation, Scorer.Team1));
+            _pointList.Push(new Point(this.ServeLocation, Team.Team1));
         }
 
         public void AddTeam2Score()
@@ -50,18 +51,18 @@ namespace Tournament.Client.Models
             this.ServeLocation = CurrentGame.Team2Score % 2 == 0 ? ServeLocation.NE : ServeLocation.SE;
             if (_pointList.TryPeek(out Point point))
             {
-                if (point.Scorer == Scorer.Team2)
+                if (point.Scorer == Team.Team2)
                 {
                     SwitchTeam2Players();
                 }
             }
-            _pointList.Push(new Point(this.ServeLocation, Scorer.Team2));
+            _pointList.Push(new Point(this.ServeLocation, Team.Team2));
         }
 
         public void ReturnPoint()
         {
             var lastPoint = _pointList.Peek();
-            if (lastPoint.Scorer == Scorer.Team1)
+            if (lastPoint.Scorer == Team.Team1)
             {
                 CurrentGame.Team1Score--;
             }
@@ -107,29 +108,4 @@ namespace Tournament.Client.Models
             }
         }
     }
-}
-
-public enum ServeLocation
-{
-    SW,
-    NW,
-    NE,
-    SE
-}
-
-public class Point
-{
-    public Point(ServeLocation serveLocation, Scorer scorer)
-    {
-        ServeLocation = serveLocation;
-        Scorer = scorer;
-    }
-    public ServeLocation ServeLocation { get; }
-    public Scorer Scorer { get; }
-}
-
-public enum Scorer
-{
-    Team1,
-    Team2
 }
