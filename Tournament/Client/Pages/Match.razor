@@ -1,6 +1,7 @@
 ﻿@page "/match"
 
 @using Tournament.Client.Components.Match
+@using Tournament.Domain.Games
 
 <PageTitle>Match</PageTitle>
 <MudText Typo="Typo.h4" GutterBottom="true">Match</MudText>
@@ -30,7 +31,7 @@
             {
                 <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchTeam2Players">Switch</MudButton>
             }
-        </MudItem>        
+        </MudItem>
         <MudItem Class="my-auto" xs="2">
             <MudElement Class="d-flex align-center justify-center">
                 <MudButton Class="mud-width-full py-2" Color="Color.Primary" Variant="Variant.Filled" @onclick="match.AddTeam2Score">Click me</MudButton>
@@ -41,7 +42,9 @@
                 @if (match.CurrentGame.Team1Score != 0 || match.CurrentGame.Team2Score != 0)
                 {
                     <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="match.ReturnPoint">Return</MudButton>
-                } else {
+                }
+                else
+                {
                     <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.ChangeServeSide">Change Serve Side</MudButton>
                     <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchTeams">Switch teams</MudButton>
                 }
@@ -58,4 +61,4 @@
     {
         match = new MatchViewModel();
     }
-}   
+}

@@ -1,9 +1,10 @@
 ﻿namespace Tournament.Domain.Players
 {
-    public class PlayerEntity
+    public class PlayerEntity : BaseEntity
     {
-        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        public ICollection<PlayerMatchEntity> PlayerMatches { get; set; }
     }
 }
