@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Security.Authentication;
+using Tournament.Domain.Services.Games;
 using Tournament.Infrastructure;
 using Tournament.Infrastructure.Data;
+using Tournament.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 string connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext(connectionString);
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+
+builder.Services.AddScoped<IMatchService, MatchService>();
 builder.WebHost.UseStaticWebAssets();
 
 var app = builder.Build();

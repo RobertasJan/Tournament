@@ -2,6 +2,7 @@
 
 @using MatchType = Tournament.Domain.Games.MatchType;
 @using System.ComponentModel.DataAnnotations
+@using Tournament.Domain.Games
 
 <PageTitle>Match</PageTitle>
 <MudForm @ref="@form" @bind-IsValid="@success">
@@ -9,83 +10,85 @@
         <MudItem xs="12" sm="7">
             <MudPaper Class="pa-2" Elevation="3">
                 <MudText Typo="Typo.subtitle2">Game rules</MudText>
-                    <MudGrid>
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudSelect @bind-Value="model.Type" Label="Match type" Variant="Variant.Outlined">
-                                @foreach (MatchType type in Enum.GetValues(typeof(MatchType))) 
-                                {
-                                    <MudSelectItem Value="@type">@type zaza</MudSelectItem>
-                                }
-                            </MudSelect>
-                        </MudItem>
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudSelect @bind-Value="model.PointsToWin" Label="Points to win" Variant="Variant.Outlined">
-                                <MudSelectItem Value="11">11 (deuce 15)</MudSelectItem>
-                                <MudSelectItem Value="15">15 (deuce 17)</MudSelectItem>
-                                <MudSelectItem Value="21">21 (deuce 30)</MudSelectItem>
-                            </MudSelect>
-                        </MudItem>
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudSelect @bind-Value="model.GamesToWin" Label="Games to win" Variant="Variant.Outlined">
-                                <MudSelectItem Value="1">Best of 1</MudSelectItem>
-                                <MudSelectItem Value="2">Best of 3</MudSelectItem>
-                                <MudSelectItem Value="3">Best of 5</MudSelectItem>
-                            </MudSelect>
-                        </MudItem>
-                    </MudGrid>
+                <MudGrid>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudSelect @bind-Value="model.Type" Label="Match type" Variant="Variant.Outlined">
+                            @foreach (MatchType type in Enum.GetValues(typeof(MatchType)))
+                            {
+                                <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudSelect @bind-Value="model.PointsToWin" Label="Points to win" Variant="Variant.Outlined">
+                            <MudSelectItem Value="11">11 (deuce 15)</MudSelectItem>
+                            <MudSelectItem Value="15">15 (deuce 17)</MudSelectItem>
+                            <MudSelectItem Value="21">21 (deuce 30)</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudSelect @bind-Value="model.GamesToWin" Label="Games to win" Variant="Variant.Outlined">
+                            <MudSelectItem Value="1">Best of 1</MudSelectItem>
+                            <MudSelectItem Value="2">Best of 3</MudSelectItem>
+                            <MudSelectItem Value="3">Best of 5</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                </MudGrid>
             </MudPaper>
         </MudItem>
     </MudGrid>
     <MudGrid Class="pt-4">
         <MudItem xs="12" sm="6">
-             <MudPaper Class="pa-2" Elevation="3">
-                 <MudText Typo="Typo.subtitle2">Team 1</MudText>
-                    <MudGrid>
+            <MudPaper Class="pa-2" Elevation="3">
+                <MudText Typo="Typo.subtitle2">Team 1</MudText>
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="model.Player1Name" Label="Enter player name" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
+                    </MudItem>
+                    @if (model.Type != MatchType.MensSingles && model.Type != MatchType.WomensSingles)
+                    {
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="model.Player1Name" Label="Enter player name" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
+                            <MudTextField @bind-Value="model.Player2Name" Label="Enter player name" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
                         </MudItem>
-                        @if (model.Type != MatchType.MensSingles && model.Type != MatchType.WomensSingles)
-                        {
-                            <MudItem xs="12" sm="6">
-                                <MudTextField @bind-Value="model.Player2Name" Label="Enter player name" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
-                            </MudItem>
-                        }
-                    </MudGrid>
+                    }
+                </MudGrid>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="6">
             <MudPaper Class="pa-2" Elevation="3">
                 <MudText Typo="Typo.subtitle2">Team 2</MudText>
-                    <MudGrid>
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="model.Player3Name" Label="Enter player name" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
+                    </MudItem>
+                    @if (model.Type != MatchType.MensSingles && model.Type != MatchType.WomensSingles)
+                    {
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="model.Player3Name" Label="Enter player name" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
+                            <MudTextField @bind-Value="model.Player4Name" Label="Enter player name" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
                         </MudItem>
-                        @if (model.Type != MatchType.MensSingles && model.Type != MatchType.WomensSingles) 
-                        {
-                            <MudItem xs="12" sm="6">
-                                <MudTextField @bind-Value="model.Player4Name" Label="Enter player name" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
-                            </MudItem>
-                        }
-                    </MudGrid>
+                    }
+                </MudGrid>
             </MudPaper>
         </MudItem>
-        <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" OnClick="@(async () => await Submit())" FullWidth="true">Create match</MudButton>
+        <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" FullWidth="true">Create match</MudButton>
     </MudGrid>
 </MudForm>
 
 @code {
     [Inject] ISnackbar Snackbar { get; set; }
+    [Inject] GameService GameService { get; set; }
 
     bool success = false;
-    MudForm form = new MudForm();
+    MudForm? form = new MudForm();
     CreateMatchViewModel model = new CreateMatchViewModel()
-    {
-        Type = MatchType.MensSingles,
-        PointsToWin = 21,
-        GamesToWin = 2
-    };
+        {
+            Type = MatchType.MensSingles,
+            PointsToWin = 21,
+            GamesToWin = 2
+        };
 
-    private class CreateMatchViewModel {
+    private class CreateMatchViewModel
+    {
         public int GamesToWin { get; set; } // 2
         public int PointsToWin { get; set; } // 21
         public int PointsToFinalize { get; set; } // 30
@@ -97,14 +100,29 @@
         public string Player4Name { get; set; }
     }
 
+    Dictionary<int, int> Deuces = new Dictionary<int, int>()
+    {
+        { 11, 15 },
+        { 15, 17 },
+        { 21, 30 },
+    };
+
     private async Task Submit()
     {
         await form.Validate();
 
         if (form.IsValid)
         {
-            Snackbar.Add("Submited!");
-            NavigationManager.NavigateTo($"/match", false);
+            Guid id = await GameService.CreateMatch(new Server.Models.MatchModel()
+                {
+                    GamesToWin = model.GamesToWin,
+                    PointsToFinalize = Deuces[model.PointsToWin],
+                    PointsToWin = model.PointsToWin,
+                    Record = MatchRecord.ToBePlayed,
+                    Result = MatchResult.Undetermined,
+                    Type = model.Type
+                });
+            NavigationManager.NavigateTo($"/match/{id}", false);
         }
     }
 

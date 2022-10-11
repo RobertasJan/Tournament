@@ -1,19 +1,29 @@
-﻿using Tournament.Domain.Games;
+﻿using Tournament.Client.Services;
+using Tournament.Domain.Games;
 using Tournament.Domain.Players;
+using Tournament.Server.Models;
+using Tournament.Shared.Games;
 using MatchType = Tournament.Domain.Games.MatchType;
 
 namespace Tournament.Client.Models
 {
     public class MatchViewModel
     {
+        public Guid MatchId { get; set; } = Guid.Empty;
+
         public string Player1 { get; set; } = "Player 1";
         public string Player2 { get; set; } = "Player 2";
         public string Player3 { get; set; } = "Player 3";
         public string Player4 { get; set; } = "Player 4";
 
+        public bool Team1LeftSide { get; set; } = true;
+        public bool EndGame { get; set; } = false;
+        public bool EndMatch { get; set; } = false;
+
         public int GamesToWin { get; set; } // 2
         public int PointsToWin { get; set; } // 21
         public int PointsToFinalize { get; set; } // 30
+
         public MatchType Type { get; set; }
         public MatchRecord Record { get; set; } = MatchRecord.ToBePlayed;
         public MatchResult Result { get; set; } = MatchResult.Undetermined;
@@ -23,15 +33,27 @@ namespace Tournament.Client.Models
         private ICollection<GameViewModel> _gameList { get; set; }
         public GameViewModel CurrentGame { get; set; }
 
-        public MatchViewModel()
+        private readonly GameService service;
+
+        public MatchViewModel(GameService service, MatchModel matchModel)
         {
+            if (matchModel != null)
+            {
+                this.GamesToWin = matchModel.GamesToWin;
+                this.PointsToFinalize = matchModel.PointsToFinalize;
+                this.PointsToWin = matchModel.PointsToWin;
+                this.Type = matchModel.Type;
+                this.Record = matchModel.Record;
+                this.Result = matchModel.Result;
+                this.MatchId = matchModel.Id;
+            }
             _pointList = new Stack<Point>();
             CurrentGame = new GameViewModel();
             _gameList = new List<GameViewModel>() { CurrentGame };
 
         }
 
-        public void AddTeam1Score()
+        public async Task AddTeam1Score()
         {
             CurrentGame.Team1Score++;
             this.ServeLocation = CurrentGame.Team1Score % 2 == 0 ? ServeLocation.SW : ServeLocation.NW;
@@ -39,13 +61,15 @@ namespace Tournament.Client.Models
             {
                 if (point.Scorer == Team.Team1)
                 {
-                    SwitchTeam1Players();
+                    SwitchLeftsidePlayers();
                 }
             }
             _pointList.Push(new Point(this.ServeLocation, Team.Team1));
+
+            await CheckEndGame();
         }
 
-        public void AddTeam2Score()
+        public async Task AddTeam2Score()
         {
             CurrentGame.Team2Score++;
             this.ServeLocation = CurrentGame.Team2Score % 2 == 0 ? ServeLocation.NE : ServeLocation.SE;
@@ -53,13 +77,48 @@ namespace Tournament.Client.Models
             {
                 if (point.Scorer == Team.Team2)
                 {
-                    SwitchTeam2Players();
+                    SwitchRightsidePlayers();
                 }
             }
             _pointList.Push(new Point(this.ServeLocation, Team.Team2));
+
+            await CheckEndGame();
         }
 
-        public void ReturnPoint()
+        private async Task SetMatchGame()
+        {
+            if (CurrentGame.Id != null)
+            {
+                await service.UpdateGame(new GameModel(), MatchId);
+            }
+            else
+            {
+                await service.CreateGame(new GameModel(), MatchId);
+            }
+        }
+
+        private async Task CheckEndGame()
+        {
+            if (CurrentGame.Team2Score == PointsToFinalize || (CurrentGame.Team2Score >= PointsToWin && CurrentGame.Team2Score > CurrentGame.Team1Score + 1))
+            {
+                this.CurrentGame.Result = GameResult.Team2Victory;
+                EndGame = true;
+            }
+            else if (CurrentGame.Team1Score == PointsToFinalize || (CurrentGame.Team1Score >= PointsToWin && CurrentGame.Team1Score > CurrentGame.Team2Score + 1))
+            {
+                EndGame = true;
+                this.CurrentGame.Result = GameResult.Team1Victory;
+            }
+            else
+            {
+                this.CurrentGame.Result = GameResult.Undetermined;
+                EndGame = false;
+                EndMatch = false;
+            }
+            await SetMatchGame();
+        }
+
+        public async Task ReturnPoint()
         {
             var lastPoint = _pointList.Peek();
             if (lastPoint.Scorer == Team.Team1)
@@ -80,13 +139,14 @@ namespace Tournament.Client.Models
                 var previousPoint = _pointList.Peek();
                 this.ServeLocation = previousPoint.ServeLocation;
             }
+            await CheckEndGame();
         }
 
-        public void SwitchTeam1Players()
+        public void SwitchLeftsidePlayers()
         {
             (Player2, Player1) = (Player1, Player2);
         }
-        public void SwitchTeam2Players()
+        public void SwitchRightsidePlayers()
         {
             (Player4, Player3) = (Player3, Player4);
         }
@@ -107,5 +167,6 @@ namespace Tournament.Client.Models
                 this.ServeLocation = ServeLocation.SW;
             }
         }
+
     }
 }
