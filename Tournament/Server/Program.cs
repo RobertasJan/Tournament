@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
-using System.Security.Authentication;
 using Tournament.Domain.Services.Games;
+using Tournament.Domain.Services.Players;
+using Tournament.Domain.Services.Tournament;
 using Tournament.Infrastructure;
 using Tournament.Infrastructure.Data;
 using Tournament.Server;
@@ -19,6 +18,10 @@ builder.Services.AddDbContext(connectionString);
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 builder.Services.AddScoped<IMatchService, MatchService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<ITournamentService, TournamentService>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
+
 builder.WebHost.UseStaticWebAssets();
 
 var app = builder.Build();

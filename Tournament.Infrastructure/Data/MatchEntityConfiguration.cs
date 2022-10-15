@@ -21,14 +21,30 @@ namespace Tournament.Infrastructure.Data
              .WithOne(x => x.Match)
              .HasForeignKey(x => x.MatchId)
              .IsRequired()
-             .OnDelete(DeleteBehavior.Cascade);
+             .OnDelete(DeleteBehavior.Restrict);
 
             builder
              .HasMany(x => x.PlayersMatches)
              .WithOne(x => x.Match)
              .HasForeignKey(x => x.MatchId)
              .IsRequired()
-             .OnDelete(DeleteBehavior.Cascade);
+             .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .HasOne(x => x.TournamentGroup)
+                .WithMany()
+                .HasForeignKey(x => x.TournamentGroupId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.NextMatchIfWon)
+                .WithMany()
+                .HasForeignKey(x => x.NextMatchIfWonId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.NextMatchIfLost)
+                .WithMany()
+                .HasForeignKey(x => x.NextMatchIfLostId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

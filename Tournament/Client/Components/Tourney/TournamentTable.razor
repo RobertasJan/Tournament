@@ -1,0 +1,33 @@
+﻿@using Tournament.Domain.Tournaments
+
+@if (MatchTypes.Count() > 0)
+{
+    <MudSimpleTable Dense="true" Striped="true" Bordered="true">
+        <thead>
+            <tr>
+                <th>Group</th>
+                @foreach (var type in MatchTypes.OrderBy(x => x))
+                {
+                    <th>@type.ToString()</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var type in Groups.OrderBy(x => x))
+            {
+                <tr>
+                    <td>@type.ToString()</td>
+                    @foreach (var matchType in MatchTypes.OrderBy(x => x))
+                    {
+                        <td>@matchType.ToString()</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+}
+
+@code {
+    [Parameter] public IEnumerable<Tournament.Domain.Games.MatchType> MatchTypes { get; set; }
+    [Parameter] public IEnumerable<TournamentGroupTypes> Groups { get; set; }
+}

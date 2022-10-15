@@ -9,7 +9,7 @@
     <MudGrid>
         <MudItem xs="12" sm="7">
             <MudPaper Class="pa-2" Elevation="3">
-                <MudText Typo="Typo.subtitle2">Game rules</MudText>
+                <MudText Typo="Typo.subtitle2">Match rules</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6" md="4">
                         <MudSelect @bind-Value="model.Type" Label="Match type" Variant="Variant.Outlined">
@@ -86,19 +86,6 @@
             PointsToWin = 21,
             GamesToWin = 2
         };
-
-    private class CreateMatchViewModel
-    {
-        public int GamesToWin { get; set; } // 2
-        public int PointsToWin { get; set; } // 21
-        public int PointsToFinalize { get; set; } // 30
-        public MatchType Type { get; set; }
-
-        public string Player1Name { get; set; }
-        public string Player2Name { get; set; }
-        public string Player3Name { get; set; }
-        public string Player4Name { get; set; }
-    }
 
     Dictionary<int, int> Deuces = new Dictionary<int, int>()
     {

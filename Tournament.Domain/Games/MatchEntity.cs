@@ -1,4 +1,5 @@
 ﻿using Tournament.Domain.Players;
+using Tournament.Domain.Tournaments;
 
 namespace Tournament.Domain.Games
 {
@@ -12,6 +13,15 @@ namespace Tournament.Domain.Games
         public MatchResult Result { get; set; } = MatchResult.Undetermined;
         public IEnumerable<GameEntity>? Games { get; set; }
         public IEnumerable<PlayerMatchEntity>? PlayersMatches { get; set; }
+
+        public Guid? TournamentGroupId { get; set; }
+        public TournamentGroupEntity? TournamentGroup { get; set; }
+
+        public Guid? NextMatchIfWonId { get; set; }
+        public MatchEntity? NextMatchIfWon { get; set; }
+
+        public Guid? NextMatchIfLostId { get; set; }
+        public MatchEntity? NextMatchIfLost { get; set; }
     }
 
     public enum MatchType : byte

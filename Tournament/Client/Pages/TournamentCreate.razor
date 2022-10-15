@@ -1,0 +1,147 @@
+﻿@page "/tournament/create"
+@using System.Globalization
+@using System.Reflection
+@using Tournament.Domain.Tournaments
+
+<PageTitle>Tournament</PageTitle>
+
+<MudForm @ref="@form" @bind-IsValid="@success">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudPaper Class="pa-2" Elevation="3">
+                <MudText Typo="Typo.subtitle2">Tournament description</MudText>
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="model.Name" Label="Enter tournament name" Variant="Variant.Text" Required="true" RequiredError="Tournament name is required!"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="model.Description" Label="Enter short description" Variant="Variant.Text" Required="true" RequiredError="Tournament short description is required!"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField Lines="8" @bind-Value="model.LongDescription" Label="Enter full description" Variant="Variant.Text" Required="true" RequiredError="Tournament full description is required!"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudDatePicker Label="Start date" @bind-Date="model.StartDate" Culture="@GetLithuanianCultureInfo()" TitleDateFormat="dddd, dd MMMM" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudDatePicker Label="End date" @bind-Date="model.EndDate" Culture="@GetLithuanianCultureInfo()" TitleDateFormat="dddd, dd MMMM" />
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudPaper Class="pa-2" Elevation="3">
+                <MudText Typo="Typo.subtitle2">Match rules</MudText>
+                <MudGrid>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudSelect @bind-Value="model.PointsToWin" Label="Points to win" Variant="Variant.Outlined">
+                            <MudSelectItem Value="11">11 (deuce 15)</MudSelectItem>
+                            <MudSelectItem Value="15">15 (deuce 17)</MudSelectItem>
+                            <MudSelectItem Value="21">21 (deuce 30)</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudSelect @bind-Value="model.GamesToWin" Label="Games to win" Variant="Variant.Outlined">
+                            <MudSelectItem Value="1">Best of 1</MudSelectItem>
+                            <MudSelectItem Value="2">Best of 3</MudSelectItem>
+                            <MudSelectItem Value="3">Best of 5</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+    <MudGrid Class="pt-4">
+        <MudItem xs="12">
+            <MudPaper Class="pa-2" Elevation="3">
+                <MudText Typo="Typo.subtitle2">Tournament groups</MudText>
+                <MudGrid>
+                    <MudItem xs=12 sm="6">
+                        <MudSelect @bind-SelectedValues="model.MatchTypes" Label="Match types" Variant="Variant.Outlined" MultiSelection="true">
+                            @foreach (Tournament.Domain.Games.MatchType type in Enum.GetValues(typeof(Tournament.Domain.Games.MatchType)))
+                            {
+                                <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudSelect @bind-SelectedValues="model.Groups" Label="Tournament group types" Variant="Variant.Outlined" MultiSelection="true">
+                            @foreach (TournamentGroupTypes type in Enum.GetValues(typeof(TournamentGroupTypes)))
+                            {
+                                <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <TournamentTable MatchTypes="model.MatchTypes" Groups="model.Groups"></TournamentTable>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+        <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" FullWidth="true">Create tournament</MudButton>
+
+    </MudGrid>
+</MudForm>
+
+@code {
+    [Inject] TournamentService TournamentService { get; set; }
+
+    bool success = false;
+    MudForm? form = new MudForm();
+
+    public CultureInfo GetLithuanianCultureInfo()
+    {
+        var culture = new CultureInfo("lt");
+        DateTimeFormatInfo formatInfo = culture.DateTimeFormat;
+        formatInfo.AbbreviatedDayNames = new[] { "ی", "د", "س", "چ", "پ", "ج", "ش" };
+        formatInfo.DayNames = new[] { "یکشنبه", "دوشنبه", "سه شنبه", "چهار شنبه", "پنجشنبه", "جمعه", "شنبه" };
+        var monthNames = new[]
+        {
+            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن",
+            "اسفند",
+            "",
+    };
+        formatInfo.AbbreviatedMonthNames =
+            formatInfo.MonthNames =
+                formatInfo.MonthGenitiveNames = formatInfo.AbbreviatedMonthGenitiveNames = monthNames;
+        System.Globalization.Calendar cal = new GregorianCalendar();
+        FieldInfo fieldInfo = culture.GetType().GetField("calendar", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (fieldInfo != null)
+            fieldInfo.SetValue(culture, cal);
+        FieldInfo info = formatInfo.GetType().GetField("calendar", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (info != null)
+            info.SetValue(formatInfo, cal);
+        return culture;
+    }
+    TournamentCreateViewModel model = new TournamentCreateViewModel()
+        {
+            Groups = new HashSet<TournamentGroupTypes>(),
+            MatchTypes = new HashSet<Tournament.Domain.Games.MatchType>(),
+            PointsToWin = 21,
+            GamesToWin = 2,
+            StartDate = DateTime.Now,
+            EndDate = DateTime.Now
+        };
+
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            //Guid id = await TournamentService.CreateMatch(new Server.Models.MatchModel()
+            //    {
+            //        GamesToWin = model.GamesToWin,
+            //        PointsToFinalize = Deuces[model.PointsToWin],
+            //        PointsToWin = model.PointsToWin,
+            //        Record = MatchRecord.ToBePlayed,
+            //        Result = MatchResult.Undetermined,
+            //        Type = model.Type
+            //    });
+            Guid id = Guid.NewGuid();
+            NavigationManager.NavigateTo($"/tournament/{id}", false);
+        }
+    }
+}
