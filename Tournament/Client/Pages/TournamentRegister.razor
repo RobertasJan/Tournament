@@ -1,4 +1,4 @@
-﻿@page "/tournament/{Id:guid}"
+﻿@page "/tournament/{Id:guid}/register"
 @using Tournament.Shared.Tournaments
 
 <PageTitle>Tournament</PageTitle>
@@ -13,18 +13,6 @@
             </MudPaper>
         </MudItem>
         <TournamentTable Groups="model.Data.Groups"></TournamentTable>
-        @{
-            var href = $"tournament/{Id}/register";
-        }
-        <MudItem xs="12">
-            <MudLink Href="@href">
-            <MudButton
-                   Variant="Variant.Filled"
-                   Color="Color.Primary">
-                REGISTER
-                </MudButton>
-            </MudLink>
-        </MudItem>
     </MudGrid>
 }
 @code {

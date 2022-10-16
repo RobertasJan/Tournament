@@ -17,7 +17,7 @@ namespace Tournament.Infrastructure.Data
 
             builder
                 .HasOne(x => x.Tournament)
-                .WithMany()
+                .WithMany(x => x.Groups)
                 .HasForeignKey(x => x.TournamentId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
