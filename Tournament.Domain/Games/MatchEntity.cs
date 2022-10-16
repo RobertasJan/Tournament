@@ -31,8 +31,6 @@ namespace Tournament.Domain.Games
         MensDoubles = 3,
         WomensDoubles = 4,
         MixedDoubles = 5,
-
-        Other = 6
     }
 
     public enum MatchRecord : byte

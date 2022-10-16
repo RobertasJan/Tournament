@@ -23,6 +23,5 @@ namespace Tournament.Domain.Tournaments
         C = 3,
         D = 4,
         E = 5,
-        Other = 6,
     }
 }

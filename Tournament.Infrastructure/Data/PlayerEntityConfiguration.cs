@@ -20,6 +20,11 @@ namespace Tournament.Infrastructure.Data
              .HasForeignKey(x => x.PlayerId)
              .IsRequired()
              .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(x => x.User)
+                .WithOne(x => x.Player)
+                .HasForeignKey<PlayerEntity>(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

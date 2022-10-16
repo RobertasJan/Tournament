@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Tournament.Domain.Services.Games;
 using Tournament.Domain.Services.Players;
 using Tournament.Domain.Services.Tournament;
+using Tournament.Domain.Services.User;
+using Tournament.Domain.User;
 using Tournament.Infrastructure;
 using Tournament.Infrastructure.Data;
 using Tournament.Server;
@@ -15,6 +18,23 @@ builder.Services.AddRazorPages();
 string connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext(connectionString);
 
+builder.Services.AddDefaultIdentity<ApplicationUserEntity>(options => 
+{
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+})
+    .AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddIdentityServer()
+    .AddApiAuthorization<ApplicationUserEntity, AppDbContext>();
+
+builder.Services.AddAuthentication()
+    .AddIdentityServerJwt();
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 builder.Services.AddScoped<IMatchService, MatchService>();
@@ -22,6 +42,7 @@ builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<ITournamentGroupService, TournamentGroupService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.WebHost.UseStaticWebAssets();
 
@@ -44,7 +65,12 @@ app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
+app.UseAuthentication();
+app.UseIdentityServer();
+
 app.UseRouting();
+
+app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();

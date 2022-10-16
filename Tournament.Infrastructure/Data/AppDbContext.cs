@@ -1,16 +1,20 @@
-using System.Numerics;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Tournament.Domain.Games;
 using Tournament.Domain.Players;
 using Tournament.Domain.Tournaments;
+using Tournament.Domain.User;
+using Duende.IdentityServer.EntityFramework.Options;
+using Microsoft.Extensions.Options;
 
 namespace Tournament.Infrastructure.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : ApiAuthorizationDbContext<ApplicationUserEntity>
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
+    public AppDbContext(
+          DbContextOptions options,
+          IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
     {
     }
 

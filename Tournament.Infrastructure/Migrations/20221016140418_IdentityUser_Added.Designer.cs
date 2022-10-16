@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tournament.Infrastructure.Data;
 
@@ -11,9 +12,10 @@ using Tournament.Infrastructure.Data;
 namespace Tournament.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221016140418_IdentityUser_Added")]
+    partial class IdentityUser_Added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -428,14 +430,7 @@ namespace Tournament.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset")
                         .HasDefaultValueSql("SYSDATETIMEOFFSET()");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("Players", (string)null);
                 });
@@ -744,17 +739,6 @@ namespace Tournament.Infrastructure.Migrations
                     b.Navigation("TournamentGroup");
                 });
 
-            modelBuilder.Entity("Tournament.Domain.Players.PlayerEntity", b =>
-                {
-                    b.HasOne("Tournament.Domain.User.ApplicationUserEntity", "User")
-                        .WithOne("Player")
-                        .HasForeignKey("Tournament.Domain.Players.PlayerEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Tournament.Domain.Players.PlayerMatchEntity", b =>
                 {
                     b.HasOne("Tournament.Domain.Games.MatchEntity", null)
@@ -813,12 +797,6 @@ namespace Tournament.Infrastructure.Migrations
             modelBuilder.Entity("Tournament.Domain.Tournaments.TournamentGroupEntity", b =>
                 {
                     b.Navigation("Matches");
-                });
-
-            modelBuilder.Entity("Tournament.Domain.User.ApplicationUserEntity", b =>
-                {
-                    b.Navigation("Player")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -8,8 +8,36 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank" />
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" />
+        <AuthorizeView>
+            <Authorized>
+                <MudLink Href="#">
+                    <MudButton Variant="Variant.Text"
+                               Color="Color.Secondary">
+                        Hello, @context.User.Identity?.Name!
+                    </MudButton>
+                </MudLink>
+                <MudLink Href="logout">
+                    <MudButton Variant="Variant.Text"
+                               Color="Color.Secondary">
+                        LOGOUT
+                    </MudButton>
+                </MudLink>
+            </Authorized>
+            <NotAuthorized>
+                <MudLink Href="login">
+                    <MudButton Variant="Variant.Text"
+                               Color="Color.Secondary">
+                        LOGIN
+                    </MudButton>
+                </MudLink>
+                <MudLink Href="register">
+                    <MudButton Variant="Variant.Text"
+                               Color="Color.Secondary">
+                        REGISTER
+                    </MudButton>
+                </MudLink>
+            </NotAuthorized>
+        </AuthorizeView>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>
