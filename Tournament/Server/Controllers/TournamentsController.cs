@@ -11,12 +11,12 @@ namespace Tournament.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class TournamentController : BaseController
+    public class TournamentsController : BaseController
     {
-        private readonly ILogger<TournamentController> _logger;
+        private readonly ILogger<TournamentsController> _logger;
         private readonly ITournamentService tournamentService;
 
-        public TournamentController(ILogger<TournamentController> logger, ITournamentService tournamentService)
+        public TournamentsController(ILogger<TournamentsController> logger, ITournamentService tournamentService)
         {
             _logger = logger;
             this.tournamentService = tournamentService;
@@ -26,6 +26,12 @@ namespace Tournament.Server.Controllers
         public async Task<TournamentModel> Get([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             return Mapper.Map<TournamentModel>(await tournamentService.GetById(id, cancellationToken));
+        }
+
+        [HttpGet]
+        public async Task<ICollection<TournamentModel>> Get(CancellationToken cancellationToken)
+        {
+            return Mapper.Map<ICollection<TournamentModel>>(await tournamentService.Get(cancellationToken));
         }
 
         [HttpPost()]

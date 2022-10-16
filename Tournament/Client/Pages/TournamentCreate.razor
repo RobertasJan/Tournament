@@ -2,6 +2,9 @@
 @using System.Globalization
 @using System.Reflection
 @using Tournament.Domain.Tournaments
+@using Tournament.Shared.Games
+@using Tournament.Shared.Tournaments
+@using MatchType = Tournament.Domain.Games.MatchType
 
 <PageTitle>Tournament</PageTitle>
 
@@ -12,19 +15,23 @@
                 <MudText Typo="Typo.subtitle2">Tournament description</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6">
-                        <MudTextField @bind-Value="model.Name" Label="Enter tournament name" Variant="Variant.Text" Required="true" RequiredError="Tournament name is required!"></MudTextField>
+                        <MudTextField @bind-Value="model.Data.Name" Label="Enter tournament name" Variant="Variant.Text" Required="true" RequiredError="Tournament name is required!"></MudTextField>
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <MudTextField @bind-Value="model.Description" Label="Enter short description" Variant="Variant.Text" Required="true" RequiredError="Tournament short description is required!"></MudTextField>
+                        <MudTextField @bind-Value="model.Data.Description" Label="Enter short description" Variant="Variant.Text" Required="true" RequiredError="Tournament short description is required!"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudDatePicker Label="Start date" @bind-Date="model.Data.StartDate" Culture="@GetLithuanianCultureInfo()" TitleDateFormat="dddd, dd MMMM" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudDatePicker Label="End date" @bind-Date="model.Data.EndDate" Culture="@GetLithuanianCultureInfo()" TitleDateFormat="dddd, dd MMMM" />
                     </MudItem>
                     <MudItem xs="12">
-                        <MudTextField Lines="8" @bind-Value="model.LongDescription" Label="Enter full description" Variant="Variant.Text" Required="true" RequiredError="Tournament full description is required!"></MudTextField>
+                        <MudCheckBox @bind-Checked="@model.Data.Public" Label="Public" Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox @bind-Checked="@model.Data.Rated" Label="Rated" Color="Color.Primary"></MudCheckBox>
                     </MudItem>
-                    <MudItem xs="12" sm="6">
-                        <MudDatePicker Label="Start date" @bind-Date="model.StartDate" Culture="@GetLithuanianCultureInfo()" TitleDateFormat="dddd, dd MMMM" />
-                    </MudItem>
-                    <MudItem xs="12" sm="6">
-                        <MudDatePicker Label="End date" @bind-Date="model.EndDate" Culture="@GetLithuanianCultureInfo()" TitleDateFormat="dddd, dd MMMM" />
+                    <MudItem xs="12">
+                        <MudTextField Lines="8" @bind-Value="model.Data.LongDescription" Label="Enter full description" Variant="Variant.Text" Required="true" RequiredError="Tournament full description is required!"></MudTextField>
                     </MudItem>
                 </MudGrid>
             </MudPaper>
@@ -36,14 +43,14 @@
                 <MudText Typo="Typo.subtitle2">Match rules</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6" md="4">
-                        <MudSelect @bind-Value="model.PointsToWin" Label="Points to win" Variant="Variant.Outlined">
+                        <MudSelect @bind-Value="model.Data.PointsToWin" Label="Points to win" Variant="Variant.Outlined">
                             <MudSelectItem Value="11">11 (deuce 15)</MudSelectItem>
                             <MudSelectItem Value="15">15 (deuce 17)</MudSelectItem>
                             <MudSelectItem Value="21">21 (deuce 30)</MudSelectItem>
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="12" sm="6" md="4">
-                        <MudSelect @bind-Value="model.GamesToWin" Label="Games to win" Variant="Variant.Outlined">
+                        <MudSelect @bind-Value="model.Data.GamesToWin" Label="Games to win" Variant="Variant.Outlined">
                             <MudSelectItem Value="1">Best of 1</MudSelectItem>
                             <MudSelectItem Value="2">Best of 3</MudSelectItem>
                             <MudSelectItem Value="3">Best of 5</MudSelectItem>
@@ -59,15 +66,15 @@
                 <MudText Typo="Typo.subtitle2">Tournament groups</MudText>
                 <MudGrid>
                     <MudItem xs=12 sm="6">
-                        <MudSelect @bind-SelectedValues="model.MatchTypes" Label="Match types" Variant="Variant.Outlined" MultiSelection="true">
-                            @foreach (Tournament.Domain.Games.MatchType type in Enum.GetValues(typeof(Tournament.Domain.Games.MatchType)))
+                        <MudSelect SelectedValuesChanged="OnMatchSelected" T="MatchType" Label="Match types" Variant="Variant.Outlined" MultiSelection="true">
+                            @foreach (MatchType type in Enum.GetValues(typeof(Tournament.Domain.Games.MatchType)))
                             {
                                 <MudSelectItem Value="@type">@type zaza</MudSelectItem>
                             }
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <MudSelect @bind-SelectedValues="model.Groups" Label="Tournament group types" Variant="Variant.Outlined" MultiSelection="true">
+                        <MudSelect SelectedValuesChanged="OnGroupSelected" T="TournamentGroupTypes" Label="Tournament group types" Variant="Variant.Outlined" MultiSelection="true">
                             @foreach (TournamentGroupTypes type in Enum.GetValues(typeof(TournamentGroupTypes)))
                             {
                                 <MudSelectItem Value="@type">@type zaza</MudSelectItem>
@@ -75,13 +82,12 @@
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <TournamentTable MatchTypes="model.MatchTypes" Groups="model.Groups"></TournamentTable>
+                        <TournamentTable Groups="model.Data.Groups"></TournamentTable>
                     </MudItem>
                 </MudGrid>
             </MudPaper>
         </MudItem>
         <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" FullWidth="true">Create tournament</MudButton>
-
     </MudGrid>
 </MudForm>
 
@@ -90,6 +96,10 @@
 
     bool success = false;
     MudForm? form = new MudForm();
+    TournamentViewModel model;
+    IEnumerable<MatchType> MatchTypes { get; set; } = new HashSet<MatchType>();
+    IEnumerable<TournamentGroupTypes> Groups { get; set; } = new HashSet<TournamentGroupTypes>();
+
 
     public CultureInfo GetLithuanianCultureInfo()
     {
@@ -115,15 +125,65 @@
             info.SetValue(formatInfo, cal);
         return culture;
     }
-    TournamentCreateViewModel model = new TournamentCreateViewModel()
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = new TournamentViewModel(TournamentService, new TournamentModel
+            {
+                PointsToWin = 21,
+                GamesToWin = 2,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now,
+                Groups = new List<TournamentGroupModel>()
+            });
+        MatchTypes = new HashSet<MatchType>();
+        Groups = new HashSet<TournamentGroupTypes>();
+    }
+
+    private void OnMatchSelected(IEnumerable<MatchType> values)
+    {
+        MatchTypes = values;
+        BindGroupsToModel();
+    }
+
+    private void OnGroupSelected(IEnumerable<TournamentGroupTypes> values)
+    {
+        Groups = values;
+        BindGroupsToModel();
+    }
+
+    private void BindGroupsToModel()
+    {
+        var groups = new List<TournamentGroupModel>();
+        foreach (var group in Groups)
         {
-            Groups = new HashSet<TournamentGroupTypes>(),
-            MatchTypes = new HashSet<Tournament.Domain.Games.MatchType>(),
-            PointsToWin = 21,
-            GamesToWin = 2,
-            StartDate = DateTime.Now,
-            EndDate = DateTime.Now
-        };
+            foreach (var match in MatchTypes)
+            {
+                groups.Add(new TournamentGroupModel()
+                    {
+                        MatchType = match,
+                        Type = group
+                    });
+            }
+        }
+        model.Data.Groups = model.Data.Groups.Where(x => groups.Any(y => y.MatchType == x.MatchType && y.Type == x.Type)).ToList();
+        foreach (var group in groups)
+        {
+            if (!model.Data.Groups.Any(x => x.MatchType == group.MatchType && x.Type == group.Type))
+            {
+                model.Data.Groups.Add(new TournamentGroupModel()
+                {
+                    MatchType = group.MatchType,
+                    Type = group.Type
+                });
+            }
+        }
+
+        foreach (var zz in model.Data.Groups)
+        {
+            Console.WriteLine(zz);
+        }
+    }
 
     private async Task Submit()
     {
@@ -131,16 +191,7 @@
 
         if (form.IsValid)
         {
-            //Guid id = await TournamentService.CreateMatch(new Server.Models.MatchModel()
-            //    {
-            //        GamesToWin = model.GamesToWin,
-            //        PointsToFinalize = Deuces[model.PointsToWin],
-            //        PointsToWin = model.PointsToWin,
-            //        Record = MatchRecord.ToBePlayed,
-            //        Result = MatchResult.Undetermined,
-            //        Type = model.Type
-            //    });
-            Guid id = Guid.NewGuid();
+            var id = model.Save();
             NavigationManager.NavigateTo($"/tournament/{id}", false);
         }
     }

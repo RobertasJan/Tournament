@@ -21,6 +21,7 @@ namespace Tournament.Infrastructure.Data
             builder.Property(x => x.PointsToFinalize).IsRequired();
 
             builder.Property(x => x.Public).IsRequired().HasDefaultValue(false);
+            builder.Property(x => x.Rated).IsRequired().HasDefaultValue(false);
             builder.Property(x => x.StartDate).IsRequired();
             builder.Property(x => x.EndDate);
             builder.Property(x => x.Name).IsRequired().HasMaxLength(128);

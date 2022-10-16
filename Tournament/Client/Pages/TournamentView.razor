@@ -1,3 +1,30 @@
 ﻿@page "/tournament/{Id:guid}"
+@using Tournament.Shared.Tournaments
 
-<PageTitle>Match</PageTitle>
+<PageTitle>Tournament</PageTitle>
+@if (model != null)
+{
+    <MudGrid>
+        <MudItem xs="12">
+            <MudPaper Class="pa-2" Elevation="3">
+                <MudText Typo="Typo.h4" GutterBottom="true">@model.Data.Name</MudText>
+                <MudText Typo="Typo.caption" GutterBottom="true">@model.Data.Description</MudText>
+                <MudText Typo="Typo.body2" GutterBottom="true">@model.Data.LongDescription</MudText>
+            </MudPaper>
+        </MudItem>
+        <TournamentTable Groups="model.Data.Groups"></TournamentTable>
+    </MudGrid>
+}
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Inject] TournamentService TournamentService { get; set; }
+
+    private TournamentViewModel model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
+    }
+}

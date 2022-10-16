@@ -3,6 +3,7 @@
 @using MatchType = Tournament.Domain.Games.MatchType;
 @using System.ComponentModel.DataAnnotations
 @using Tournament.Domain.Games
+@using Tournament.Shared.Games
 
 <PageTitle>Match</PageTitle>
 <MudForm @ref="@form" @bind-IsValid="@success">
@@ -87,13 +88,6 @@
             GamesToWin = 2
         };
 
-    Dictionary<int, int> Deuces = new Dictionary<int, int>()
-    {
-        { 11, 15 },
-        { 15, 17 },
-        { 21, 30 },
-    };
-
     private async Task Submit()
     {
         await form.Validate();
@@ -103,7 +97,7 @@
             Guid id = await GameService.CreateMatch(new Server.Models.MatchModel()
                 {
                     GamesToWin = model.GamesToWin,
-                    PointsToFinalize = Deuces[model.PointsToWin],
+                    PointsToFinalize = Deuces.DeucesList[model.PointsToWin],
                     PointsToWin = model.PointsToWin,
                     Record = MatchRecord.ToBePlayed,
                     Result = MatchResult.Undetermined,

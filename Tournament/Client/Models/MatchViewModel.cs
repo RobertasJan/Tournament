@@ -50,6 +50,7 @@ namespace Tournament.Client.Models
             _pointList = new Stack<Point>();
             CurrentGame = new GameViewModel();
             _gameList = new List<GameViewModel>() { CurrentGame };
+            this.service = service;
 
         }
 

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tournament.Domain.Tournaments
+﻿namespace Tournament.Domain.Tournaments
 {
     public class TournamentEntity : BaseEntity
     {
@@ -14,6 +7,7 @@ namespace Tournament.Domain.Tournaments
         public string LongDescription { get; set; }
 
         public bool Public { get; set; }
+        public bool Rated { get; set; }
 
         #region Match rules
         public int GamesToWin { get; set; } // 2
@@ -21,8 +15,8 @@ namespace Tournament.Domain.Tournaments
         public int PointsToFinalize { get; set; } // 30
         #endregion
 
-        public DateTimeOffset StartDate { get; set; }
-        public DateTimeOffset? EndDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public ICollection<TournamentGroupEntity> Groups { get; set; }
     }
 }

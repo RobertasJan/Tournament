@@ -1,25 +1,25 @@
 ﻿@using Tournament.Domain.Tournaments
+@using Tournament.Shared.Tournaments
 
-@if (MatchTypes.Count() > 0)
+@if (GetMatchTypes()?.Count() > 0)
 {
     <MudSimpleTable Dense="true" Striped="true" Bordered="true">
         <thead>
             <tr>
                 <th>Group</th>
-                @foreach (var type in MatchTypes.OrderBy(x => x))
+                @foreach (var type in GetMatchTypes())
                 {
                     <th>@type.ToString()</th>
                 }
             </tr>
         </thead>
         <tbody>
-            @foreach (var type in Groups.OrderBy(x => x))
+            @foreach (var type in GetGroupTypes())
             {
                 <tr>
                     <td>@type.ToString()</td>
-                    @foreach (var matchType in MatchTypes.OrderBy(x => x))
-                    {
-                        <td>@matchType.ToString()</td>
+                    @foreach (var match in Groups.Where(x => x.Type == type).OrderBy(x => x.MatchType)) {
+                        <td>@match.MatchType.ToString()</td>
                     }
                 </tr>
             }
@@ -28,6 +28,13 @@
 }
 
 @code {
-    [Parameter] public IEnumerable<Tournament.Domain.Games.MatchType> MatchTypes { get; set; }
-    [Parameter] public IEnumerable<TournamentGroupTypes> Groups { get; set; }
+    [Parameter] public IEnumerable<TournamentGroupModel> Groups { get; set; }
+    private IEnumerable<Tournament.Domain.Games.MatchType>? GetMatchTypes() {
+        return Groups?.OrderBy(x => x.MatchType).GroupBy(x => new {x.MatchType}).Select(x => x.Key.MatchType);
+    }
+
+    private IEnumerable<TournamentGroupTypes>? GetGroupTypes()
+    {
+        return Groups?.OrderBy(x => x.Type).GroupBy(x => new { x.Type }).Select(x => x.Key.Type);
+    }
 }
