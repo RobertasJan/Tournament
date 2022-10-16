@@ -15,11 +15,13 @@ namespace Tournament.Server.Controllers
     {
         private readonly ILogger<TournamentsController> _logger;
         private readonly ITournamentService tournamentService;
+        private readonly ITournamentGroupService tournamentGroupService;
 
-        public TournamentsController(ILogger<TournamentsController> logger, ITournamentService tournamentService)
+        public TournamentsController(ILogger<TournamentsController> logger, ITournamentService tournamentService, ITournamentGroupService tournamentGroupService)
         {
             _logger = logger;
             this.tournamentService = tournamentService;
+            this.tournamentGroupService = tournamentGroupService;
         }
 
         [HttpGet("{id:Guid}")]
@@ -37,7 +39,14 @@ namespace Tournament.Server.Controllers
         [HttpPost()]
         public async Task<Guid> Create(TournamentModel model, CancellationToken cancellationToken)
         {
-            return await tournamentService.Create(Mapper.Map<TournamentEntity>(model), cancellationToken);
+            var id = await tournamentService.Create(Mapper.Map<TournamentEntity>(model), cancellationToken);
+            var tournamentGroups = Mapper.Map<ICollection<TournamentGroupEntity>>(model.Groups);
+            foreach (var group in tournamentGroups)
+            {
+                group.TournamentId = id;
+                await tournamentGroupService.Create(group, cancellationToken);
+            }
+            return id;
         }
     }
 }

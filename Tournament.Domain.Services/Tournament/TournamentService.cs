@@ -29,6 +29,7 @@ namespace Tournament.Domain.Services.Tournament
 
         public async Task<Guid> Create(TournamentEntity tournament, CancellationToken cancellationToken)
         {
+            tournament.Groups = null;
             await _db.Tournaments.AddAsync(tournament, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);
             return tournament.Id;
@@ -38,6 +39,9 @@ namespace Tournament.Domain.Services.Tournament
             => await _db.Tournaments.ToListAsync(cancellationToken);
 
         public async Task<TournamentEntity> GetById(Guid id, CancellationToken cancellationToken)
-            => await _db.Tournaments.FirstOrDefaultAsync(x => x.Id == id, cancellationToken) ?? throw new Exception($"Tournament {id} not found.");
+        {  
+            var item = await _db.Tournaments.Include(x => x.Groups).FirstOrDefaultAsync(x => x.Id == id, cancellationToken) ?? throw new Exception($"Tournament {id} not found.");
+            return item;
+        } 
     }
 }

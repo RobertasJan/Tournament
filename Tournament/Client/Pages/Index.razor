@@ -1,9 +1,33 @@
 ﻿@page "/"
+@using Tournament.Shared.Tournaments
 
 <PageTitle>Index</PageTitle>
+
+@if (tournaments != null)
+{
+    @foreach (var tourney in tournaments)
+    {
+        var href = $"tournament/{tourney.Id}";
+        <MudLink Href="@href">
+            <MudText Typo="Typo.h4" GutterBottom="true">@tourney.Name</MudText>
+            <MudText Typo="Typo.caption" GutterBottom="true">@tourney.Description</MudText>
+        </MudLink>
+    }
+}
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+    [Inject] TournamentService tournamentService { get; set; }
+
+    ICollection<TournamentModel> tournaments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tournaments = await tournamentService.GetTournaments();
+    }
+}

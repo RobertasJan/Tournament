@@ -20,6 +20,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 builder.Services.AddScoped<IMatchService, MatchService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<ITournamentService, TournamentService>();
+builder.Services.AddScoped<ITournamentGroupService, TournamentGroupService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 
 builder.WebHost.UseStaticWebAssets();

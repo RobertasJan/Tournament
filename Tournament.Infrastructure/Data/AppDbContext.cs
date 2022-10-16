@@ -19,6 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<MatchEntity> Matches { get; set; }
     public DbSet<PlayerMatchEntity> PlayerMatches { get; set; }
     public DbSet<TournamentEntity> Tournaments { get; set; }
+    public DbSet<TournamentGroupEntity> TournamentGroups { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

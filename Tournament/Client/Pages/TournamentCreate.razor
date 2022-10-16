@@ -172,16 +172,11 @@
             if (!model.Data.Groups.Any(x => x.MatchType == group.MatchType && x.Type == group.Type))
             {
                 model.Data.Groups.Add(new TournamentGroupModel()
-                {
-                    MatchType = group.MatchType,
-                    Type = group.Type
-                });
+                    {
+                        MatchType = group.MatchType,
+                        Type = group.Type
+                    });
             }
-        }
-
-        foreach (var zz in model.Data.Groups)
-        {
-            Console.WriteLine(zz);
         }
     }
 
@@ -191,7 +186,7 @@
 
         if (form.IsValid)
         {
-            var id = model.Save();
+            var id = await model.Save();
             NavigationManager.NavigateTo($"/tournament/{id}", false);
         }
     }
