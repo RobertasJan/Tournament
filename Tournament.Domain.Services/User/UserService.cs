@@ -14,8 +14,10 @@ namespace Tournament.Domain.Services.User
 {
     public interface IUserService
     {
-        public Task<string> Create(ApplicationUserEntity user, string password);
+        public Task<ApplicationUserEntity> Create(ApplicationUserEntity user, string password);
         public Task<ApplicationUserEntity?> Login(string loginName, string password);
+        public Task Signout();
+        public Task AddClaim(ApplicationUserEntity user, string type, string value);
     }
 
     public class UserService : IUserService
@@ -39,11 +41,11 @@ namespace Tournament.Domain.Services.User
             this._signInManager = signInManager;
         }
 
-        public async Task<string> Create(ApplicationUserEntity user, string password)
+        public async Task<ApplicationUserEntity> Create(ApplicationUserEntity user, string password)
         {
             user.LockoutEnabled = false;
             await _userManager.CreateAsync(user, password);
-            return user.Id;
+            return user;
         }
 
         public async Task<ApplicationUserEntity?> Login(string loginName, string password)
@@ -56,6 +58,16 @@ namespace Tournament.Domain.Services.User
                 return user;
             }
             return null;
+        }
+
+        public async Task AddClaim(ApplicationUserEntity user, string type, string value)
+        {
+            await _userManager.AddClaimAsync(user, new Claim(type, value));
+        }
+
+        public async Task Signout()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }

@@ -3,9 +3,9 @@
 
 <PageTitle>Index</PageTitle>
 
-@if (tournaments != null)
+@if (Tournaments != null)
 {
-    @foreach (var tourney in tournaments)
+    @foreach (var tourney in Tournaments)
     {
         var href = $"tournament/{tourney.Id}";
         <MudLink Href="@href">
@@ -22,12 +22,12 @@ Welcome to your new app.
 <SurveyPrompt Title="How is Blazor working for you?" />
 
 @code {
-    [Inject] TournamentService tournamentService { get; set; }
+    [Inject] TournamentService TournamentService { get; set; }
 
-    ICollection<TournamentModel> tournaments;
+    ICollection<TournamentModel>? Tournaments { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        tournaments = await tournamentService.GetTournaments();
+        Tournaments = await TournamentService.GetTournaments();
     }
 }

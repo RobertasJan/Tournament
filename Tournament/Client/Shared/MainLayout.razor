@@ -1,4 +1,10 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.Identity
+@using Tournament.Domain.User
+@inherits LayoutComponentBase
+
+@inject SignOutSessionStateManager SignOutManager
+
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -16,12 +22,11 @@
                         Hello, @context.User.Identity?.Name!
                     </MudButton>
                 </MudLink>
-                <MudLink Href="logout">
-                    <MudButton Variant="Variant.Text"
-                               Color="Color.Secondary">
-                        LOGOUT
-                    </MudButton>
-                </MudLink>
+                <MudButton Variant="Variant.Text"
+                           Color="Color.Secondary"
+                           OnClick="@(async () => await BeginSignOut())">
+                    LOGOUT
+                </MudButton>
             </Authorized>
             <NotAuthorized>
                 <MudLink Href="login">
@@ -53,10 +58,20 @@
 </MudLayout>
 
 @code {
+    [Inject] UserService UserService { get; set; }
+
     bool _drawerOpen = true;
 
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    private async Task BeginSignOut()
+    {
+        await UserService.SignOut();
+        await SignOutManager.SetSignOutState();
+
+        NavigationManager.NavigateTo("/", false);
     }
 }

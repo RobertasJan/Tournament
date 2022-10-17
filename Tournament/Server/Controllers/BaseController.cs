@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Tournament.Server.Controllers
 {
     [ApiController]
-    public class BaseController : ControllerBase
+    public abstract class BaseController : ControllerBase
     {
         /// <summary>
         /// AutoMapper

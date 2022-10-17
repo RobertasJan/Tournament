@@ -18,7 +18,7 @@ builder.Services.AddRazorPages();
 string connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext(connectionString);
 
-builder.Services.AddDefaultIdentity<ApplicationUserEntity>(options => 
+builder.Services.AddDefaultIdentity<ApplicationUserEntity>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = true;
@@ -65,8 +65,8 @@ app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
-app.UseAuthentication();
 app.UseIdentityServer();
+app.UseAuthentication();
 
 app.UseRouting();
 

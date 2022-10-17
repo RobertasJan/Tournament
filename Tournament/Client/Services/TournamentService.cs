@@ -6,7 +6,7 @@ namespace Tournament.Client.Services
 {
     public class TournamentService : BaseService
     {
-        public TournamentService(HttpClient client) : base(client)
+        public TournamentService(IHttpClientFactory client) : base(client)
         {
 
         }
@@ -17,7 +17,7 @@ namespace Tournament.Client.Services
             var httpResponse = await _client.GetAsync($"tournaments/{id}", cancellationToken).ConfigureAwait(false);
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
-                var tournament = await httpResponse.Content.ReadAsAsync<TournamentModel>(cancellationToken).ConfigureAwait(false);
+                var tournament = await httpResponse.Content.ReadAsAsync<TournamentModel>(CancellationToken.None).ConfigureAwait(false);
                 return tournament;
             }
             throw new NotImplementedException("No error handling");
@@ -29,7 +29,7 @@ namespace Tournament.Client.Services
             var httpResponse = await _client.GetAsync($"tournaments", cancellationToken).ConfigureAwait(false);
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
-                var tournaments = await httpResponse.Content.ReadAsAsync<ICollection<TournamentModel>>(cancellationToken).ConfigureAwait(false);
+                var tournaments = await httpResponse.Content.ReadAsAsync<ICollection<TournamentModel>>(CancellationToken.None).ConfigureAwait(false);
                 return tournaments;
             }
             throw new NotImplementedException("No error handling");

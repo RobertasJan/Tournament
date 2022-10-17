@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Tournament.Domain.Games;
 using Tournament.Domain.Services.Games;
 using Tournament.Domain.Services.Tournament;

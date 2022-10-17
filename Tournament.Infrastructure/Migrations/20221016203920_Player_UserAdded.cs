@@ -12,14 +12,14 @@ namespace Tournament.Infrastructure.Migrations
                 name: "UserId",
                 table: "Players",
                 type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Players_UserId",
                 table: "Players",
                 column: "UserId",
-                unique: true);
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Players_AspNetUsers_UserId",

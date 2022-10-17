@@ -1,4 +1,6 @@
 ﻿@page "/tournament/{Id:guid}/register"
+@using Tournament.Domain.Tournaments
+@using Tournament.Shared.Players
 @using Tournament.Shared.Tournaments
 
 <PageTitle>Register</PageTitle>
@@ -11,20 +13,71 @@
                 <MudText Typo="Typo.caption" GutterBottom="true">@model.Data.Description</MudText>
             </MudPaper>
         </MudItem>
-        <TournamentTable Groups="model.Data.Groups"></TournamentTable>
-
+        <AuthorizeView>
+            <Authorized>
+                Hello, @context.User.Identity?.Name!
+                <MudGrid>
+                    <MudItem xs=12 sm="6">
+                        <MudSelect @bind-Value="MatchType1" Label="Match type" Variant="Variant.Outlined">
+                            @foreach (MatchType type in Enum.GetValues(typeof(MatchType)))
+                            {
+                                <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudSelect @bind-Value="Group1" Label="Group" Variant="Variant.Outlined">
+                            @foreach (TournamentGroupTypes type in Enum.GetValues(typeof(TournamentGroupTypes)))
+                            {
+                                <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                </MudGrid>
+            </Authorized>
+            <NotAuthorized>
+                <MudLink Href="login">
+                    <MudButton Variant="Variant.Text"
+                           Color="Color.Secondary">
+                        LOGIN
+                    </MudButton>
+                </MudLink>
+                <MudLink Href="register">
+                    <MudButton Variant="Variant.Text"
+                           Color="Color.Secondary">
+                        REGISTER
+                    </MudButton>
+                </MudLink>
+            </NotAuthorized>
+        </AuthorizeView>
     </MudGrid>
 }
 @code {
     [Parameter]
     public Guid Id { get; set; }
 
-    [Inject] TournamentService TournamentService { get; set; }
+    MatchType MatchType1 { get; set; }
+    TournamentGroupTypes Group1 { get; set; }
+    Guid? PartnerId1 { get; set; }
 
-    private TournamentViewModel model;
+    MatchType? MatchType2 { get; set; }
+    TournamentGroupTypes? Group2 { get; set; }
+    Guid? PartnerId2 { get; set; }
+
+    MatchType? MatchType3 { get; set; }
+    TournamentGroupTypes? Group3 { get; set; }
+    Guid? PartnerId3 { get; set; }
+
+    [Inject] TournamentService TournamentService { get; set; }
+    [Inject] PlayerService PlayerService { get; set; }
+
+    TournamentViewModel? model = null;
+    PlayerModel? myPlayer = null;
 
     protected override async Task OnInitializedAsync()
     {
         model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
+        var authState = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+            myPlayer = await PlayerService.GetPlayer(authState.FindFirst("PlayerId")?.Value);
     }
 }

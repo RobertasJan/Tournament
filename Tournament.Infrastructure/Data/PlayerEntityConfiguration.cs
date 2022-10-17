@@ -13,6 +13,7 @@ namespace Tournament.Infrastructure.Data
 
             builder.Property(x => x.FirstName).IsRequired().HasMaxLength(64);
             builder.Property(x => x.LastName).IsRequired().HasMaxLength(64);
+            builder.Property(x => x.Gender).IsRequired();
 
             builder
              .HasMany(x => x.PlayerMatches)
@@ -24,6 +25,7 @@ namespace Tournament.Infrastructure.Data
             builder.HasOne(x => x.User)
                 .WithOne(x => x.Player)
                 .HasForeignKey<PlayerEntity>(x => x.UserId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

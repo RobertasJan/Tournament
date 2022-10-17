@@ -12,7 +12,7 @@ using Tournament.Infrastructure.Data;
 namespace Tournament.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221016201749_Player_UserAdded")]
+    [Migration("20221016203920_Player_UserAdded")]
     partial class Player_UserAdded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -431,13 +431,13 @@ namespace Tournament.Infrastructure.Migrations
                         .HasDefaultValueSql("SYSDATETIMEOFFSET()");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Players", (string)null);
                 });
@@ -751,8 +751,7 @@ namespace Tournament.Infrastructure.Migrations
                     b.HasOne("Tournament.Domain.User.ApplicationUserEntity", "User")
                         .WithOne("Player")
                         .HasForeignKey("Tournament.Domain.Players.PlayerEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("User");
                 });
