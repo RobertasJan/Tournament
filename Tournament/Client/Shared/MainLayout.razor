@@ -3,9 +3,6 @@
 @using Tournament.Domain.User
 @inherits LayoutComponentBase
 
-@inject SignOutSessionStateManager SignOutManager
-
-
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -14,35 +11,37 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
-        <AuthorizeView>
-            <Authorized>
-                <MudLink Href="#">
-                    <MudButton Variant="Variant.Text"
-                               Color="Color.Secondary">
-                        Hello, @context.User.Identity?.Name!
-                    </MudButton>
-                </MudLink>
-                <MudButton Variant="Variant.Text"
-                           Color="Color.Secondary"
-                           OnClick="@(async () => await BeginSignOut())">
-                    LOGOUT
-                </MudButton>
-            </Authorized>
-            <NotAuthorized>
-                <MudLink Href="login">
-                    <MudButton Variant="Variant.Text"
-                               Color="Color.Secondary">
-                        LOGIN
-                    </MudButton>
-                </MudLink>
-                <MudLink Href="register">
-                    <MudButton Variant="Variant.Text"
-                               Color="Color.Secondary">
-                        REGISTER
-                    </MudButton>
-                </MudLink>
-            </NotAuthorized>
-        </AuthorizeView>
+        <Tournament.Client.Pages.UserComponent />
+
+        @* <AuthorizeView>
+        <Authorized>
+        <MudLink Href="#">
+        <MudButton Variant="Variant.Text"
+        Color="Color.Secondary">
+        Hello, @context.User.Identity?.Name!
+        </MudButton>
+        </MudLink>
+        <MudButton Variant="Variant.Text"
+        Color="Color.Secondary"
+        OnClick="@(async () => await BeginSignOut())">
+        LOGOUT
+        </MudButton>
+        </Authorized>
+        <NotAuthorized>
+        <MudLink Href="login">
+        <MudButton Variant="Variant.Text"
+        Color="Color.Secondary">
+        LOGIN
+        </MudButton>
+        </MudLink>
+        <MudLink Href="register">
+        <MudButton Variant="Variant.Text"
+        Color="Color.Secondary">
+        REGISTER
+        </MudButton>
+        </MudLink>
+        </NotAuthorized>
+        </AuthorizeView>*@
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>
@@ -67,11 +66,4 @@
         _drawerOpen = !_drawerOpen;
     }
 
-    private async Task BeginSignOut()
-    {
-        await UserService.SignOut();
-        await SignOutManager.SetSignOutState();
-
-        NavigationManager.NavigateTo("/", false);
-    }
 }

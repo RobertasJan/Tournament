@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Tournament.Domain.Services.Games;
 using Tournament.Domain.Services.Players;
 using Tournament.Domain.Services.Tournament;
@@ -8,6 +10,7 @@ using Tournament.Domain.User;
 using Tournament.Infrastructure;
 using Tournament.Infrastructure.Data;
 using Tournament.Server;
+using Tournament.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,11 +32,29 @@ builder.Services.AddDefaultIdentity<ApplicationUserEntity>(options =>
 })
     .AddEntityFrameworkStores<AppDbContext>();
 
-builder.Services.AddIdentityServer()
-    .AddApiAuthorization<ApplicationUserEntity, AppDbContext>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateAudience = true,
+        ValidAudience = AppSettings.ValidAudience,
+        ValidateIssuer = true,
+        ValidIssuer = AppSettings.ValidIssuer,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(AppSettings.SecretKey)),
+    };
+});
 
-builder.Services.AddAuthentication()
-    .AddIdentityServerJwt();
+#if DEBUG
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    builder.WithOrigins("https://localhost:7250")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+#endif
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
@@ -65,7 +86,6 @@ app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
-app.UseIdentityServer();
 app.UseAuthentication();
 
 app.UseRouting();

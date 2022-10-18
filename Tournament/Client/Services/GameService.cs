@@ -6,7 +6,7 @@ namespace Tournament.Client.Services
 {
     public class GameService : BaseService
     {
-        public GameService(IHttpClientFactory client) : base(client)
+        public GameService(HttpClient client) : base(client)
         {
 
         }

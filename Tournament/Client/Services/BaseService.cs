@@ -4,13 +4,11 @@ namespace Tournament.Client.Services
 {
     public abstract class BaseService
     {
-        public BaseService(IHttpClientFactory httpClientFactory)
+        public BaseService(HttpClient httpClient)
         {
-            _client = httpClientFactory.CreateClient("Tournament.AnonymousAPI");
-            _authorizedClient = httpClientFactory.CreateClient("Tournament.ServerAPI");
+            _client = httpClient;
         }
         protected HttpClient _client;
-        protected HttpClient _authorizedClient;
 
     }
 }

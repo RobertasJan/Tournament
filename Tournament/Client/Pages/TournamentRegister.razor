@@ -11,50 +11,52 @@
             <MudPaper Class="pa-2" Elevation="3">
                 <MudText Typo="Typo.h4" GutterBottom="true">@model.Data.Name</MudText>
                 <MudText Typo="Typo.caption" GutterBottom="true">@model.Data.Description</MudText>
+                <MudText Typo="Typo.caption" GutterBottom="true">@model.Data.Name</MudText>
             </MudPaper>
         </MudItem>
-        <AuthorizeView>
-            <Authorized>
-                Hello, @context.User.Identity?.Name!
-                <MudGrid>
-                    <MudItem xs=12 sm="6">
-                        <MudSelect @bind-Value="MatchType1" Label="Match type" Variant="Variant.Outlined">
-                            @foreach (MatchType type in Enum.GetValues(typeof(MatchType)))
-                            {
-                                <MudSelectItem Value="@type">@type zaza</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
-                    <MudItem xs="12" sm="6">
-                        <MudSelect @bind-Value="Group1" Label="Group" Variant="Variant.Outlined">
-                            @foreach (TournamentGroupTypes type in Enum.GetValues(typeof(TournamentGroupTypes)))
-                            {
-                                <MudSelectItem Value="@type">@type zaza</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
-                </MudGrid>
-            </Authorized>
-            <NotAuthorized>
-                <MudLink Href="login">
-                    <MudButton Variant="Variant.Text"
-                           Color="Color.Secondary">
-                        LOGIN
-                    </MudButton>
-                </MudLink>
-                <MudLink Href="register">
-                    <MudButton Variant="Variant.Text"
-                           Color="Color.Secondary">
-                        REGISTER
-                    </MudButton>
-                </MudLink>
-            </NotAuthorized>
-        </AuthorizeView>
+        @*<AuthorizeView>
+    <Authorized>
+    <MudGrid>
+    <MudItem xs=12 sm="6">
+    <MudSelect @bind-Value="MatchType1" Label="Match type" Variant="Variant.Outlined">
+    @foreach (MatchType type in Enum.GetValues(typeof(MatchType)))
+    {
+    <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+    }
+    </MudSelect>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+    <MudSelect @bind-Value="Group1" Label="Group" Variant="Variant.Outlined">
+    @foreach (TournamentGroupTypes type in Enum.GetValues(typeof(TournamentGroupTypes)))
+    {
+    <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+    }
+    </MudSelect>
+    </MudItem>
+    </MudGrid>
+    </Authorized>
+    <NotAuthorized>
+    <MudLink Href="login">
+    <MudButton Variant="Variant.Text"
+    Color="Color.Secondary">
+    LOGIN
+    </MudButton>
+    </MudLink>
+    <MudLink Href="register">
+    <MudButton Variant="Variant.Text"
+    Color="Color.Secondary">
+    REGISTER
+    </MudButton>
+    </MudLink>
+    </NotAuthorized>
+    </AuthorizeView>*@
     </MudGrid>
 }
 @code {
     [Parameter]
     public Guid Id { get; set; }
+
+    string Name = "";
 
     MatchType MatchType1 { get; set; }
     TournamentGroupTypes Group1 { get; set; }
@@ -77,7 +79,6 @@
     protected override async Task OnInitializedAsync()
     {
         model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
-        var authState = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-            myPlayer = await PlayerService.GetPlayer(authState.FindFirst("PlayerId")?.Value);
+        //   myPlayer = await PlayerService.GetPlayer(claims.First(x => x.Type == "PlayerId")?.Value);
     }
 }
