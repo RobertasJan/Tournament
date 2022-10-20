@@ -20,5 +20,11 @@ namespace Tournament.Shared.Tournaments
         public DateTime? EndDate { get; set; }
 
         public ICollection<TournamentGroupModel> Groups { get; set; }
+
+        public IEnumerable<TournamentGroupTypes> GetGroupTypes()
+            => this.Groups.GroupBy(x => new { x.Type }).Select(x => x.Key.Type).OrderBy(x => x);
+
+        public IEnumerable<Domain.Games.MatchType> GetMatchTypes()
+            => this.Groups.GroupBy(x => new { x.MatchType }).Select(x => x.Key.MatchType).OrderBy(x => x);
     }
 }

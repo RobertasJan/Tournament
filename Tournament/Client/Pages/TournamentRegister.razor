@@ -1,5 +1,8 @@
 ﻿@page "/tournament/{Id:guid}/register"
+@using Tournament.Client.Components.Player
+@using Tournament.Domain.Games
 @using Tournament.Domain.Tournaments
+@using Tournament.Shared.Games
 @using Tournament.Shared.Players
 @using Tournament.Shared.Tournaments
 
@@ -12,6 +15,135 @@
                 <MudText Typo="Typo.h4" GutterBottom="true">@model.Data.Name</MudText>
                 <MudText Typo="Typo.caption" GutterBottom="true">@model.Data.Description</MudText>
                 <MudText Typo="Typo.caption" GutterBottom="true">@model.Data.Name</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudPaper Class="pa-2" Elevation="3">
+                <MudGrid>
+                    @if (myPlayer != null)
+                    {
+                        <MudItem xs="12" sm="6">
+                            <MudSelect @bind-Value="MatchType1" Label="Match type" Variant="Variant.Outlined">
+                                @foreach (MatchType type in myPlayer.GetGenderMatchTypes(model.Data.GetMatchTypes()))
+                                {
+                                    <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSelect @bind-Value="Group1" Label="Group" Variant="Variant.Outlined">
+                                @foreach (TournamentGroupTypes type in model.Data.GetGroupTypes())
+                                {
+                                    <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12">
+                            @if (MatchType1 == MatchType.MixedDoubles)
+                            {
+                                <AddPartner PartnerGender="myPlayer.GetOppositeGender()" PlayerId="myPlayer.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+                            }
+                            else if (MatchType1 == MatchType.MensDoubles || MatchType1 == MatchType.WomensDoubles)
+                            {
+                                <AddPartner PartnerGender="myPlayer.Gender" PlayerId="myPlayer.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+
+                            }
+                        </MudItem>
+
+                        @if (!AddedGroup2)
+                        {
+                            @if (myPlayer.GetGenderMatchTypes(model.Data.GetMatchTypes()).Where(x => x != MatchType1).Count() > 0)
+                            {
+                                <MudItem xs="12">
+                                    <MudButton OnClick="AddGroup2" Variant="Variant.Filled" Color="Color.Primary">Add group</MudButton>
+                                </MudItem>
+                            }
+                        }
+                        else
+                        {
+                            <MudDivider></MudDivider>
+                            <MudItem xs="12" sm="6">
+                                <MudSelect @bind-Value="MatchType2" Label="Match type" Variant="Variant.Outlined">
+                                    @foreach (MatchType type in myPlayer.GetGenderMatchTypes(model.Data.GetMatchTypes()).Where(x => x != MatchType1 && x != MatchType3))
+                                    {
+                                        <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudSelect @bind-Value="Group2" Label="Group" Variant="Variant.Outlined">
+                                    @foreach (TournamentGroupTypes type in model.Data.GetGroupTypes())
+                                    {
+                                        <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <MudItem xs="12">
+                                @if (MatchType2 == MatchType.MixedDoubles)
+                                {
+                                    <AddPartner PartnerGender="myPlayer.GetOppositeGender()" PlayerId="myPlayer.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+                                }
+                                else if (MatchType2 == MatchType.MensDoubles || MatchType2 == MatchType.WomensDoubles)
+                                {
+                                    <AddPartner PartnerGender="myPlayer.Gender" PlayerId="myPlayer.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+                                }
+                            </MudItem>
+                            @if (!AddedGroup3)
+                            {
+                                <MudItem xs="12">
+                                    @if (myPlayer.GetGenderMatchTypes(model.Data.GetMatchTypes()).Where(x => x != MatchType1 && x != MatchType2).Count() > 0)
+                                    {
+                                        <MudButton OnClick="AddGroup3" Variant="Variant.Filled" Color="Color.Primary">Add group</MudButton>
+                                    }
+                                    <MudButton OnClick="RemoveGroup2" Variant="Variant.Filled" Color="Color.Secondary">Remove group</MudButton>
+                                </MudItem>
+                            }
+                        }
+
+                        @if (AddedGroup3)
+                        {
+                            <MudDivider></MudDivider>
+                            <MudItem xs="12" sm="6">
+                                <MudSelect @bind-Value="MatchType3" Label="Match type" Variant="Variant.Outlined">
+                                    @foreach (MatchType type in myPlayer.GetGenderMatchTypes(model.Data.GetMatchTypes()).Where(x => x != MatchType1 && x != MatchType2))
+                                    {
+                                        <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudSelect @bind-Value="Group3" Label="Group" Variant="Variant.Outlined">
+                                    @foreach (TournamentGroupTypes type in model.Data.GetGroupTypes())
+                                    {
+                                        <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <MudItem xs="12">
+                                @if (MatchType3 == MatchType.MixedDoubles)
+                                {
+                                    <AddPartner PartnerGender="myPlayer.GetOppositeGender()" PlayerId="myPlayer.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+                                }
+                                else if (MatchType3 == MatchType.MensDoubles || MatchType3 == MatchType.WomensDoubles)
+                                {
+                                    <AddPartner PartnerGender="myPlayer.Gender" PlayerId="myPlayer.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+                                }
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudButton OnClick="RemoveGroup3" Variant="Variant.Filled" Color="Color.Secondary">Remove group</MudButton>
+                            </MudItem>
+                        }
+
+                        <MudDivider></MudDivider>
+                        <MudItem xs="12">
+                            <MudButton OnClick="AddMatch" Variant="Variant.Filled" Color="Color.Primary">Register</MudButton>
+                        </MudItem>
+                    }
+                    else
+                    {
+                        <span>PLEASE LOGIN TO REGISTER</span>
+                    }
+                </MudGrid>
             </MudPaper>
         </MudItem>
         @*<AuthorizeView>
@@ -51,34 +183,87 @@
     </NotAuthorized>
     </AuthorizeView>*@
     </MudGrid>
+
 }
 @code {
     [Parameter]
     public Guid Id { get; set; }
 
-    string Name = "";
-
     MatchType MatchType1 { get; set; }
-    TournamentGroupTypes Group1 { get; set; }
+    TournamentGroupTypes Group1 { get; set; } = TournamentGroupTypes.A;
     Guid? PartnerId1 { get; set; }
 
-    MatchType? MatchType2 { get; set; }
-    TournamentGroupTypes? Group2 { get; set; }
+    public bool AddedGroup2 { get; set; } = false;
+    MatchType MatchType2 { get; set; }
+    TournamentGroupTypes Group2 { get; set; } = TournamentGroupTypes.A;
     Guid? PartnerId2 { get; set; }
 
-    MatchType? MatchType3 { get; set; }
-    TournamentGroupTypes? Group3 { get; set; }
+    public bool AddedGroup3 { get; set; } = false;
+    MatchType MatchType3 { get; set; }
+    TournamentGroupTypes Group3 { get; set; } = TournamentGroupTypes.A;
     Guid? PartnerId3 { get; set; }
 
     [Inject] TournamentService TournamentService { get; set; }
     [Inject] PlayerService PlayerService { get; set; }
+    [Inject] GameService GameService { get; set; }
 
     TournamentViewModel? model = null;
     PlayerModel? myPlayer = null;
 
+    async Task AddGroup2()
+    {
+        MatchType2 = myPlayer.GetGenderMatchTypes(model.Data.GetMatchTypes()).First(x => x != MatchType1);
+        AddedGroup2 = true;
+    }
+
+    async Task RemoveGroup2()
+    {
+        AddedGroup2 = false;
+    }
+
+    async Task AddGroup3()
+    {
+        MatchType3 = myPlayer.GetGenderMatchTypes(model.Data.GetMatchTypes()).First(x => x != MatchType1 && x != MatchType2);
+        AddedGroup3 = true;
+    }
+
+    async Task RemoveGroup3()
+    {
+        AddedGroup3 = false;
+    }
+
+    async Task AddMatch()
+    {
+        await RegisterPlayers(PartnerId1, MatchType1, Group1);
+        if (AddedGroup2)
+        {
+            await RegisterPlayers(PartnerId2, MatchType2, Group2);
+        }
+
+        if (AddedGroup3)
+        {
+            await RegisterPlayers(PartnerId3, MatchType3, Group3);
+        }
+        NavigationManager.NavigateTo($"/tournament/{model.Data.Id}", false);
+    }
+
+    async Task RegisterPlayers(Guid? partnerId, MatchType type, TournamentGroupTypes tourneyGroupType)
+    {
+        await TournamentService.RegisterPlayer(model.Data.Id.Value,
+            model.Data.Groups.First(x => x.MatchType == type && x.Type == tourneyGroupType).Id.Value, new RegisteredPlayersModel()
+                {
+                    Player1Id = myPlayer.Id,
+                    Player2Id = partnerId
+                });
+    }
+
     protected override async Task OnInitializedAsync()
     {
         model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
-        //   myPlayer = await PlayerService.GetPlayer(claims.First(x => x.Type == "PlayerId")?.Value);
+        myPlayer = await PlayerService.GetCurrent();
+        MatchType1 = myPlayer.GetGenderMatchTypes(model.Data.GetMatchTypes()).First();
+        Group1 = model.Data.GetGroupTypes().First();
+        Group2 = model.Data.GetGroupTypes().First();
+        Group3 = model.Data.GetGroupTypes().First();
     }
 }

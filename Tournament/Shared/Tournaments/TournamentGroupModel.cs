@@ -5,6 +5,7 @@ namespace Tournament.Shared.Tournaments
 {
     public class TournamentGroupModel
     {
+        public Guid? Id { get; set; }
         public TournamentGroupTypes Type { get; set; }
         public string? OtherTypeName { get; set; }
 

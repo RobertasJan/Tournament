@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Tournament.Server.Models;
+using Tournament.Shared.Players;
 using Tournament.Shared.Tournaments;
 
 namespace Tournament.Client.Services
@@ -17,7 +18,7 @@ namespace Tournament.Client.Services
             var httpResponse = await _client.GetAsync($"tournaments/{id}", cancellationToken).ConfigureAwait(false);
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
-                var tournament = await httpResponse.Content.ReadAsAsync<TournamentModel>(CancellationToken.None).ConfigureAwait(false);
+                var tournament = await httpResponse.Content.ReadAsAsync<TournamentModel>(cancellationToken).ConfigureAwait(false);
                 return tournament;
             }
             throw new NotImplementedException("No error handling");
@@ -29,7 +30,7 @@ namespace Tournament.Client.Services
             var httpResponse = await _client.GetAsync($"tournaments", cancellationToken).ConfigureAwait(false);
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
-                var tournaments = await httpResponse.Content.ReadAsAsync<ICollection<TournamentModel>>(CancellationToken.None).ConfigureAwait(false);
+                var tournaments = await httpResponse.Content.ReadAsAsync<ICollection<TournamentModel>>(cancellationToken).ConfigureAwait(false);
                 return tournaments;
             }
             throw new NotImplementedException("No error handling");
@@ -42,6 +43,34 @@ namespace Tournament.Client.Services
             var httpResponse = await _client.PostAsJsonAsync($"tournaments", model, cancellationToken);
             if (httpResponse.StatusCode == HttpStatusCode.OK)
                 return await httpResponse.Content.ReadAsAsync<Guid>(cancellationToken).ConfigureAwait(false);
+            throw new NotImplementedException("No error handling");
+        }
+
+        public async Task AddMatch(Guid tournamentId, MatchModel match)
+        {
+            var cancellationToken = new CancellationTokenSource().Token;
+            var httpResponse = await _client.PostAsJsonAsync($"tournaments/{tournamentId}/match", match, cancellationToken);
+            if (httpResponse.StatusCode != HttpStatusCode.OK)
+                throw new NotImplementedException("No error handling");
+        }
+
+        public async Task RegisterPlayer(Guid tournamentId, Guid tournamentGroupId, RegisteredPlayersModel model)
+        {
+            var cancellationToken = new CancellationTokenSource().Token;
+            var httpResponse = await _client.PostAsJsonAsync($"tournaments/{tournamentId}/groups/{tournamentGroupId}/register", model, cancellationToken);
+            if (httpResponse.StatusCode != HttpStatusCode.OK)
+                throw new NotImplementedException("No error handling");
+        }
+
+        public async Task<ICollection<RegisteredPlayersModel>> GetRegisteredPlayers(Guid tournamentId)
+        {
+            var cancellationToken = new CancellationTokenSource().Token;
+            var httpResponse = await _client.GetAsync($"tournaments/{tournamentId}/players", cancellationToken).ConfigureAwait(false);
+            if (httpResponse.StatusCode == HttpStatusCode.OK)
+            {
+                var tournaments = await httpResponse.Content.ReadAsAsync<ICollection<RegisteredPlayersModel>>(cancellationToken).ConfigureAwait(false);
+                return tournaments;
+            }
             throw new NotImplementedException("No error handling");
         }
     }

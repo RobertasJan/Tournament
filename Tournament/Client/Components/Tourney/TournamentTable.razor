@@ -1,4 +1,5 @@
 ﻿@using Tournament.Domain.Tournaments
+@using Tournament.Shared.Players
 @using Tournament.Shared.Tournaments
 
 @if (GetMatchTypes()?.Count() > 0)
@@ -18,8 +19,9 @@
             {
                 <tr>
                     <td>@type.ToString()</td>
-                    @foreach (var match in Groups.Where(x => x.Type == type).OrderBy(x => x.MatchType)) {
-                        <td>@match.MatchType.ToString()</td>
+                    @foreach (var match in Groups.Where(x => x.Type == type).OrderBy(x => x.MatchType))
+                    {
+                        <td>@GetPlayerCount(match.MatchType, match.Type)</td>
                     }
                 </tr>
             }
@@ -29,12 +31,24 @@
 
 @code {
     [Parameter] public IEnumerable<TournamentGroupModel> Groups { get; set; }
-    private IEnumerable<Tournament.Domain.Games.MatchType>? GetMatchTypes() {
-        return Groups?.OrderBy(x => x.MatchType).GroupBy(x => new {x.MatchType}).Select(x => x.Key.MatchType);
+    [Parameter] public IEnumerable<RegisteredPlayersModel>? RegisteredPlayers { get; set; }
+
+    private IEnumerable<Tournament.Domain.Games.MatchType>? GetMatchTypes()
+    {
+        return Groups?.OrderBy(x => x.MatchType).GroupBy(x => new { x.MatchType }).Select(x => x.Key.MatchType);
     }
 
     private IEnumerable<TournamentGroupTypes>? GetGroupTypes()
     {
         return Groups?.OrderBy(x => x.Type).GroupBy(x => new { x.Type }).Select(x => x.Key.Type);
+    }
+
+    public string GetPlayerCount(MatchType matchType, TournamentGroupTypes groupType)
+    {
+        if (RegisteredPlayers is null)
+        {
+            return matchType.ToString();
+        }
+        return RegisteredPlayers.Where(x => x.TournamentGroup.MatchType == matchType && x.TournamentGroup.Type == groupType).Count().ToString();
     }
 }

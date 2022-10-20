@@ -24,6 +24,7 @@ public class AppDbContext : ApiAuthorizationDbContext<ApplicationUserEntity>
     public DbSet<PlayerMatchEntity> PlayerMatches { get; set; }
     public DbSet<TournamentEntity> Tournaments { get; set; }
     public DbSet<TournamentGroupEntity> TournamentGroups { get; set; }
+    public DbSet<RegisteredPlayersEntity> RegisteredPlayers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

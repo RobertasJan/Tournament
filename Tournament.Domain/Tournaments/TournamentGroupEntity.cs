@@ -1,4 +1,5 @@
 ﻿using Tournament.Domain.Games;
+using Tournament.Domain.Players;
 using MatchType = Tournament.Domain.Games.MatchType;
 
 namespace Tournament.Domain.Tournaments
@@ -14,6 +15,7 @@ namespace Tournament.Domain.Tournaments
         public Guid TournamentId { get; set; }
         public TournamentEntity Tournament { get; set; }
         public ICollection<MatchEntity> Matches { get; set; }
+        public ICollection<RegisteredPlayersEntity> Registrations { get; set; }
     }
 
     public enum TournamentGroupTypes

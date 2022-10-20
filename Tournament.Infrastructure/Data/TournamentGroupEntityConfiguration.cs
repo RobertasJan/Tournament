@@ -27,6 +27,12 @@ namespace Tournament.Infrastructure.Data
                 .WithOne(x => x.TournamentGroup)
                 .HasForeignKey(x => x.TournamentGroupId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+               .HasMany(x => x.Registrations)
+               .WithOne(x => x.TournamentGroup)
+               .HasForeignKey(x => x.TournamentGroupId)
+               .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

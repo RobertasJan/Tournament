@@ -11,11 +11,15 @@ namespace Tournament.Shared.Players
         public Gender Gender { get; set; }
         public string? UserId { get; set; }
 
-        //public IEnumerable<MatchType> GetGenderMatchTypes()
-        //{
-        //    return Gender == Gender.Male
-        //        ? new MatchType[] { MatchType.MixedDoubles, MatchType.MensDoubles, MatchType.MensSingles }
-        //        : new MatchType[] { MatchType.MixedDoubles, MatchType.WomensDoubles, MatchType.WomensSingles };
-        //}
+        public IEnumerable<MatchType> GetGenderMatchTypes(IEnumerable<MatchType> matchTypes)
+        {
+            var matchTypesGendered = Gender == Gender.Male
+                ? new MatchType[] { MatchType.MixedDoubles, MatchType.MensDoubles, MatchType.MensSingles }.OrderBy(x => x)
+                : new MatchType[] { MatchType.MixedDoubles, MatchType.WomensDoubles, MatchType.WomensSingles }.OrderBy(x => x);
+            return matchTypesGendered.ToList().Where(x => matchTypes.Contains(x));
+        }
+
+        public Gender GetOppositeGender()
+            => Gender == Gender.Male ? Gender.Female : Gender.Male;
     }
 }

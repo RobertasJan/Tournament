@@ -13,8 +13,10 @@ namespace Tournament.Domain.Services.Players
     public interface IPlayerService
     {
         public Task<Guid> Create(PlayerEntity player, CancellationToken cancellationToken);
+        public Task<ICollection<PlayerEntity>> Get(Guid? tournamentId, string? searchText, Gender? gender);
         public Task<PlayerEntity> GetById(Guid id, CancellationToken cancellationToken);
         public Task<PlayerEntity> GetByUserId(string id, CancellationToken cancellationToken);
+        public Task<ICollection<RegisteredPlayersEntity>> GetTournamentPlayers(Guid tournamentId, CancellationToken cancellationToken);
     }
 
     public class PlayerService : IPlayerService
@@ -32,6 +34,28 @@ namespace Tournament.Domain.Services.Players
             await _db.SaveChangesAsync(cancellationToken);
             return entity.Id;
         }
+
+        public async Task<ICollection<PlayerEntity>> Get(Guid? tournamentId, string? searchText, Gender? gender)
+        {
+            var query = _db.Players.AsQueryable();
+            if (tournamentId != null)
+            {
+                query = query.Where(x => x.PlayerMatches.Any(x => x.Match.TournamentGroup.TournamentId == tournamentId));
+            }
+            if (searchText != null)
+            {
+                query = query.Where(x => (x.FirstName + " " + x.LastName).Contains(searchText));
+            }
+            if (gender != null)
+            {
+                query = query.Where(x => x.Gender == gender);
+            }
+            return query.ToList();
+        }
+
+        public async Task<ICollection<RegisteredPlayersEntity>> GetTournamentPlayers(Guid tournamentId, CancellationToken cancellationToken)
+            => _db.RegisteredPlayers.Include(x => x.TournamentGroup).Where(x => x.TournamentGroup.TournamentId == tournamentId).ToList();
+
 
         public async Task<PlayerEntity> GetById(Guid id, CancellationToken cancellationToken)
             => (await _db.Players.FirstOrDefaultAsync(x => x.Id == id)) ?? throw new Exception($"Player {id} not found.");

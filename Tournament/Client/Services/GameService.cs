@@ -23,6 +23,21 @@ namespace Tournament.Client.Services
             throw new NotImplementedException("No error handling");
         }
 
+
+        public async Task<ICollection<GameModel>> GetMatchGames(Guid id)
+        {
+            var cancellationToken = new CancellationTokenSource().Token;
+            var httpResponse = await _client.GetAsync($"matches/{id}/games", cancellationToken).ConfigureAwait(false);
+            if (httpResponse.StatusCode == HttpStatusCode.OK)
+            {
+                var games = await httpResponse.Content.ReadAsAsync<ICollection<GameModel>>(cancellationToken).ConfigureAwait(false);
+                return games;
+            }
+            throw new NotImplementedException("No error handling");
+        }
+
+
+
         public async Task<Guid> CreateGame(GameModel model, Guid matchId)
         {
             var cancellationToken = new CancellationTokenSource().Token;

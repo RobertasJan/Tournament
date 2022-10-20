@@ -19,6 +19,7 @@ namespace Tournament.Server
             CreateMap<TournamentGroupModel, TournamentGroupEntity>().ReverseMap();
             CreateMap<TournamentModel, TournamentEntity>().ReverseMap();
             CreateMap<PlayerModel, PlayerEntity>().ReverseMap();
+            CreateMap<RegisteredPlayersModel, RegisteredPlayersEntity>().ReverseMap();
         }
     }
 }

@@ -54,7 +54,6 @@ namespace Tournament.Domain.Services.User
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByEmailAsync(loginName);
-                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim(ClaimTypes.Email, loginName));
                 return user;
             }
             return null;

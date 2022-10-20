@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tournament.Domain.Games;
+using Tournament.Domain.Players;
 using Tournament.Domain.Services.Games;
+using Tournament.Domain.Services.Players;
 using Tournament.Domain.Services.Tournament;
 using Tournament.Domain.Tournaments;
 using Tournament.Server.Models;
 using Tournament.Shared.Games;
+using Tournament.Shared.Players;
 using Tournament.Shared.Tournaments;
 
 namespace Tournament.Server.Controllers
@@ -17,12 +20,14 @@ namespace Tournament.Server.Controllers
         private readonly ILogger<TournamentsController> _logger;
         private readonly ITournamentService tournamentService;
         private readonly ITournamentGroupService tournamentGroupService;
+        private readonly IPlayerService playerService;
 
-        public TournamentsController(ILogger<TournamentsController> logger, ITournamentService tournamentService, ITournamentGroupService tournamentGroupService)
+        public TournamentsController(ILogger<TournamentsController> logger, ITournamentService tournamentService, ITournamentGroupService tournamentGroupService, IPlayerService playerService)
         {
             _logger = logger;
             this.tournamentService = tournamentService;
             this.tournamentGroupService = tournamentGroupService;
+            this.playerService = playerService;
         }
 
         [HttpGet("{id:Guid}")]
@@ -37,7 +42,7 @@ namespace Tournament.Server.Controllers
             return Mapper.Map<ICollection<TournamentModel>>(await tournamentService.Get(cancellationToken));
         }
 
-        [HttpPost()]
+        [HttpPost]
         public async Task<Guid> Create(TournamentModel model, CancellationToken cancellationToken)
         {
             var id = await tournamentService.Create(Mapper.Map<TournamentEntity>(model), cancellationToken);
@@ -48,6 +53,28 @@ namespace Tournament.Server.Controllers
                 await tournamentGroupService.Create(group, cancellationToken);
             }
             return id;
+        }
+
+        [HttpPost("{id:Guid}/groups/{tournamentGroupId:Guid}/register")]
+        public async Task CreateRegisteredPlayers([FromRoute] Guid id, [FromRoute] Guid tournamentGroupId, RegisteredPlayersModel model, CancellationToken cancellationToken)
+        {
+            var registeredPlayerEntity = Mapper.Map<RegisteredPlayersEntity>(model);
+            registeredPlayerEntity.TournamentGroupId = tournamentGroupId;
+            registeredPlayerEntity.Id = id;
+            await tournamentGroupService.AddRegistration(registeredPlayerEntity, cancellationToken);
+        }
+
+        [HttpGet("{id:Guid}/players")]
+        public async Task<ICollection<RegisteredPlayersModel>> GetPlayers([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            return Mapper.Map<ICollection<RegisteredPlayersModel>>(await playerService.GetTournamentPlayers(id, cancellationToken));
+        }
+
+
+        [HttpPost("{id:Guid}")]
+        public async Task AddMatch([FromRoute] Guid id, MatchModel match, CancellationToken cancellationToken)
+        {
+            await tournamentService.AddMatch(Mapper.Map<MatchEntity>(match), cancellationToken);
         }
     }
 }

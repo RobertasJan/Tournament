@@ -10,6 +10,7 @@ namespace Tournament.Domain.Players
 
         public Gender Gender { get; set; }
         public ICollection<PlayerMatchEntity> PlayerMatches { get; set; }
+        public ICollection<RegisteredPlayersEntity> Registrations { get; set; }
         public string? UserId { get; set; }
         public ApplicationUserEntity? User { get; set; }
     }

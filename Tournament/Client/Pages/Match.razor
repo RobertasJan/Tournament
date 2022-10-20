@@ -81,6 +81,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        match = new MatchViewModel(GameService, await GameService.GetMatchById(Id));
+        match = new MatchViewModel(GameService, await GameService.GetMatchById(Id), await GameService.GetMatchGames(Id));
     }
 }

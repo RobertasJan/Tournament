@@ -30,6 +30,12 @@ namespace Tournament.Server.Controllers
             return Mapper.Map<MatchModel>(await matchService.GetById(id, cancellationToken));
         }
 
+        [HttpGet("{id:Guid}/games")]
+        public async Task<ICollection<GameModel>> GetGames([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            return Mapper.Map<ICollection<GameModel>>(await gameService.Get(id, cancellationToken));
+        }
+
         [HttpPost()]
         public async Task<Guid> Create(MatchModel model, CancellationToken cancellationToken)
         {
@@ -39,12 +45,15 @@ namespace Tournament.Server.Controllers
         [HttpPost("{id:Guid}/games")]
         public async Task<Guid> CreateGame([FromRoute] Guid id, GameModel model, CancellationToken cancellationToken)
         {
+            model.MatchId = id;
             return await gameService.Create(Mapper.Map<GameEntity>(model), cancellationToken);
         }
 
-        [HttpPost("{id:Guid}/games/{gameId:Guid}")]
+        [HttpPut("{id:Guid}/games/{gameId:Guid}")]
         public async Task UpdateGame([FromRoute] Guid id, [FromRoute] Guid gameId, GameModel model, CancellationToken cancellationToken)
         {
+            model.Id = gameId;
+            model.MatchId = id;
             await gameService.Update(Mapper.Map<GameEntity>(model), cancellationToken);
         }
     }

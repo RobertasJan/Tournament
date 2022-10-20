@@ -1,27 +1,37 @@
 ﻿@page "/tournament/{Id:guid}"
+@using Tournament.Shared.Players
 @using Tournament.Shared.Tournaments
 
 <PageTitle>Tournament</PageTitle>
 @if (model != null)
 {
     <MudGrid>
-        <MudItem xs="12">
-            <MudPaper Class="pa-2" Elevation="3">
-                <MudText Typo="Typo.h4" GutterBottom="true">@model.Data.Name</MudText>
-                <MudText Typo="Typo.caption" GutterBottom="true">@model.Data.Description</MudText>
-                <MudText Typo="Typo.body2" GutterBottom="true">@model.Data.LongDescription</MudText>
+        <MudItem xs="12" md="6">
+            <MudPaper Class="justify-center">
+                <TournamentTable Groups="model.Data.Groups" RegisteredPlayers="Players"></TournamentTable>
             </MudPaper>
         </MudItem>
-        <TournamentTable Groups="model.Data.Groups"></TournamentTable>
-        @{
-            var href = $"tournament/{Id}/register";
-        }
         <MudItem xs="12">
+            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                <MudTabPanel Text="Description">
+                    <MudText Typo="Typo.h4" GutterBottom="true">@model.Data.Name</MudText>
+                    <MudText Typo="Typo.caption" GutterBottom="true">@model.Data.Description</MudText>
+                    <MudText Typo="Typo.body2" GutterBottom="true">@model.Data.LongDescription</MudText>
+                </MudTabPanel>
+                <MudTabPanel Text="Players">
+                    <MudText>Content Two</MudText>
+                </MudTabPanel>
+            </MudTabs>
+
+        </MudItem>
+        <MudItem xs="12">
+            @{
+                var href = $"tournament/{Id}/register";
+            }
             <MudLink Href="@href">
-            <MudButton
-                   Variant="Variant.Filled"
-                   Color="Color.Primary">
-                REGISTER
+                <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary">
+                    REGISTER
                 </MudButton>
             </MudLink>
         </MudItem>
@@ -33,10 +43,12 @@
 
     [Inject] TournamentService TournamentService { get; set; }
 
-    private TournamentViewModel model;
+    TournamentViewModel model;
+    ICollection<RegisteredPlayersModel>? Players { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
+        Players = await TournamentService.GetRegisteredPlayers(Id);
     }
 }

@@ -1,5 +1,6 @@
 ﻿@page "/login"
 @page "/login/{redirectUrl}"
+@using System.Text.Json
 @using Tournament.Shared
 @inject HttpClient Http
 @inject IJSRuntime jsr
@@ -42,8 +43,10 @@
                 message = result.Message;
                 isDisabled = false;
                 if (result.Success)
+                {
                     await jsr.InvokeVoidAsync("localStorage.setItem", "user", $"{result.Email};{result.JwtBearer}").ConfigureAwait(false);
-
+                    await jsr.InvokeVoidAsync("localStorage.setItem", "player", JsonSerializer.Serialize(result.Player)).ConfigureAwait(false);
+                }
                 if (!string.IsNullOrEmpty(redirectUrl))
                 {
                     nav.NavigateTo($"/{redirectUrl}", true);

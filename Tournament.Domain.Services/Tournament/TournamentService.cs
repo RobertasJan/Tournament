@@ -15,6 +15,7 @@ namespace Tournament.Domain.Services.Tournament
         Task<TournamentEntity> GetById(Guid id, CancellationToken cancellationToken);
         Task<ICollection<TournamentEntity>> Get(CancellationToken cancellationToken);
         Task<Guid> Create(TournamentEntity tournament, CancellationToken cancellationToken);
+        Task AddMatch(MatchEntity matchEntity, CancellationToken cancellationToken);
     }
 
 
@@ -25,6 +26,12 @@ namespace Tournament.Domain.Services.Tournament
         public TournamentService(AppDbContext db)
         {
             this._db = db;
+        }
+
+        public async Task AddMatch(MatchEntity matchEntity, CancellationToken cancellationToken)
+        {
+            await _db.Matches.AddAsync(matchEntity, cancellationToken);
+            await _db.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<Guid> Create(TournamentEntity tournament, CancellationToken cancellationToken)
@@ -39,9 +46,9 @@ namespace Tournament.Domain.Services.Tournament
             => await _db.Tournaments.ToListAsync(cancellationToken);
 
         public async Task<TournamentEntity> GetById(Guid id, CancellationToken cancellationToken)
-        {  
+        {
             var item = await _db.Tournaments.Include(x => x.Groups).FirstOrDefaultAsync(x => x.Id == id, cancellationToken) ?? throw new Exception($"Tournament {id} not found.");
             return item;
-        } 
+        }
     }
 }

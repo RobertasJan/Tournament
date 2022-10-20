@@ -39,7 +39,8 @@ namespace Tournament.Server.Controllers
                 LastName = model.Login,
                 UserId = user.Id
             }, cancellationToken);
-            await userService.AddClaim(user, "PlayerId", guid.ToString());
+            //    var guid = await playerService.GetByUserId(response.Id, cancellationToken);
+
             await Login(model, cancellationToken);
         }
 

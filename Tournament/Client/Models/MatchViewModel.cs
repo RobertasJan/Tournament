@@ -1,4 +1,5 @@
-﻿using Tournament.Client.Services;
+﻿using System.Text.Json;
+using Tournament.Client.Services;
 using Tournament.Domain.Games;
 using Tournament.Domain.Players;
 using Tournament.Server.Models;
@@ -35,7 +36,7 @@ namespace Tournament.Client.Models
 
         private readonly GameService service;
 
-        public MatchViewModel(GameService service, MatchModel matchModel)
+        public MatchViewModel(GameService service, MatchModel matchModel, ICollection<GameModel> games)
         {
             if (matchModel != null)
             {
@@ -46,10 +47,31 @@ namespace Tournament.Client.Models
                 this.Record = matchModel.Record;
                 this.Result = matchModel.Result;
                 this.MatchId = matchModel.Id;
+                if (games.Count > 0)
+                {
+                    var lastGame = games.Last();
+                    _pointList = lastGame.Scores != null ? JsonSerializer.Deserialize<Stack<Point>>(games.Last().Scores) : new Stack<Point>();
+                    CurrentGame = GameViewModel.FromGameModel(lastGame);
+                    ServeLocation = ServeLocation.SW;
+                    var pointLast = _pointList?.LastOrDefault();
+                    if (pointLast != null)
+                    {
+                        ServeLocation = pointLast.ServeLocation;
+                    }
+          
+                    _gameList = new List<GameViewModel>();
+                    foreach (var game in games)
+                    {
+                        _gameList.Add(GameViewModel.FromGameModel(game));
+                    }
+                }
+                else
+                {
+                    _pointList = new Stack<Point>();
+                    CurrentGame = new GameViewModel();
+                    _gameList = new List<GameViewModel>() { CurrentGame };
+                }
             }
-            _pointList = new Stack<Point>();
-            CurrentGame = new GameViewModel();
-            _gameList = new List<GameViewModel>() { CurrentGame };
             this.service = service;
 
         }
@@ -90,11 +112,18 @@ namespace Tournament.Client.Models
         {
             if (CurrentGame.Id != null)
             {
-                await service.UpdateGame(new GameModel(), MatchId);
+                await service.UpdateGame(new GameModel()
+                {
+                    Id = CurrentGame.Id,
+                    Result = CurrentGame.Result,
+                    Scores = JsonSerializer.Serialize(_pointList),
+                    Team1Score = CurrentGame.Team1Score,
+                    Team2Score = CurrentGame.Team2Score
+                }, MatchId);
             }
             else
             {
-                await service.CreateGame(new GameModel(), MatchId);
+                CurrentGame.Id = await service.CreateGame(new GameModel(), MatchId);
             }
         }
 

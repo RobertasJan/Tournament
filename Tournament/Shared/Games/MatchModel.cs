@@ -12,5 +12,9 @@ namespace Tournament.Server.Models
         public MatchType Type { get; set; }
         public MatchRecord Record { get; set; } = MatchRecord.ToBePlayed;
         public MatchResult Result { get; set; } = MatchResult.Undetermined;
+
+        public Guid? TournamentGroupId { get; set; }
+
+
     }
 }

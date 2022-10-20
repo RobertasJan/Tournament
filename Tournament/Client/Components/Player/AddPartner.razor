@@ -1,0 +1,25 @@
+﻿@using Tournament.Domain.Players
+
+<MudAutocomplete T="string" Label="Partner" @bind-Value="PlayerName" SearchFunc="@SearchPlayer"></MudAutocomplete>
+
+@code {
+    [Parameter]
+    public Guid PlayerId { get; set; }
+
+    [Parameter]
+    public Guid TournamentId { get; set; }
+
+    [Parameter]
+    public Gender PartnerGender { get; set; }
+
+    [Inject] PlayerService PlayerService { get; set; }
+
+    string PlayerName { get; set; }
+
+    private async Task<IEnumerable<string>> SearchPlayer(string value)
+    {
+        var response = await PlayerService.GetPartnerPlayers(PartnerGender, TournamentId, value);
+
+        return response.Where(x => x.Id != PlayerId).Select(x => $"{x.FirstName} {x.LastName}");
+    }
+}

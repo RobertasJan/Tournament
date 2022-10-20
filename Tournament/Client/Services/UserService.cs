@@ -11,7 +11,6 @@ namespace Tournament.Client.Services
 
         }
 
-
         public async Task Register(UserModel model)
         {
             var cancellationToken = new CancellationTokenSource().Token;

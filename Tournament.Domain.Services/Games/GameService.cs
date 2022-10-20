@@ -7,6 +7,8 @@ namespace Tournament.Domain.Services.Games
     public interface IGameService
     {
         Task<Guid> Create(GameEntity entity, CancellationToken cancellationToken);
+        Task<ICollection<GameEntity>> Get(Guid? matchId, CancellationToken cancellationToken);
+        Task<GameEntity> GetById(Guid id, CancellationToken cancellationToken);
         Task Update(GameEntity entity, CancellationToken cancellationToken);
     }
 
@@ -39,6 +41,16 @@ namespace Tournament.Domain.Services.Games
             game.Scores = entity.Scores;
             _db.Games.Update(game);
             await _db.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<ICollection<GameEntity>> Get(Guid? matchId, CancellationToken cancellationToken)
+        {
+            var query = _db.Games.AsQueryable();
+            if (matchId != null)
+            {
+                query = query.Where(x => x.MatchId == matchId);
+            }
+            return await query.ToListAsync(cancellationToken);
         }
     }
 }
