@@ -40,7 +40,7 @@ namespace Tournament.Domain.Services.Players
             var query = _db.Players.AsQueryable();
             if (tournamentId != null)
             {
-                query = query.Where(x => x.PlayerMatches.Any(x => x.Match.TournamentGroup.TournamentId == tournamentId));
+                query = query.Where(x => x.PlayerMatches.Any(x => x.Match.MatchesGroup.TournamentGroup.TournamentId == tournamentId));
             }
             if (searchText != null)
             {

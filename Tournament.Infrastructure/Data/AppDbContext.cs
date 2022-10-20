@@ -21,6 +21,7 @@ public class AppDbContext : ApiAuthorizationDbContext<ApplicationUserEntity>
     public DbSet<PlayerEntity> Players { get; set; }
     public DbSet<GameEntity> Games { get; set; }
     public DbSet<MatchEntity> Matches { get; set; }
+    public DbSet<MatchesGroupEntity> MatchesGroups { get; set; }
     public DbSet<PlayerMatchEntity> PlayerMatches { get; set; }
     public DbSet<TournamentEntity> Tournaments { get; set; }
     public DbSet<TournamentGroupEntity> TournamentGroups { get; set; }

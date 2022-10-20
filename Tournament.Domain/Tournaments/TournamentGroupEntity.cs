@@ -14,7 +14,7 @@ namespace Tournament.Domain.Tournaments
 
         public Guid TournamentId { get; set; }
         public TournamentEntity Tournament { get; set; }
-        public ICollection<MatchEntity> Matches { get; set; }
+        public ICollection<MatchesGroupEntity> MatchesGroups { get; set; }
         public ICollection<RegisteredPlayersEntity> Registrations { get; set; }
     }
 

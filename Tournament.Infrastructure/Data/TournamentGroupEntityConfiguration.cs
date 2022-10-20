@@ -23,7 +23,7 @@ namespace Tournament.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder
-                .HasMany(x => x.Matches)
+                .HasMany(x => x.MatchesGroups)
                 .WithOne(x => x.TournamentGroup)
                 .HasForeignKey(x => x.TournamentGroupId)
                 .OnDelete(DeleteBehavior.Restrict);

@@ -14,8 +14,8 @@ namespace Tournament.Domain.Games
         public IEnumerable<GameEntity>? Games { get; set; }
         public IEnumerable<PlayerMatchEntity>? PlayersMatches { get; set; }
 
-        public Guid? TournamentGroupId { get; set; }
-        public TournamentGroupEntity? TournamentGroup { get; set; }
+        public Guid? MatchesGroupId { get; set; }
+        public MatchesGroupEntity? MatchesGroup { get; set; }
 
         public Guid? NextMatchIfWonId { get; set; }
         public MatchEntity? NextMatchIfWon { get; set; }

@@ -31,9 +31,9 @@ namespace Tournament.Infrastructure.Data
              .OnDelete(DeleteBehavior.Restrict);
 
             builder
-                .HasOne(x => x.TournamentGroup)
+                .HasOne(x => x.MatchesGroup)
                 .WithMany()
-                .HasForeignKey(x => x.TournamentGroupId)
+                .HasForeignKey(x => x.MatchesGroupId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.NextMatchIfWon)
