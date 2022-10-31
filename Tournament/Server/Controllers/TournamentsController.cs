@@ -67,9 +67,14 @@ namespace Tournament.Server.Controllers
         [HttpGet("{id:Guid}/players")]
         public async Task<ICollection<RegisteredPlayersModel>> GetPlayers([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            return Mapper.Map<ICollection<RegisteredPlayersModel>>(await playerService.GetTournamentPlayers(id, cancellationToken));
+            return Mapper.Map<ICollection<RegisteredPlayersModel>>(await playerService.GetTournamentPlayers(id, null, cancellationToken));
         }
 
+        [HttpGet("{id:Guid}/groups/{tournamentGroupId:Guid}/players")]
+        public async Task<ICollection<RegisteredPlayersModel>> GetPlayers([FromRoute] Guid id, [FromRoute] Guid tournamentGroupId, CancellationToken cancellationToken)
+        {
+            return Mapper.Map<ICollection<RegisteredPlayersModel>>(await playerService.GetTournamentPlayers(id, tournamentGroupId, cancellationToken));
+        }
 
         [HttpPost("{id:Guid}")]
         public async Task AddMatch([FromRoute] Guid id, MatchModel match, CancellationToken cancellationToken)

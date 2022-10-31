@@ -21,7 +21,13 @@
                     <td>@type.ToString()</td>
                     @foreach (var match in Groups.Where(x => x.Type == type).OrderBy(x => x.MatchType))
                     {
-                        <td>@GetPlayerCount(match.MatchType, match.Type)</td>
+                        @if (TournamentId is null) {
+                            <td>@GetPlayerCount(match.MatchType, match.Type)</td>
+                        }
+                        else {
+                            var url = @GetGroupIdUrl(match.MatchType, match.Type);
+                            <td><MudLink Href="@url">@GetPlayerCount(match.MatchType, match.Type)</MudLink></td>
+                        }
                     }
                 </tr>
             }
@@ -32,6 +38,8 @@
 @code {
     [Parameter] public IEnumerable<TournamentGroupModel> Groups { get; set; }
     [Parameter] public IEnumerable<RegisteredPlayersModel>? RegisteredPlayers { get; set; }
+
+    [Parameter] public Guid? TournamentId { get; set; } 
 
     private IEnumerable<Tournament.Domain.Games.MatchType>? GetMatchTypes()
     {
@@ -51,4 +59,10 @@
         }
         return RegisteredPlayers.Where(x => x.TournamentGroup.MatchType == matchType && x.TournamentGroup.Type == groupType).Count().ToString();
     }
+
+    public string GetGroupIdUrl(MatchType matchType, TournamentGroupTypes groupType) 
+    {
+        return $"tournament/{TournamentId}/group/{Groups.First(x => x.Type == groupType && x.MatchType == matchType).Id.Value}";
+    }
+
 }

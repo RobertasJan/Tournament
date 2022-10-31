@@ -17,6 +17,7 @@ namespace Tournament.Infrastructure.Data
 
             builder.Property(x => x.Round).IsRequired();
             builder.Property(x => x.GroupName).IsRequired();
+            builder.Property(x => x.RoundType).IsRequired();
 
             builder
              .HasMany(x => x.Matches)

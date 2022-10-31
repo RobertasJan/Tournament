@@ -62,10 +62,11 @@ namespace Tournament.Client.Services
                 throw new NotImplementedException("No error handling");
         }
 
-        public async Task<ICollection<RegisteredPlayersModel>> GetRegisteredPlayers(Guid tournamentId)
+        public async Task<ICollection<RegisteredPlayersModel>> GetRegisteredPlayers(Guid tournamentId, Guid? tournamentGroupId = null)
         {
             var cancellationToken = new CancellationTokenSource().Token;
-            var httpResponse = await _client.GetAsync($"tournaments/{tournamentId}/players", cancellationToken).ConfigureAwait(false);
+            var routeParams = tournamentGroupId is null ? $"tournaments/{tournamentId}/players" : $"tournaments/{tournamentId}/groups/{tournamentGroupId}/players";
+            var httpResponse = await _client.GetAsync(routeParams, cancellationToken).ConfigureAwait(false);
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
                 var tournaments = await httpResponse.Content.ReadAsAsync<ICollection<RegisteredPlayersModel>>(cancellationToken).ConfigureAwait(false);

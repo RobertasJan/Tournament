@@ -1,0 +1,45 @@
+﻿@page "/players/{Id:guid}"
+@using Tournament.Shared.Players
+
+@if (player != null)
+{
+    <PageTitle>@player.FullName</PageTitle>
+
+    <MudGrid>
+        <MudItem xs="12" md="4">
+            <MudPaper Class="pa-2" Elevation="3">
+                <MudText Typo="Typo.h5" GutterBottom="true">@player.FullName</MudText>
+                <MudText Typo="Typo.body1" GutterBottom="true">@player.Gender</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudPaper Class="pa-2" Elevation="3">
+                <MudGrid>
+                    <MudItem xs="12" md="4">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Singles</MudText>
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Doubles</MudText>
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Mixed doubles</MudText>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+}
+@code {
+    [Inject] PlayerService PlayerService { get; set; }
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    PlayerModel? player = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        player = await PlayerService.GetPlayer(Id.ToString());
+    }
+}

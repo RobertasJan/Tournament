@@ -1,4 +1,57 @@
-﻿
+﻿@page "/tournament/{Id:guid}/group/{TournamentGroupId:guid}"
+
+@if (model != null && model.TournamentRounds != null)
+{
+    @if (model.TournamentRounds.Count == 6)
+    {
+        <link href="css/tourney/64grid.css" rel="stylesheet" />
+    }
+    else if (model.TournamentRounds.Count == 5)
+    {
+        <link href="css/tourney/32grid.css" rel="stylesheet" />
+    }
+    else
+    {
+        <link href="css/tourney/16grid.css" rel="stylesheet" />
+    }
+    <div class="tournament-container">
+        <div class="tournament-headers">
+            @for (var i = 0; i < model.TournamentRounds.Count; i++) 
+            {
+                <h3>Round of @model.TournamentRounds[model.TournamentRounds.Count - i - 1].Round</h3>
+            }
+        </div>
+
+        <div class="tournament-brackets">
+            @for (var i = 0; i < model.TournamentRounds.Count; i++) 
+            {
+                var round = model.TournamentRounds[model.TournamentRounds.Count - i - 1];
+                <ul class="bracket bracket-@(round.Round+1)">
+                    @foreach (var match in round.Matches) 
+                    {
+                        <li class="team-item">A2 <time>14:00</time> C2</li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+}
+
 @code {
-    
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Parameter]
+    public Guid TournamentGroupId { get; set; }
+
+    [Inject] TournamentService TournamentService { get; set; }
+    [Inject] TournamentGroupService TournamentGroupService { get; set; }
+
+    TournamentGroupViewModel model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = new TournamentGroupViewModel(TournamentService, TournamentGroupService, Id, TournamentGroupId);
+        await model.Load();
+    }
 }

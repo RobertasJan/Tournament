@@ -8,6 +8,12 @@ namespace Tournament.Domain.Players
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
+        public string FullName { get
+            {
+                return FirstName + " " + LastName;
+            } 
+        }
+
         public Gender Gender { get; set; }
         public ICollection<PlayerMatchEntity> PlayerMatches { get; set; }
         public ICollection<RegisteredPlayersEntity> Registrations { get; set; }

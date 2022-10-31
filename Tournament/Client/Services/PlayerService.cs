@@ -32,10 +32,10 @@ namespace Tournament.Client.Services
         public async Task<PlayerModel> GetPlayer(string playerId)
         {
             var cancellationToken = new CancellationTokenSource().Token;
-            var httpResponse = await _client.GetAsync($"players/{playerId}", CancellationToken.None).ConfigureAwait(false);
+            var httpResponse = await _client.GetAsync($"api/players/{playerId}", cancellationToken).ConfigureAwait(false);
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
-                var player = await httpResponse.Content.ReadAsAsync<PlayerModel>(CancellationToken.None).ConfigureAwait(false);
+                var player = await httpResponse.Content.ReadAsAsync<PlayerModel>(cancellationToken).ConfigureAwait(false);
                 return player;
             }
             throw new NotImplementedException("No error handling");
@@ -55,7 +55,7 @@ namespace Tournament.Client.Services
             queryString = queryString.Add(nameof(gender), ((int?)gender)?.ToString());
             queryString = queryString.Add(nameof(tournamentId), tournamentId?.ToString());
             queryString = queryString.Add(nameof(searchText), searchText);
-            var httpResponse = await _client.GetAsync($"players/{queryString.Value}", cancellationToken).ConfigureAwait(false);
+            var httpResponse = await _client.GetAsync($"api/players/{queryString.Value}", cancellationToken).ConfigureAwait(false);
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
                 return await httpResponse.Content.ReadAsAsync<ICollection<PlayerModel>>(cancellationToken).ConfigureAwait(false);

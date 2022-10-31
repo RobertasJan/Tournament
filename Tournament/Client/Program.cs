@@ -28,6 +28,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 builder.Services.AddScoped<GameService>();
 builder.Services.AddScoped<TournamentService>();
+builder.Services.AddScoped<TournamentGroupService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<PlayerService>();
 

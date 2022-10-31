@@ -8,7 +8,7 @@
     <MudGrid>
         <MudItem xs="12" md="6">
             <MudPaper Class="justify-center">
-                <TournamentTable Groups="model.Data.Groups" RegisteredPlayers="Players"></TournamentTable>
+                <TournamentTable Groups="model.Data.Groups" RegisteredPlayers="model.Players" TournamentId="Id"></TournamentTable>
             </MudPaper>
         </MudItem>
         <MudItem xs="12">
@@ -19,6 +19,12 @@
                     <MudText Typo="Typo.body2" GutterBottom="true">@model.Data.LongDescription</MudText>
                 </MudTabPanel>
                 <MudTabPanel Text="Players">
+                    <MudDataGrid T="RegisteredPlayersModel" Items="model.Players" Filterable="true">
+                        <Columns>
+                            <SelectColumn T="RegisteredPlayersModel" />
+                            <Column T="RegisteredPlayersModel" Field="Player1Name" Title="Name"/>
+                        </Columns>
+                    </MudDataGrid>
                     <MudText>Content Two</MudText>
                 </MudTabPanel>
             </MudTabs>
@@ -44,11 +50,10 @@
     [Inject] TournamentService TournamentService { get; set; }
 
     TournamentViewModel model;
-    ICollection<RegisteredPlayersModel>? Players { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
-        Players = await TournamentService.GetRegisteredPlayers(Id);
+        model.Players = await TournamentService.GetRegisteredPlayers(Id);
     }
 }

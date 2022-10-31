@@ -15,6 +15,19 @@ namespace Tournament.Server.Models
 
         public Guid? TournamentGroupId { get; set; }
 
+        public MatchTeamModel? Team1 { get; set; }
+        public MatchTeamModel? Team2 { get; set; }
 
+        public int? GroupPosition { get; set; }
+    }
+
+    public class MatchTeamModel
+    {
+        public Guid? Player1Id { get; set; }
+        public string Player1Name { get; set; }
+        public Guid? Player2Id { get; set; }
+        public string? Player2Name { get; set; }
+
+        public int? Rating { get; set; }
     }
 }

@@ -1,0 +1,58 @@
+﻿@page "/players"
+@using Tournament.Shared.Players
+
+<PageTitle>Players</PageTitle>
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudGrid>
+            <MudItem xs="12" sm="4">        
+                <MudTextField T="string" @bind-Text="searchText" Label="Search" Variant="Variant.Text" OnKeyPress="OnEnterKey"></MudTextField>
+            </MudItem>
+            <MudItem xs="12" sm="4">
+                <MudIconButton Style="margin-top: 10px;" Icon="@Icons.Material.Filled.Search" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="Search" />
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+    <MudItem xs="12">
+        <MudDataGrid T="PlayerModel" Items="players">
+            <Columns>
+                <Column T="PlayerModel" Field="FullName" Title="Name">
+                    <CellTemplate>
+                        @{
+                            var href = $"players/{@context.Item.Id}";
+                        }
+                        <MudLink Href="@href">@context.Item.FullName</MudLink>
+                    </CellTemplate>
+                </Column>
+                <Column T="PlayerModel" Field="Gender" Title="Gender" />
+                <Column T="PlayerModel" Field="RatingSingles" Title="Rating" />
+                <Column T="PlayerModel" Field="PositionSinglesString" Title="Rating" />
+            </Columns>
+        </MudDataGrid>
+    </MudItem>
+</MudGrid>
+
+
+@code {
+    [Inject] PlayerService PlayerService { get; set; }
+
+    string searchText = "";
+
+    IEnumerable<PlayerModel> players { get; set; }
+
+    private async Task OnEnterKey(KeyboardEventArgs args) {
+        if (args.Key == "Enter") {
+            _ = Search();
+        }
+    }
+
+    private async Task Search() {
+        players = await PlayerService.GetPlayers(searchText: searchText);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        players = await PlayerService.GetPlayers();
+    }
+}

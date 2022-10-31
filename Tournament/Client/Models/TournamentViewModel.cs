@@ -3,6 +3,7 @@ using Tournament.Client.Services;
 using Tournament.Domain.Games;
 using Tournament.Domain.Tournaments;
 using Tournament.Shared.Games;
+using Tournament.Shared.Players;
 using Tournament.Shared.Tournaments;
 using MatchType = Tournament.Domain.Games.MatchType;
 
@@ -12,6 +13,8 @@ namespace Tournament.Client.Models
     {
 
         private TournamentService service { get; set; }
+
+        public IEnumerable<RegisteredPlayersModel>? Players { get; set; } 
 
         public TournamentViewModel(TournamentService service, TournamentModel tournamentModel = null)
         {

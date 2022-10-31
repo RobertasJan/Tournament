@@ -14,7 +14,11 @@ namespace Tournament.Shared.Players
         public Guid? Player2Id { get; set; }
         public string? Player2Name { get; set; }
         public TournamentGroupModel TournamentGroup { get; set; }
-        public int? Rating { get; set; }
+        public int? Rating { get {
+                Random rnd = new Random();
+                return rnd.Next(1, 1000);
+            }
+        }
 
     }
 }

@@ -8,7 +8,29 @@ namespace Tournament.Shared.Players
         public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string FullName
+        {
+            get
+            {
+                return FirstName + " " + LastName;
+            }
+        }
         public Gender Gender { get; set; }
+
+        public int RatingSingles { get; set; } = 0;
+        public int PositionSingles { get; set; } = 0;
+        public string PositionSinglesString
+        {
+            get
+            {
+                return PositionSingles == 0 ? "None" : PositionSingles.ToString();
+            }
+        }
+        public int RatingDoubles { get; set; } = 0;
+        public int PositionDoubles { get; set; } = 0;
+        public int RatingMixed { get; set; } = 0;
+        public int PositionsMixed { get; set; } = 0;
+
         public string? UserId { get; set; }
 
         public IEnumerable<MatchType> GetGenderMatchTypes(IEnumerable<MatchType> matchTypes)

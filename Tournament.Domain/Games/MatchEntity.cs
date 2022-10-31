@@ -17,6 +17,9 @@ namespace Tournament.Domain.Games
         public Guid? MatchesGroupId { get; set; }
         public MatchesGroupEntity? MatchesGroup { get; set; }
 
+        public int? GroupPosition { get; set; }
+
+
         public Guid? NextMatchIfWonId { get; set; }
         public MatchEntity? NextMatchIfWon { get; set; }
 

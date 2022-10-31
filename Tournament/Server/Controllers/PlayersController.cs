@@ -13,29 +13,27 @@ using Tournament.Shared.Players;
 namespace Tournament.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class PlayersController : BaseController
     {
         private readonly ILogger<PlayersController> _logger;
         private readonly IPlayerService playerService;
-        private readonly SignInManager<ApplicationUserEntity> userManager;
-        public PlayersController(ILogger<PlayersController> logger, IPlayerService playerService, SignInManager<ApplicationUserEntity> userManager)
+        public PlayersController(ILogger<PlayersController> logger, IPlayerService playerService)
         {
             _logger = logger;
             this.playerService = playerService;
-            this.userManager = userManager;
         }
 
-        [HttpGet("id:string")]
-        public async Task<PlayerModel> Get([FromRoute] string id, CancellationToken cancellationToken)
+        [HttpGet("{id:Guid}")]
+        public async Task<PlayerModel> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            return Mapper.Map<PlayerModel>(await playerService.GetById(Guid.Parse(id), cancellationToken));
+            return Mapper.Map<PlayerModel>(await playerService.GetById(id, cancellationToken));
         }
 
         [HttpGet]
         public async Task<ICollection<PlayerModel>> Get([FromQuery] Guid? tournamentId, [FromQuery] string? searchText, [FromQuery] Gender? gender, CancellationToken cancellationToken)
         {
-            return Mapper.Map<ICollection<PlayerModel>>(await playerService.Get(tournamentId: tournamentId, searchText: searchText, gender: gender));
+            return Mapper.Map<ICollection<PlayerModel>>(await playerService.Get(tournamentId: tournamentId, searchText: searchText, gender: gender, cancellationToken));
         }
     }
 }

@@ -13,10 +13,10 @@ namespace Tournament.Domain.Services.Players
     public interface IPlayerService
     {
         public Task<Guid> Create(PlayerEntity player, CancellationToken cancellationToken);
-        public Task<ICollection<PlayerEntity>> Get(Guid? tournamentId, string? searchText, Gender? gender);
+        public Task<ICollection<PlayerEntity>> Get(Guid? tournamentId, string? searchText, Gender? gender, CancellationToken cancellationToken);
         public Task<PlayerEntity> GetById(Guid id, CancellationToken cancellationToken);
         public Task<PlayerEntity> GetByUserId(string id, CancellationToken cancellationToken);
-        public Task<ICollection<RegisteredPlayersEntity>> GetTournamentPlayers(Guid tournamentId, CancellationToken cancellationToken);
+        public Task<ICollection<RegisteredPlayersEntity>> GetTournamentPlayers(Guid tournamentId, Guid? tournamentGroupId, CancellationToken cancellationToken);
     }
 
     public class PlayerService : IPlayerService
@@ -35,7 +35,7 @@ namespace Tournament.Domain.Services.Players
             return entity.Id;
         }
 
-        public async Task<ICollection<PlayerEntity>> Get(Guid? tournamentId, string? searchText, Gender? gender)
+        public async Task<ICollection<PlayerEntity>> Get(Guid? tournamentId, string? searchText, Gender? gender, CancellationToken cancellationToken)
         {
             var query = _db.Players.AsQueryable();
             if (tournamentId != null)
@@ -53,9 +53,15 @@ namespace Tournament.Domain.Services.Players
             return query.ToList();
         }
 
-        public async Task<ICollection<RegisteredPlayersEntity>> GetTournamentPlayers(Guid tournamentId, CancellationToken cancellationToken)
-            => _db.RegisteredPlayers.Include(x => x.TournamentGroup).Where(x => x.TournamentGroup.TournamentId == tournamentId).ToList();
-
+        public async Task<ICollection<RegisteredPlayersEntity>> GetTournamentPlayers(Guid tournamentId, Guid? tournamentGroupId, CancellationToken cancellationToken)
+        {
+            var query = _db.RegisteredPlayers.Include(x => x.TournamentGroup).Include(x => x.Player1).Include(x => x.Player2).AsQueryable();
+            if (tournamentGroupId != null)
+            {
+                query = query.Where(x => x.TournamentGroupId == tournamentGroupId.Value);
+            }
+            return query.Where(x => x.TournamentGroup.TournamentId == tournamentId).ToList();
+        }
 
         public async Task<PlayerEntity> GetById(Guid id, CancellationToken cancellationToken)
             => (await _db.Players.FirstOrDefaultAsync(x => x.Id == id)) ?? throw new Exception($"Player {id} not found.");
