@@ -10,18 +10,15 @@ namespace Tournament.Client.Services
 {
     public class PlayerService : BaseService
     {
-        public PlayerService(HttpClient client, IJSRuntime jsr) : base(client)
+        public PlayerService(HttpClient client, IJSRuntime jsr) : base(client, jsr)
         {
-            this.jsr = jsr;
         }
-
-        private IJSRuntime jsr;
 
         public async Task<PlayerModel?> GetCurrent()
         {
             try
             {
-                return JsonSerializer.Deserialize<PlayerModel>(await jsr.InvokeAsync<string>("localStorage.getItem", "player").ConfigureAwait(false));
+                return JsonSerializer.Deserialize<PlayerModel>(await _jsr.InvokeAsync<string>("localStorage.getItem", "player").ConfigureAwait(false));
             }
             catch
             {

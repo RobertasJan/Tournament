@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Tournament.Domain.Players;
 
 namespace Tournament.Shared;
 public class RegistrationModel : LoginModel
 {
-    [Required(ErrorMessage = "Confirm password is required.")]
-    [DataType(DataType.Password)]
-    [Compare("Password", ErrorMessage = "Password and confirm password do not match.")]
     public string ConfirmPassword { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public Gender Gender { get; set; } = Gender.Male;
+    public DateTime? BirthDate { get; set; }
 }

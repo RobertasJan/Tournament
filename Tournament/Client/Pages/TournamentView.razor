@@ -47,12 +47,14 @@
     [Parameter]
     public Guid Id { get; set; }
 
+
     [Inject] TournamentService TournamentService { get; set; }
 
     TournamentViewModel model;
 
     protected override async Task OnInitializedAsync()
     {
+    
         model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
         model.Players = await TournamentService.GetRegisteredPlayers(Id);
     }

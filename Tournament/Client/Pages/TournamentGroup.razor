@@ -10,9 +10,17 @@
     {
         <link href="css/tourney/32grid.css" rel="stylesheet" />
     }
-    else
+    else if (model.TournamentRounds.Count == 4)
     {
         <link href="css/tourney/16grid.css" rel="stylesheet" />
+    }
+    else if (model.TournamentRounds.Count == 3) 
+    {
+        <link href="css/tourney/8grid.css" rel="stylesheet" />
+    }
+    else 
+    {
+        <link href="css/tourney/4grid.css" rel="stylesheet" />
     }
     <div class="tournament-container">
         <div class="tournament-headers">
@@ -29,7 +37,8 @@
                 <ul class="bracket bracket-@(round.Round+1)">
                     @foreach (var match in round.Matches) 
                     {
-                        <li class="team-item">A2 <time>14:00</time> C2</li>
+                
+                        <li class="team-item">seed @match.Seed <time>00:00</time> xx</li>
                     }
                 </ul>
             }

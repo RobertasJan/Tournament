@@ -19,6 +19,8 @@ namespace Tournament.Server.Models
         public MatchTeamModel? Team2 { get; set; }
 
         public int? GroupPosition { get; set; }
+
+        public int Seed { get; set; }
     }
 
     public class MatchTeamModel

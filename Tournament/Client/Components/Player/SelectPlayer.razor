@@ -1,7 +1,7 @@
 ﻿@using Tournament.Domain.Players
 @using Tournament.Shared.Players
 
-<MudAutocomplete T="PlayerModel" Label="Partner" ValueChanged="OnPlayerChanged" SearchFunc="@SearchPlayer" ToStringFunc="@(e => e== null ? null : $"{e.FullName}")">
+<MudAutocomplete T="PlayerModel" Label="Player" ValueChanged="OnPlayerChanged" SearchFunc="@SearchPlayer" ToStringFunc="@(e => e== null ? null : $"{e.FullName}")">
     <ItemTemplate Context="e">
         <MudText>@e.FullName</MudText>
     </ItemTemplate>
@@ -12,27 +12,20 @@
 
 @code {
     [Parameter]
-    public Guid PlayerId { get; set; }
-
-    [Parameter]
     public PlayerModel Player { get; set; }
 
     [Parameter]
+    public Guid? TournamentId { get; set; }
+
+    [Parameter]
     public EventCallback<PlayerModel> PlayerChanged { get; set; }
-
-    [Parameter]
-    public Guid TournamentId { get; set; }
-
-    [Parameter]
-    public Gender PartnerGender { get; set; }
 
     [Inject] PlayerService PlayerService { get; set; }
 
     private async Task<IEnumerable<PlayerModel>> SearchPlayer(string value)
     {
-        var response = await PlayerService.GetPartnerPlayers(PartnerGender, TournamentId, value);
-
-        return response.Where(x => x.Id != PlayerId);
+        var response = await PlayerService.GetPlayers(searchText: value);
+        return response;
     }
 
     private Task OnPlayerChanged(PlayerModel player)

@@ -32,7 +32,8 @@ namespace Tournament.Client.Models
 
             var playerCount = registeredPlayers.Count;
             TournamentRounds = new List<MatchesGroupModel>();
-            for (var i = 0; i < GetCountOfRounds(playerCount); i++)
+            var countOfRounds = GetCountOfRounds(playerCount);
+            for (var i = 0; i < countOfRounds; i++)
             {
                 TournamentRounds.Add(new MatchesGroupModel()
                 {
@@ -40,7 +41,7 @@ namespace Tournament.Client.Models
                     GroupName = 1,
                     Round = i,
                     TournamentGroupId = tournamentGroupId,
-                    Matches = GetMatchTemplates((int)Math.Pow(2, i))
+                    Matches = GetMatchTemplates((int)Math.Pow(2, i), countOfRounds, registeredPlayers)
                 });
             }
         }
@@ -52,16 +53,63 @@ namespace Tournament.Client.Models
             return (int)Math.Ceiling(baseNumber);
         }
 
-        private ICollection<MatchModel> GetMatchTemplates(int count)
+        private ICollection<MatchModel> GetMatchTemplates(int count, int countOfRounds, IEnumerable<RegisteredPlayersModel> players)
         {
+            var maxCountInRound = count * 2;
+            if (Enumerable.Range(count + 1, maxCountInRound).Contains(players.Count()))
+            {
+                var matchesInRound = players.Count() - count;
+            }
+
             ICollection<MatchModel> matches = new List<MatchModel>();
+            var playersOrdered = players.OrderBy(x => x.Rating);
+          //  var seeds = Enumerable.Range(1, maxCountInRound);
+            var sortedSeeds = SortSeeds(maxCountInRound);
             for (var i = 0; i < count; i++)
             {
-                matches.Add(new MatchModel() { 
-                    
+                matches.Add(new MatchModel()
+                {
+                    Seed = sortedSeeds[i]
                 });
             }
             return matches;
+        }
+
+        private List<int> SortSeeds(int seedCount)
+        {
+            var seeds = Enumerable.Range(1, seedCount);
+            var seedList = new List<int[]>();
+            foreach (var seed in seeds)
+            {
+                seedList.Add(new int[] { seed });
+            }
+            var sorted = RecursiveSeedMatch(seedList);
+            var sortedList = new List<int>();
+            foreach (var sortedArray in sorted)
+            {
+                foreach (var array in sortedArray)
+                {
+                    sortedList.Add(array);
+                }
+            }
+            return sortedList;
+        }
+
+        private List<int[]> RecursiveSeedMatch(List<int[]> seeds)
+        {
+            if (seeds.Count == 2)
+            {
+                return seeds;
+            }
+            var newList = new List<int[]>();
+            for (var i = 0; i < seeds.Count / 2; i++)
+            {
+                var seed = seeds[i];
+                var newSeed = seed.Concat(seeds[seeds.Count - i]).ToArray();
+                newList.Add(newSeed);
+            }
+
+            return RecursiveSeedMatch(newList);
         }
 
     }

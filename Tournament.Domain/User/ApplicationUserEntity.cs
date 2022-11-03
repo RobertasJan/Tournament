@@ -5,6 +5,7 @@ namespace Tournament.Domain.User
 {
     public class ApplicationUserEntity : IdentityUser
     {
-        public PlayerEntity Player { get; set; }
+        public PlayerEntity? Player { get; set; }
+        public bool IsAdmin { get; private set; }
     }
 }

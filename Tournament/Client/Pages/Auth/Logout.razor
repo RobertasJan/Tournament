@@ -8,6 +8,7 @@
 	{
 		await base.OnInitializedAsync();
 		await jsr.InvokeVoidAsync("localStorage.removeItem", "user").ConfigureAwait(false);
+		await jsr.InvokeVoidAsync("localStorage.removeItem", "player").ConfigureAwait(false);
 		nav.NavigateTo("/", true);
 	}
 }

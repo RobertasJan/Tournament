@@ -2,8 +2,6 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Threading;
-using Tournament.Client.Services;
 using Tournament.Domain.Players;
 using Tournament.Domain.Services.Players;
 using Tournament.Domain.Services.User;
@@ -26,6 +24,10 @@ namespace Tournament.Server.Controllers
             claimList.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Email));
             claimList.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
             claimList.Add(new Claim(JwtRegisteredClaimNames.Jti, user.Email));
+            if (user.IsAdmin)
+            {
+                claimList.Add(new Claim(ClaimTypes.Role, "Admin"));
+            }
             //  claimList.Add(new Claim(JwtRegisteredClaimNames.Gender, user.Player.Gender.ToString()));
             //foreach (var role in user.AppUserRoles.Select(x => x.Role))
             //{
@@ -70,9 +72,11 @@ namespace Tournament.Server.Controllers
             }, reg.Password);
             var playerId = await playerService.Create(new PlayerEntity()
             {
-                FirstName = reg.Email,
-                LastName = reg.Email,
-                UserId = user.Id
+                FirstName = reg.FirstName,
+                LastName = reg.LastName,
+                UserId = user.Id,
+                BirthDate = reg.BirthDate.Value,
+                Gender = reg.Gender
             }, CancellationToken.None);
             var player = await playerService.GetById(playerId, CancellationToken.None);
             if (user != null)
@@ -95,9 +99,16 @@ namespace Tournament.Server.Controllers
             }
             var user = await userDb.Login(login.Email, login.Password);
             var player = await playerService.GetByUserId(user.Id, CancellationToken.None);
-            if (user != null)
-                return new LoginResult { Message = "Login successful.", JwtBearer = CreateJWT(user), Email = login.Email, Player = Mapper.Map<PlayerModel>(player), Success = true };
 
+            if (user != null)
+            {
+                var role = "";
+                if (user.IsAdmin)
+                {
+                    role = "Admin";
+                }
+                return new LoginResult { Message = "Login successful.", JwtBearer = CreateJWT(user), Email = login.Email, Player = Mapper.Map<PlayerModel>(player), Role = role, Success = true };
+            }
             return new LoginResult { Message = "User/password not found.", Success = false };
         }
     }

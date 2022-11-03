@@ -14,7 +14,7 @@ using Tournament.Shared.Tournaments;
 namespace Tournament.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class TournamentsController : BaseController
     {
         private readonly ILogger<TournamentsController> _logger;
@@ -60,7 +60,7 @@ namespace Tournament.Server.Controllers
         {
             var registeredPlayerEntity = Mapper.Map<RegisteredPlayersEntity>(model);
             registeredPlayerEntity.TournamentGroupId = tournamentGroupId;
-            registeredPlayerEntity.Id = id;
+           // registeredPlayerEntity.Id = id;
             await tournamentGroupService.AddRegistration(registeredPlayerEntity, cancellationToken);
         }
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tournament.Infrastructure.Data;
 
@@ -11,9 +12,10 @@ using Tournament.Infrastructure.Data;
 namespace Tournament.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221031112324_Player_AddedBirthDate")]
+    partial class Player_AddedBirthDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -705,9 +707,6 @@ namespace Tournament.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -962,7 +961,8 @@ namespace Tournament.Infrastructure.Migrations
 
             modelBuilder.Entity("Tournament.Domain.User.ApplicationUserEntity", b =>
                 {
-                    b.Navigation("Player");
+                    b.Navigation("Player")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

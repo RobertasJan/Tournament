@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Microsoft.JSInterop;
+using System.Net;
 using Tournament.Server.Models;
 using Tournament.Shared.Games;
 
@@ -6,7 +7,7 @@ namespace Tournament.Client.Services
 {
     public class GameService : BaseService
     {
-        public GameService(HttpClient client) : base(client)
+        public GameService(HttpClient client, IJSRuntime jsr) : base(client, jsr)
         {
 
         }

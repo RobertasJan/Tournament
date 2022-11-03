@@ -16,7 +16,7 @@ namespace Tournament.Shared.Players
             }
         }
         public Gender Gender { get; set; }
-
+        public DateTime BirthDate { get; set; } = DateTime.MaxValue;
         public int RatingSingles { get; set; } = 0;
         public int PositionSingles { get; set; } = 0;
         public string PositionSinglesString

@@ -35,6 +35,15 @@ namespace Tournament.Domain.Services.Tournament
 
         public async Task AddRegistration(RegisteredPlayersEntity registeredPlayers, CancellationToken cancellationToken)
         {
+            //check registed players
+            if (_db.RegisteredPlayers.Any(x =>
+            ((x.Player1Id == registeredPlayers.Player1Id || x.Player2Id == registeredPlayers.Player1Id)
+            || (registeredPlayers.Player2Id != null && (x.Player1Id == registeredPlayers.Player2Id || x.Player2Id == registeredPlayers.Player2Id)))
+            && x.TournamentGroupId == registeredPlayers.TournamentGroupId
+            ))
+            {
+                throw new Exception($"Player {registeredPlayers.Player1Id} or {registeredPlayers.Player2Id} is already registered in group {registeredPlayers.TournamentGroupId}");
+            }
             await _db.RegisteredPlayers.AddAsync(registeredPlayers, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);
         }

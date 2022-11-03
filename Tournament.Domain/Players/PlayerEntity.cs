@@ -11,10 +11,11 @@ namespace Tournament.Domain.Players
         public string FullName { get
             {
                 return FirstName + " " + LastName;
-            } 
+            }
         }
 
         public Gender Gender { get; set; }
+        public DateTime BirthDate { get; set; }
         public ICollection<PlayerMatchEntity> PlayerMatches { get; set; }
         public ICollection<RegisteredPlayersEntity> Registrations { get; set; }
         public string? UserId { get; set; }
