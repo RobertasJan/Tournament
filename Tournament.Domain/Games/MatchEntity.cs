@@ -44,7 +44,8 @@ namespace Tournament.Domain.Games
         Played = 2,
         Disqualified = 3,
         Walkover = 4,
-        Injury = 5
+        Injury = 5,
+        Bye = 6
     }
 
     public enum MatchResult : byte

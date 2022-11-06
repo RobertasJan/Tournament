@@ -37,8 +37,8 @@
                 <ul class="bracket bracket-@(round.Round+1)">
                     @foreach (var match in round.Matches) 
                     {
-                
-                        <li class="team-item">seed @match.Seed <time>00:00</time> xx</li>
+
+                        <li class="team-item">@match.Team1.Seed @match.Team1.Player1Name <time>00:00</time> @match.Team2.Seed @match.Team2.Player1Name</li>
                     }
                 </ul>
             }

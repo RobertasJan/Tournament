@@ -19,8 +19,6 @@ namespace Tournament.Server.Models
         public MatchTeamModel? Team2 { get; set; }
 
         public int? GroupPosition { get; set; }
-
-        public int Seed { get; set; }
     }
 
     public class MatchTeamModel
@@ -29,7 +27,7 @@ namespace Tournament.Server.Models
         public string Player1Name { get; set; }
         public Guid? Player2Id { get; set; }
         public string? Player2Name { get; set; }
-
+        public int Seed { get; set; }
         public int? Rating { get; set; }
     }
 }

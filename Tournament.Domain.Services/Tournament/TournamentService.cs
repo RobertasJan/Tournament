@@ -15,7 +15,12 @@ namespace Tournament.Domain.Services.Tournament
         Task<TournamentEntity> GetById(Guid id, CancellationToken cancellationToken);
         Task<ICollection<TournamentEntity>> Get(CancellationToken cancellationToken);
         Task<Guid> Create(TournamentEntity tournament, CancellationToken cancellationToken);
+        Task Update(TournamentEntity tournament, CancellationToken cancellationToken);
         Task AddMatch(MatchEntity matchEntity, CancellationToken cancellationToken);
+
+        Task StartDraws(Guid id, CancellationToken cancellationToken);
+        Task StartTournament(Guid id, CancellationToken cancellationToken);
+        Task FinishTournament(Guid id, CancellationToken cancellationToken);
     }
 
 
@@ -37,6 +42,7 @@ namespace Tournament.Domain.Services.Tournament
         public async Task<Guid> Create(TournamentEntity tournament, CancellationToken cancellationToken)
         {
             tournament.Groups = null;
+            tournament.State = TournamentState.Registration;
             await _db.Tournaments.AddAsync(tournament, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);
             return tournament.Id;
@@ -49,6 +55,36 @@ namespace Tournament.Domain.Services.Tournament
         {
             var item = await _db.Tournaments.Include(x => x.Groups).FirstOrDefaultAsync(x => x.Id == id, cancellationToken) ?? throw new Exception($"Tournament {id} not found.");
             return item;
+        }
+
+
+        public async Task StartDraws(Guid id, CancellationToken cancellationToken)
+        {
+            var tournament = await GetById(id, cancellationToken);
+            foreach (var group in tournament.Groups)
+            {
+                await SetTournamentMatchesBySeed(group, cancellationToken);
+            }
+        }
+
+        private async Task SetTournamentMatchesBySeed(TournamentGroupEntity group, CancellationToken cancellationToken)
+        {
+
+        }
+
+        public Task StartTournament(Guid id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+        public Task FinishTournament(Guid id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task Update(TournamentEntity tournament, CancellationToken cancellationToken)
+        {
+            _db.Update(tournament);
+            await _db.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -60,7 +60,7 @@ namespace Tournament.Server.Controllers
         {
             var registeredPlayerEntity = Mapper.Map<RegisteredPlayersEntity>(model);
             registeredPlayerEntity.TournamentGroupId = tournamentGroupId;
-           // registeredPlayerEntity.Id = id;
+            // registeredPlayerEntity.Id = id;
             await tournamentGroupService.AddRegistration(registeredPlayerEntity, cancellationToken);
         }
 
@@ -80,6 +80,27 @@ namespace Tournament.Server.Controllers
         public async Task AddMatch([FromRoute] Guid id, MatchModel match, CancellationToken cancellationToken)
         {
             await tournamentService.AddMatch(Mapper.Map<MatchEntity>(match), cancellationToken);
+        }
+
+        [HttpPut("{id:Guid}/state")]
+        public async Task SetState([FromRoute] Guid id, TournamentState state, CancellationToken cancellationToken)
+        {
+            var tournament = await tournamentService.GetById(id, cancellationToken);
+            if (state == TournamentState.Draws)
+            {
+                await tournamentService.StartDraws(id, cancellationToken);
+            }
+            else if (state == TournamentState.Ongoing)
+            {
+                await tournamentService.StartTournament(id, cancellationToken);
+            }
+            else if (state == TournamentState.Finished)
+            {
+                await tournamentService.StartTournament(id, cancellationToken);
+            } else
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

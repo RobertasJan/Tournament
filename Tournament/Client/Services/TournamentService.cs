@@ -1,5 +1,7 @@
 ﻿using Microsoft.JSInterop;
 using System.Net;
+using Tournament.Client.Pages;
+using Tournament.Domain.Tournaments;
 using Tournament.Server.Models;
 using Tournament.Shared.Players;
 using Tournament.Shared.Tournaments;
@@ -74,6 +76,14 @@ namespace Tournament.Client.Services
                 return tournaments;
             }
             throw new NotImplementedException("No error handling");
+        }
+
+        public async Task SetState(Guid tournamentId, TournamentState state)
+        {
+            var cancellationToken = new CancellationTokenSource().Token;
+            var httpResponse = await _client.PutAsJsonAsync($"api/tournaments/{tournamentId}/state", state, cancellationToken);
+            if (httpResponse.StatusCode != HttpStatusCode.OK)
+                throw new NotImplementedException("No error handling");
         }
     }
 }

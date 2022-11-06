@@ -28,34 +28,63 @@
                     <MudText>Content Two</MudText>
                 </MudTabPanel>
             </MudTabs>
-
         </MudItem>
-        <MudItem xs="12">
-            @{
-                var href = $"tournament/{Id}/register";
-            }
-            <MudLink Href="@href">
+        @if (model.Data.State == Domain.Tournaments.TournamentState.Registration)
+        {
+            <MudItem xs="12">
+                @{
+                    var href = $"tournament/{Id}/register";
+                }
+                <MudLink Href="@href">
+                    <MudButton Variant="Variant.Filled"
+                            Color="Color.Primary">
+                        REGISTER
+                    </MudButton>
+                </MudLink>
+            </MudItem>
+        }
+        @if (model.Data.State == Domain.Tournaments.TournamentState.Registration || model.Data.State == Domain.Tournaments.TournamentState.Created && IsAdmin)
+        {
+            <MudItem xs="12">
                 <MudButton Variant="Variant.Filled"
-                       Color="Color.Primary">
-                    REGISTER
+                    Color="Color.Primary" OnClick="ConfirmDraft">
+                    START DRAWS
                 </MudButton>
-            </MudLink>
-        </MudItem>
+            </MudItem>
+        }
+        else if (model.Data.State == Domain.Tournaments.TournamentState.Draws && IsAdmin) 
+        {
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary" OnClick="StartTournament">
+                    START TOURNAMENT
+                </MudButton>
+            </MudItem>
+        }
     </MudGrid>
 }
 @code {
     [Parameter]
     public Guid Id { get; set; }
 
+    public bool IsAdmin { get; set; }
 
     [Inject] TournamentService TournamentService { get; set; }
+    [Inject] UserService UserService { get; set; }
 
     TournamentViewModel model;
 
     protected override async Task OnInitializedAsync()
     {
-    
+        IsAdmin = await UserService.IsAdmin();
         model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
         model.Players = await TournamentService.GetRegisteredPlayers(Id);
+    }
+
+    async Task ConfirmDraft() {
+        TournamentService.SetState(model.Data.Id.Value, Domain.Tournaments.TournamentState.Draws);
+    }
+    async Task StartTournament() {
+        await TournamentService.SetState(model.Data.Id.Value, Domain.Tournaments.TournamentState.Ongoing);
     }
 }

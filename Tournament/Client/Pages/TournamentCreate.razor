@@ -21,10 +21,19 @@
                         <MudTextField @bind-Value="model.Data.Description" Label="Enter short description" Variant="Variant.Text" Required="true" RequiredError="Tournament short description is required!"></MudTextField>
                     </MudItem>
                     <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="model.Data.Address" Label="Tournament address" Variant="Variant.Text" Required="true" RequiredError="Tournament address is required!"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
                         <MudDatePicker Label="Start date" @bind-Date="model.Data.StartDate" Culture="@GetLithuanianCultureInfo()" TitleDateFormat="dddd, dd MMMM" />
                     </MudItem>
                     <MudItem xs="12" sm="6">
                         <MudDatePicker Label="End date" @bind-Date="model.Data.EndDate" Culture="@GetLithuanianCultureInfo()" TitleDateFormat="dddd, dd MMMM" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTimePicker Label="Average match time" @bind-Time="model.Data.AverageTimePerMatch" TimeEditMode="TimeEditMode.OnlyMinutes" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudNumericField @bind-Value="model.Data.CourtsAvailable" Label="Courts count" Min="1" Max="100" Step="1" />
                     </MudItem>
                     <MudItem xs="12">
                         <MudCheckBox @bind-Checked="@model.Data.Public" Label="Public" Color="Color.Primary"></MudCheckBox>
@@ -99,7 +108,6 @@
     TournamentViewModel model;
     IEnumerable<MatchType> MatchTypes { get; set; } = new HashSet<MatchType>();
     IEnumerable<TournamentGroupTypes> Groups { get; set; } = new HashSet<TournamentGroupTypes>();
-
 
     public CultureInfo GetLithuanianCultureInfo()
     {
