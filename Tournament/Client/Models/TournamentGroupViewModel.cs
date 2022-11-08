@@ -34,6 +34,7 @@ namespace Tournament.Client.Models
             var playerCount = registeredPlayers.Count;
             TournamentRounds = new List<MatchesGroupModel>();
             var countOfRounds = Calculations.GetCountOfRounds(playerCount);
+           // var maxPlayerCountInRound = (int)Math.Pow(2, countOfRounds);
 
             for (var i = 0; i < countOfRounds; i++)
             {
@@ -44,7 +45,7 @@ namespace Tournament.Client.Models
                     Round = i,
                     TournamentGroupId = tournamentGroupId,
                     Matches = GetMatchTemplates((int)Math.Pow(2, i), registeredPlayers, i == countOfRounds - 1)
-                   // Matches = GetMatchTemplates((int)Math.Pow(2, countOfRounds), registeredPlayers, i == countOfRounds - 1)
+                //    Matches = GetMatchTemplates(countOfRounds, registeredPlayers, i == countOfRounds - 1)
                 });
             }
         }

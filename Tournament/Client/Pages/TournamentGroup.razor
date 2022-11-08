@@ -29,16 +29,38 @@
                 <h3>Round of @model.TournamentRounds[model.TournamentRounds.Count - i - 1].Round</h3>
             }
         </div>
-        <div class="tournament-brackets">
-
-        @for (var i = model.TournamentRounds.Count - 1; i >= 0; i--)
-        {
-            var countOfTrees = i;
-            var round = model.TournamentRounds[i];
-            <Bracket Round="round.Round" Matches="round.Matches"></Bracket>
+        @{
+            var countOfPositions = (int)Math.Pow(2, model.TournamentRounds.Count);
         }
+        
+        <div class="tournament-brackets">
+          @*  @for (var i = 0; i < countOfPositions; i++)
+            {
+                
+            }*@
+            @{
+                var indexFrom = 0;
+            }
+            @for (var j = model.TournamentRounds.Count - 1; j >= 0; j--)
+            {
+                @* normlizing + 1 and matches count is / 2 of positions *@
+                var indexTo = (countOfPositions / (j + 1)) - 1;
+                var round = model.TournamentRounds[j];
+                <Bracket Round="round.Round" Matches="round.Matches" IndexFrom="indexFrom" IndexTo="indexTo"></Bracket>
+            } 
+     
         </div>
 
+@*        @for (var i = model.TournamentRounds.Count - 1; i >= 0; i--)
+        {
+            for (var j = 0; j < countOfTrees; j++)
+            {
+                var round = model.TournamentRounds[i];
+                <div class="tournament-brackets">
+                    <Bracket Round="round.Round" Matches="round.Matches"></Bracket>
+                </div>
+            }
+        }*@
     </div>
 }
 
