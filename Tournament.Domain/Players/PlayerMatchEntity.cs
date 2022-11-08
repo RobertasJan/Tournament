@@ -4,9 +4,9 @@ namespace Tournament.Domain.Players
 {
     public class PlayerMatchEntity : BaseEntity
     {
-        public Guid PlayerId { get; set; }
+        public Guid? PlayerId { get; set; }
         public PlayerEntity Player { get; set; }
-        public Guid MatchId { get; set; }
+        public Guid? MatchId { get; set; }
         public MatchEntity Match { get; set; }
 
         public Team Team { get; set; }

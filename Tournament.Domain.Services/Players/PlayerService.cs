@@ -32,7 +32,7 @@ namespace Tournament.Domain.Services.Players
         {
             await _db.Players.AddAsync(entity, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);
-            return entity.Id;
+            return entity.Id.Value;
         }
 
         public async Task<ICollection<PlayerEntity>> Get(Guid? tournamentId, string? searchText, Gender? gender, CancellationToken cancellationToken)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tournament.Infrastructure.Data;
 
@@ -11,9 +12,10 @@ using Tournament.Infrastructure.Data;
 namespace Tournament.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221106141109_Player_Ratings")]
+    partial class Player_Ratings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -370,6 +372,12 @@ namespace Tournament.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset")
                         .HasDefaultValueSql("SYSDATETIMEOFFSET()");
 
+                    b.Property<Guid?>("NextMatchIfLostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("NextMatchIfWonId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("PointsToFinalize")
                         .HasColumnType("int");
 
@@ -389,6 +397,10 @@ namespace Tournament.Infrastructure.Migrations
 
                     b.HasIndex("MatchesGroupId");
 
+                    b.HasIndex("NextMatchIfLostId");
+
+                    b.HasIndex("NextMatchIfWonId");
+
                     b.ToTable("Matches", (string)null);
                 });
 
@@ -404,6 +416,9 @@ namespace Tournament.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
                         .HasDefaultValueSql("SYSDATETIMEOFFSET()");
+
+                    b.Property<int>("GroupName")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .IsRequired()
@@ -846,7 +861,21 @@ namespace Tournament.Infrastructure.Migrations
                         .HasForeignKey("MatchesGroupId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Tournament.Domain.Games.MatchEntity", "NextMatchIfLost")
+                        .WithMany()
+                        .HasForeignKey("NextMatchIfLostId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Tournament.Domain.Games.MatchEntity", "NextMatchIfWon")
+                        .WithMany()
+                        .HasForeignKey("NextMatchIfWonId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("MatchesGroup");
+
+                    b.Navigation("NextMatchIfLost");
+
+                    b.Navigation("NextMatchIfWon");
                 });
 
             modelBuilder.Entity("Tournament.Domain.Games.MatchesGroupEntity", b =>

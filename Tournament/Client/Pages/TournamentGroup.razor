@@ -29,20 +29,16 @@
                 <h3>Round of @model.TournamentRounds[model.TournamentRounds.Count - i - 1].Round</h3>
             }
         </div>
-
         <div class="tournament-brackets">
-            @for (var i = 0; i < model.TournamentRounds.Count; i++) 
-            {
-                var round = model.TournamentRounds[model.TournamentRounds.Count - i - 1];
-                <ul class="bracket bracket-@(round.Round+1)">
-                    @foreach (var match in round.Matches) 
-                    {
 
-                        <li class="team-item">@match.Team1.Seed @match.Team1.Player1Name <time>00:00</time> @match.Team2.Seed @match.Team2.Player1Name</li>
-                    }
-                </ul>
-            }
+        @for (var i = model.TournamentRounds.Count - 1; i >= 0; i--)
+        {
+            var countOfTrees = i;
+            var round = model.TournamentRounds[i];
+            <Bracket Round="round.Round" Matches="round.Matches"></Bracket>
+        }
         </div>
+
     </div>
 }
 

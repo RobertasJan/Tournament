@@ -12,19 +12,12 @@ namespace Tournament.Domain.Games
         public MatchRecord Record { get; set; } = MatchRecord.ToBePlayed;
         public MatchResult Result { get; set; } = MatchResult.Undetermined;
         public IEnumerable<GameEntity>? Games { get; set; }
-        public IEnumerable<PlayerMatchEntity>? PlayersMatches { get; set; }
+        public ICollection<PlayerMatchEntity>? PlayersMatches { get; set; }
 
         public Guid? MatchesGroupId { get; set; }
         public MatchesGroupEntity? MatchesGroup { get; set; }
 
         public int? GroupPosition { get; set; }
-
-
-        public Guid? NextMatchIfWonId { get; set; }
-        public MatchEntity? NextMatchIfWon { get; set; }
-
-        public Guid? NextMatchIfLostId { get; set; }
-        public MatchEntity? NextMatchIfLost { get; set; }
     }
 
     public enum MatchType : byte

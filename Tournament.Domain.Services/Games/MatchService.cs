@@ -23,7 +23,7 @@ namespace Tournament.Domain.Services.Games
         {
             await _db.Matches.AddAsync(entity, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);
-            return entity.Id;
+            return entity.Id.Value;
         }
 
         public async Task<MatchEntity> GetById(Guid id, CancellationToken cancellationToken)

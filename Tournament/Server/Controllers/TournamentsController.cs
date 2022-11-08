@@ -83,21 +83,22 @@ namespace Tournament.Server.Controllers
         }
 
         [HttpPut("{id:Guid}/state")]
-        public async Task SetState([FromRoute] Guid id, TournamentState state, CancellationToken cancellationToken)
+        public async Task SetState([FromRoute] Guid id, SetStateModel model, CancellationToken cancellationToken)
         {
             var tournament = await tournamentService.GetById(id, cancellationToken);
-            if (state == TournamentState.Draws)
+            if (model.State == TournamentState.Draws)
             {
                 await tournamentService.StartDraws(id, cancellationToken);
             }
-            else if (state == TournamentState.Ongoing)
+            else if (model.State == TournamentState.Ongoing)
             {
                 await tournamentService.StartTournament(id, cancellationToken);
             }
-            else if (state == TournamentState.Finished)
+            else if (model.State == TournamentState.Finished)
             {
                 await tournamentService.StartTournament(id, cancellationToken);
-            } else
+            }
+            else
             {
                 throw new NotImplementedException();
             }

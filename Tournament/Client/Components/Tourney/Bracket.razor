@@ -1,0 +1,16 @@
+﻿@using Tournament.Server.Models;
+
+@{
+    int position = 0;
+}
+<ul class="bracket bracket-@(Round+1)">
+@foreach (var match in Matches)
+{
+    position++;
+    <li class="team-item">@match.Team1.Seed @match.Team1.Player1Name <time>00:00</time> @match.Team2.Seed @match.Team2.Player1Name POS @position</li>
+}
+</ul>
+@code {
+    [Parameter] public ICollection<MatchModel> Matches { get; set; }
+    [Parameter] public int Round { get; set; }
+}

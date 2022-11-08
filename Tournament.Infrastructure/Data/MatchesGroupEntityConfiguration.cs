@@ -16,7 +16,7 @@ namespace Tournament.Infrastructure.Data
             builder.ToTable("MatchesGroups");
 
             builder.Property(x => x.Round).IsRequired();
-            builder.Property(x => x.GroupName).IsRequired();
+            //  builder.Property(x => x.Group).IsRequired();
             builder.Property(x => x.RoundType).IsRequired();
 
             builder

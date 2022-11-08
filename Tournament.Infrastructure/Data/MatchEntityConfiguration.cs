@@ -35,16 +35,6 @@ namespace Tournament.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(x => x.MatchesGroupId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(x => x.NextMatchIfWon)
-                .WithMany()
-                .HasForeignKey(x => x.NextMatchIfWonId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(x => x.NextMatchIfLost)
-                .WithMany()
-                .HasForeignKey(x => x.NextMatchIfLostId)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

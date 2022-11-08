@@ -28,12 +28,12 @@ namespace Tournament.Domain.Services.Games
         {
             await _db.Games.AddAsync(entity, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);
-            return entity.Id;
+            return entity.Id.Value;
         }
 
         public async Task Update(GameEntity entity, CancellationToken cancellationToken)
         {
-            var game = await GetById(entity.Id, cancellationToken);
+            var game = await GetById(entity.Id.Value, cancellationToken);
             game.ModifiedAt = DateTime.UtcNow;
             game.Team1Score = entity.Team1Score;
             game.Team2Score = entity.Team2Score;

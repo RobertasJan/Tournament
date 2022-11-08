@@ -13,6 +13,9 @@ namespace Tournament.Domain.Players
                 return FirstName + " " + LastName;
             }
         }
+        public int RatingSingles { get; set; } = 0;
+        public int RatingDoubles { get; set; } = 0;
+        public int RatingMixed { get; set; } = 0;
 
         public Gender Gender { get; set; }
         public DateTime BirthDate { get; set; }

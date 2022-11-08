@@ -1,9 +1,9 @@
 ﻿using Tournament.Client.Services;
+using Tournament.Domain.Calculation;
 using Tournament.Server.Models;
 using Tournament.Shared.Games;
 using Tournament.Shared.Players;
 using Tournament.Shared.Tournaments;
-using static MudBlazor.CategoryTypes;
 
 namespace Tournament.Client.Models
 {
@@ -33,7 +33,7 @@ namespace Tournament.Client.Models
 
             var playerCount = registeredPlayers.Count;
             TournamentRounds = new List<MatchesGroupModel>();
-            var countOfRounds = GetCountOfRounds(playerCount);
+            var countOfRounds = Calculations.GetCountOfRounds(playerCount);
 
             for (var i = 0; i < countOfRounds; i++)
             {
@@ -44,21 +44,14 @@ namespace Tournament.Client.Models
                     Round = i,
                     TournamentGroupId = tournamentGroupId,
                     Matches = GetMatchTemplates((int)Math.Pow(2, i), registeredPlayers, i == countOfRounds - 1)
+                   // Matches = GetMatchTemplates((int)Math.Pow(2, countOfRounds), registeredPlayers, i == countOfRounds - 1)
                 });
             }
         }
 
-
-        private int GetCountOfRounds(int playerCount)
-        {
-            if (playerCount < 2) return 1;
-            var baseNumber = Math.Log2(playerCount);
-            return (int)Math.Ceiling(baseNumber);
-        }
-
         private ICollection<MatchModel> GetMatchTemplates(int count, ICollection<RegisteredPlayersModel> registeredPlayers, bool firstRound)
         {
-            var maxCountInRound = count * 2;
+            var maxPlayerCountInRound = count * 2;
             //bool matchesInRound = false;
             //if (Enumerable.Range(count + 1, maxCountInRound).Contains(registeredPlayers.Count()))
             //{
@@ -69,7 +62,7 @@ namespace Tournament.Client.Models
             ICollection<MatchModel> matches = new List<MatchModel>();
             //var playersOrdered = players.OrderBy(x => x.Rating);
             //  var seeds = Enumerable.Range(1, maxCountInRound);
-            var sortedSeeds = SortSeeds(maxCountInRound);
+            var sortedSeeds = Calculations.SortSeeds(maxPlayerCountInRound);
             for (var i = 0; i < count; i++)
             {
                 matches.Add(new MatchModel()
@@ -93,43 +86,7 @@ namespace Tournament.Client.Models
             return matches;
         }
 
-        private List<int> SortSeeds(int seedCount)
-        {
-            var seeds = Enumerable.Range(1, seedCount);
-            var seedList = new List<int[]>();
-            foreach (var seed in seeds)
-            {
-                seedList.Add(new int[] { seed });
-            }
-            var sorted = RecursiveSeedMatch(seedList);
-            var sortedList = new List<int>();
-            foreach (var sortedArray in sorted)
-            {
-                foreach (var array in sortedArray)
-                {
-                    sortedList.Add(array);
-                }
-            }
-            return sortedList;
-        }
 
-        private List<int[]> RecursiveSeedMatch(List<int[]> seeds)
-        {
-            if (seeds.Count == 2)
-            {
-                seeds[1] = seeds[1].Reverse().ToArray();
-                return seeds;
-            }
-            var newList = new List<int[]>();
-            for (var i = 0; i < seeds.Count / 2; i++)
-            {
-                var seed = seeds[i];
-                var newSeed = seed.Concat(seeds[seeds.Count - 1 - i]).ToArray();
-                newList.Add(newSeed);
-            }
-
-            return RecursiveSeedMatch(newList);
-        }
 
     }
 }

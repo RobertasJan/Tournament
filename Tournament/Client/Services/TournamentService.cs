@@ -81,7 +81,8 @@ namespace Tournament.Client.Services
         public async Task SetState(Guid tournamentId, TournamentState state)
         {
             var cancellationToken = new CancellationTokenSource().Token;
-            var httpResponse = await _client.PutAsJsonAsync($"api/tournaments/{tournamentId}/state", state, cancellationToken);
+            var model = new SetStateModel() { State = state };
+            var httpResponse = await _client.PutAsJsonAsync($"api/tournaments/{tournamentId}/state", model, cancellationToken);
             if (httpResponse.StatusCode != HttpStatusCode.OK)
                 throw new NotImplementedException("No error handling");
         }

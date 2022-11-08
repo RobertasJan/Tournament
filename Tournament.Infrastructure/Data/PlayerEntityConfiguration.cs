@@ -14,6 +14,10 @@ namespace Tournament.Infrastructure.Data
             builder.Property(x => x.FirstName).IsRequired().HasMaxLength(64);
             builder.Property(x => x.LastName).IsRequired().HasMaxLength(64);
             builder.Property(x => x.Gender).IsRequired();
+            builder.Property(x => x.RatingSingles).IsRequired().HasDefaultValue(0);
+            builder.Property(x => x.RatingDoubles).IsRequired().HasDefaultValue(0);
+            builder.Property(x => x.RatingMixed).IsRequired().HasDefaultValue(0);
+           
             builder.Property(x => x.BirthDate).HasDefaultValue(DateTime.MaxValue).IsRequired();
 
             builder
