@@ -18,5 +18,7 @@ namespace Tournament.Shared.Games
 
         public Guid TournamentGroupId { get; set; }
         public ICollection<MatchModel>? Matches { get; set; }
+        public MatchesGroupModel? WinnersGroup { get; set; }
+        public MatchesGroupModel? LosersGroup { get; set; }
     }
 }

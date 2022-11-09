@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Tournament.Domain.Calculation;
 using Tournament.Domain.Games;
@@ -10,7 +12,9 @@ using Tournament.Domain.Players;
 using Tournament.Domain.Services.Players;
 using Tournament.Domain.Tournaments;
 using Tournament.Infrastructure.Data;
+using Tournament.Server.Models;
 using Tournament.Shared.Games;
+using Tournament.Shared.Players;
 
 namespace Tournament.Domain.Services.Tournament
 {
@@ -83,7 +87,6 @@ namespace Tournament.Domain.Services.Tournament
             var countOfRounds = Calculations.GetCountOfRounds(playerCount);
             var matchesCount = (int)Math.Pow(2, countOfRounds - 1);
             var maxPlayerCount = matchesCount * 2;
-
             var playersOrdered = players.ToList();
             switch (group.MatchType)
             {
@@ -104,7 +107,7 @@ namespace Tournament.Domain.Services.Tournament
             var seeds = Enumerable.Range(1, maxPlayerCount);
             var roundGroup = new MatchesGroupEntity()
             {
-                Round = Calculations.GetCountOfRounds(maxPlayerCount),
+                Round = 0,//Calculations.GetCountOfRounds(maxPlayerCount),
                 RoundType = RoundType.Tree,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow,
@@ -131,7 +134,7 @@ namespace Tournament.Domain.Services.Tournament
                     {
                         Record = MatchRecord.ToBePlayed,
                         Result = MatchResult.Undetermined,
-                        GroupPosition = i + 1,
+                        GroupPosition = i,
                         GamesToWin = tournament.GamesToWin,
                         PointsToFinalize = Deuces.DeucesList[tournament.PointsToWin],
                         PointsToWin = tournament.PointsToWin,
@@ -181,6 +184,9 @@ namespace Tournament.Domain.Services.Tournament
                     }
                 }
             }
+            group.Tournament = tournament;
+            roundGroup.TournamentGroup = group;
+            CreateGroupMatches(roundGroup, true, 0, (int)Math.Pow(2, countOfRounds - 1));
             group.MatchesGroups = new List<MatchesGroupEntity>()
             {
                 roundGroup
@@ -188,7 +194,61 @@ namespace Tournament.Domain.Services.Tournament
 
         }
 
+        private MatchesGroupEntity CreateGroupMatches(MatchesGroupEntity group, bool skipFirst, int depth, int countOfMatches)
+        {
+            if (!skipFirst)
+            {
+                group.Matches = CreateMatches(group, countOfMatches);
+            }
+            if (group.Matches.Count == 1)
+            {
+                return group;
+            }
+            group.WinnersGroup = CreateGroupMatches(new MatchesGroupEntity()
+            {
+                Round = group.Round + 1,
+                GroupName = group.GroupName,
+                TournamentGroup = group.TournamentGroup,
+                RoundType = RoundType.Tree,
+                CreatedAt = DateTime.UtcNow,
+                ModifiedAt = DateTime.UtcNow,
+            }, false, depth, countOfMatches / 2);
+            group.LosersGroup = CreateGroupMatches(new MatchesGroupEntity()
+            {
+                Round = group.Round + 1,
+                GroupName = depth,
+                TournamentGroup = group.TournamentGroup,
+                RoundType = RoundType.Tree,
+                CreatedAt = DateTime.UtcNow,
+                ModifiedAt = DateTime.UtcNow,
+            }, false, ++depth, countOfMatches / 2);
+            return group;
+        }
 
+        private ICollection<MatchEntity> CreateMatches(MatchesGroupEntity group, int countOfMatches)
+        {
+            var maxPlayerCountInRound = countOfMatches * 2;
+
+            ICollection<MatchEntity> matches = new List<MatchEntity>();
+            for (var i = 0; i < countOfMatches; i++)
+            {
+                matches.Add(new MatchEntity()
+                {
+                    GroupPosition = i,
+                    Type = group.TournamentGroup.MatchType,
+                    GamesToWin = group.TournamentGroup.Tournament.GamesToWin,
+                    Record = MatchRecord.ToBePlayed,
+                    PointsToFinalize = Deuces.DeucesList[group.TournamentGroup.Tournament.PointsToWin],
+                    PointsToWin = group.TournamentGroup.Tournament.PointsToWin,
+                    Result = MatchResult.Undetermined,
+                    MatchesGroup = group,
+                    CreatedAt = DateTime.UtcNow,
+                    ModifiedAt = DateTime.UtcNow,
+                    
+                });
+            }
+            return matches;
+        }
 
         public Task StartTournament(Guid id, CancellationToken cancellationToken)
         {

@@ -1,16 +1,20 @@
 ﻿@using Tournament.Server.Models;
 
-@{
-    int position = 0;
-}
 <ul class="bracket bracket-@(Round+1)">
-@foreach (var match in Matches)
-{
-    position++;
-    <li class="team-item">@match.Team1.Seed @match.Team1.Player1Name <time>00:00</time> @match.Team2.Seed @match.Team2.Player1Name POS @position</li>
-}
+    @for (var i = IndexFrom; i < IndexTo; i++)
+    {
+        var match = Matches.FirstOrDefault(x => x.GroupPosition == i);
+        <li class="team-item"> <time>00:00</time>  POS @(i + 1)</li>
+
+        @if (match is not null && false) 
+        {
+            <li class="team-item">@match.Team1.Seed @match.Team1.Player1Name <time>00:00</time> @match.Team2.Seed @match.Team2.Player1Name POS @(i+1)</li>
+        }
+    }
 </ul>
 @code {
     [Parameter] public ICollection<MatchModel> Matches { get; set; }
     [Parameter] public int Round { get; set; }
+    [Parameter] public int IndexFrom { get; set; }
+    [Parameter] public int IndexTo { get; set; }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tournament.Infrastructure.Data;
 
@@ -11,9 +12,10 @@ using Tournament.Infrastructure.Data;
 namespace Tournament.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221109120030_Match_CourtAndDate")]
+    partial class Match_CourtAndDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -411,12 +413,6 @@ namespace Tournament.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset")
                         .HasDefaultValueSql("SYSDATETIMEOFFSET()");
 
-                    b.Property<int>("GroupName")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("LosersGroupId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -432,16 +428,9 @@ namespace Tournament.Infrastructure.Migrations
                     b.Property<Guid>("TournamentGroupId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("WinnersGroupId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("LosersGroupId");
-
                     b.HasIndex("TournamentGroupId");
-
-                    b.HasIndex("WinnersGroupId");
 
                     b.ToTable("MatchesGroups", (string)null);
                 });
@@ -872,25 +861,13 @@ namespace Tournament.Infrastructure.Migrations
 
             modelBuilder.Entity("Tournament.Domain.Games.MatchesGroupEntity", b =>
                 {
-                    b.HasOne("Tournament.Domain.Games.MatchesGroupEntity", "LosersGroup")
-                        .WithMany()
-                        .HasForeignKey("LosersGroupId");
-
                     b.HasOne("Tournament.Domain.Tournaments.TournamentGroupEntity", "TournamentGroup")
                         .WithMany("MatchesGroups")
                         .HasForeignKey("TournamentGroupId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Tournament.Domain.Games.MatchesGroupEntity", "WinnersGroup")
-                        .WithMany()
-                        .HasForeignKey("WinnersGroupId");
-
-                    b.Navigation("LosersGroup");
-
                     b.Navigation("TournamentGroup");
-
-                    b.Navigation("WinnersGroup");
                 });
 
             modelBuilder.Entity("Tournament.Domain.Players.PlayerEntity", b =>

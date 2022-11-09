@@ -15,6 +15,10 @@
     height: 900px;
 }
 
+.team-item {
+    line-height: 14px !important;
+    height: 50px !important;
+}
 /* Tournament tree */
 
 

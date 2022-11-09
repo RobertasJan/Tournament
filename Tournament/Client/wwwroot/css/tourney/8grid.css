@@ -82,31 +82,31 @@
     }
 
 
-.bracket-2 .team-item:nth-of-type(odd):after {
-    height: 150%;
-    top: 50%;
-}
-
-.bracket-2 .team-item:nth-of-type(even):after {
-    height: 150%;
-    top: -100%;
-}
-
 .bracket-1 .team-item:nth-of-type(odd):after {
-    height: 700%;
+    height: 100%;
     top: 50%;
 }
 
 .bracket-1 .team-item:nth-of-type(even):after {
-    height: 700%;
-    top: -650%;
+    height: 50%;
+    top: 0%;
+}
+
+.bracket-2 .team-item:nth-of-type(odd):after {
+    height: 135%;
+    top: 50%;
+}
+
+.bracket-2 .team-item:nth-of-type(even):after {
+    height: 135%;
+    top: -85%;
 }
 
 .bracket:first-of-type .team-item:before {
     display: none;
 }
 
-.bracket-1 .team-item:after {
+.bracket-3 .team-item:after {
     display: none;
 }
 

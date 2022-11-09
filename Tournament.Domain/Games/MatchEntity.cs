@@ -18,6 +18,8 @@ namespace Tournament.Domain.Games
         public MatchesGroupEntity? MatchesGroup { get; set; }
 
         public int? GroupPosition { get; set; }
+        public int? Court { get; set; }
+        public DateTime? MatchDate { get; set; }
     }
 
     public enum MatchType : byte

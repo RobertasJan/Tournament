@@ -14,9 +14,11 @@ namespace Tournament.Client.Models
         private readonly Guid tournamentId;
         private readonly Guid tournamentGroupId;
         private ICollection<RegisteredPlayersModel> registeredPlayers;
+        private TournamentModel tournament;
 
         public TournamentGroupModel TournamentGroup { get; private set; }
-        public List<MatchesGroupModel> TournamentRounds { get; private set; }
+        public MatchesGroupModel TournamentRounds { get; private set; }
+        public int CountOfRounds { get; private set; }
 
         public TournamentGroupViewModel(TournamentService tournamentService, TournamentGroupService tournamentGroupService, Guid tournamentId, Guid tournamentGroupId)
         {
@@ -26,47 +28,132 @@ namespace Tournament.Client.Models
             this.tournamentGroupId = tournamentGroupId;
         }
 
-        public async Task Load()
+        public List<MatchModel> GroupAsList()
         {
-            registeredPlayers = await tournamentService.GetRegisteredPlayers(tournamentId, tournamentGroupId);
-            TournamentGroup = await this.tournamentGroupService.GetTournamentGroupById(tournamentGroupId);
+            var list = new List<MatchModel>();
+            RecursiveTake(list, TournamentRounds);
+            SetTimes(list);
+            return list;
+            
+        }
 
-            var playerCount = registeredPlayers.Count;
-            TournamentRounds = new List<MatchesGroupModel>();
-            var countOfRounds = Calculations.GetCountOfRounds(playerCount);
-
-            for (var i = 0; i < countOfRounds; i++)
-            {
-                TournamentRounds.Add(new MatchesGroupModel()
+        private void SetTimes(List<MatchModel> list)
+        {
+            var startDate = tournament.StartDate;
+            var averageTimeForMatch = tournament.AverageTimePerMatch;
+            var courtsCount = tournament.CourtsAvailable;
+            var currentCourt = 0;
+            var currentTimeForMatch = startDate;
+            var lastRound = 0;
+            list.OrderBy(x => x.Round).ToList().ForEach(x => {
+                if (lastRound == 0 && x.Round == 1)
                 {
-                    RoundType = Domain.Games.RoundType.Tree,
-                    GroupName = 1,
-                    Round = i,
-                    TournamentGroupId = tournamentGroupId,
-                    Matches = GetMatchTemplates((int)Math.Pow(2, i), registeredPlayers, i == countOfRounds - 1)
-                   // Matches = GetMatchTemplates((int)Math.Pow(2, countOfRounds), registeredPlayers, i == countOfRounds - 1)
-                });
+                    currentTimeForMatch += averageTimeForMatch;
+                    currentCourt--;
+                }
+                //skip byes
+                if (x.Round != 0 || (x.Team1?.Player1Name != null && x.Team2?.Player1Name != null))
+                {
+                    x.MatchDate = currentTimeForMatch;
+                    if (currentCourt == courtsCount)
+                    {
+                        currentCourt = 0;
+                        currentTimeForMatch += averageTimeForMatch;
+                    }
+                    else
+                    {
+                        currentCourt++;
+                    }
+                    lastRound = x.Round;
+                }
+            });
+            
+        }
+
+        private void RecursiveTake(List<MatchModel> list, MatchesGroupModel model)
+        {
+            foreach (var match in model.Matches)
+            {
+                list.Add(match);
+            }
+            if (model.Matches.Count == 1)
+            {
+                return;
+            }
+
+            if (model.WinnersGroup != null)
+            {
+                RecursiveTake(list, model.WinnersGroup);
+            }
+            if (model.LosersGroup != null)
+            {
+                RecursiveTake(list, model.LosersGroup);
             }
         }
 
-        private ICollection<MatchModel> GetMatchTemplates(int count, ICollection<RegisteredPlayersModel> registeredPlayers, bool firstRound)
+
+
+        public async Task Load()
+        {
+            registeredPlayers = await tournamentService.GetRegisteredPlayers(tournamentId, tournamentGroupId);
+            tournament = await tournamentService.GetTournamentById(tournamentId);
+            TournamentGroup = await this.tournamentGroupService.GetTournamentGroupById(tournamentGroupId);
+
+            var playerCount = registeredPlayers.Count;
+            TournamentRounds = new MatchesGroupModel();
+            CountOfRounds = Calculations.GetCountOfRounds(playerCount);
+            var maxPlayerCountInRound = (int)Math.Pow(2, CountOfRounds);
+            var treeCount = maxPlayerCountInRound / 2;
+
+            TournamentRounds = 
+                CreateGroup(new MatchesGroupModel()
+                {
+                    RoundType = Domain.Games.RoundType.Tree,
+                    GroupName = 0,
+                    Round = 0,
+                    TournamentGroupId = tournamentGroupId,
+                }, (int)Math.Pow(2, CountOfRounds - 1), registeredPlayers, true);
+        }
+
+        private int depth = 0;
+
+        private MatchesGroupModel CreateGroup(MatchesGroupModel model, int count, ICollection<RegisteredPlayersModel> registeredPlayers, bool firstRound)
+        {
+            model.Matches = GetMatchTemplates(count, registeredPlayers, firstRound, model.GroupName, model.Round);
+            if (count == 1)
+            {
+                return model;
+            }
+            model.WinnersGroup = CreateGroup(new MatchesGroupModel() {
+                Round = model.Round + 1,
+                RoundType = Domain.Games.RoundType.Tree,
+                GroupName = model.GroupName,
+                TournamentGroupId = model.TournamentGroupId
+            }, count / 2, registeredPlayers, false);
+            model.LosersGroup = CreateGroup(new MatchesGroupModel()
+            {
+                Round = model.Round + 1,
+                RoundType = Domain.Games.RoundType.Tree,
+                GroupName = ++depth,
+                TournamentGroupId = model.TournamentGroupId
+            }, count / 2, registeredPlayers, false);
+            return model;
+        }
+
+        private ICollection<MatchModel> GetMatchTemplates(int count, ICollection<RegisteredPlayersModel> registeredPlayers, bool firstRound, int groupName, int round)
         {
             var maxPlayerCountInRound = count * 2;
-            //bool matchesInRound = false;
-            //if (Enumerable.Range(count + 1, maxCountInRound).Contains(registeredPlayers.Count()))
-            //{
-            //    matchesInRound = true;
-            //}
             var playersOrdered = registeredPlayers.OrderByDescending(x => x.Rating).ToList();
 
             ICollection<MatchModel> matches = new List<MatchModel>();
-            //var playersOrdered = players.OrderBy(x => x.Rating);
-            //  var seeds = Enumerable.Range(1, maxCountInRound);
             var sortedSeeds = Calculations.SortSeeds(maxPlayerCountInRound);
             for (var i = 0; i < count; i++)
             {
                 matches.Add(new MatchModel()
                 {
+                    GroupPosition = i,
+                    GroupName = groupName,
+                    Round = round,
                     Team1 = new MatchTeamModel()
                     {
                         Seed = sortedSeeds[i * 2]
