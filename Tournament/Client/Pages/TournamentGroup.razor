@@ -2,19 +2,19 @@
 
 @if (model != null && model.TournamentRounds != null)
 {
-    @if (model.TournamentRounds.Count == 6)
+    @if (model.CountOfRounds == 6)
     {
         <link href="css/tourney/64grid.css" rel="stylesheet" />
     }
-    else if (model.TournamentRounds.Count == 5)
+    else if (model.CountOfRounds == 5)
     {
         <link href="css/tourney/32grid.css" rel="stylesheet" />
     }
-    else if (model.TournamentRounds.Count == 4)
+    else if (model.CountOfRounds == 4)
     {
         <link href="css/tourney/16grid.css" rel="stylesheet" />
     }
-    else if (model.TournamentRounds.Count == 3) 
+    else if (model.CountOfRounds == 3) 
     {
         <link href="css/tourney/8grid.css" rel="stylesheet" />
     }
@@ -24,34 +24,83 @@
     }
     <div class="tournament-container">
         <div class="tournament-headers">
-            @for (var i = 0; i < model.TournamentRounds.Count; i++) 
+            @for (var i = 0; i < model.CountOfRounds; i++) 
             {
-                <h3>Round of @model.TournamentRounds[model.TournamentRounds.Count - i - 1].Round</h3>
+                <h3>Round of @(model.CountOfRounds - i)</h3>
             }
         </div>
         @{
-            var countOfPositions = (int)Math.Pow(2, model.TournamentRounds.Count);
+            var countOfPositions = (int)Math.Pow(2, model.CountOfRounds);
+            var matchesCount = countOfPositions / 2;
+        }
+
+
+        @for (var i = 0; i < matchesCount; i++)
+        {
+            <div class="tournament-brackets">
+                @for (var j = 0; j < model.CountOfRounds; j++)
+                {
+                    var matches = model.GroupAsList().Where(x => x.Round == j && x.GroupName == i);
+                    <ul class="bracket bracket-@(j+1)">
+                        @foreach (var match in matches)
+                        {
+                            <li class="team-item">
+                                <MudGrid>
+                                    <MudItem xs="5">@match.Team1.Seed @match.Team1.Player1Name</MudItem>
+                                    <MudItem xs="2"><time>@DisplayTime(match.MatchDate)</time></MudItem>
+                                    <MudItem xs="5">@match.Team2.Seed @match.Team2.Player1Name @(matches.Count() == 1 ? $"BF({i * 2 + 1}-{i * 2 + 2})" : "")</MudItem>
+                                </MudGrid>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+
+      @*  @for (var i = 0; i < matchesCount; i++)
+        {
+            <div class="tournament-brackets">
+                @for (var j = model.TournamentRounds.Count - 1; j >= 0; j--)
+                {
+                   @* var indexFrom = (((i + 1) * 2) - 1) - 1;
+                    var round = model.TournamentRounds[j];
+                    var indexTo = ((int) (Math.Pow(2, round.Round + 1)) + (i * 2)) / 2; // ((i + 1) * 2) + ((round.Round + 1) * 2);
+                  @*  <Bracket Round="round.Round" Matches="round.Matches" IndexFrom="indexFrom" IndexTo="indexTo"></Bracket>
+                }
+            </div>
+        }*@
+     @*       @for (var indexFrom = ((i + 1) * 2) - 1); indexFrom < matchesCount; i = i)
+            {
+                <div class="tournament-brackets">
+                    @for (var j = model.TournamentRounds.Count - 1; j >= 0; j--)
+                    {
+                        var round = model.TournamentRounds[j];
+                        //normlizing + 1 and matches count is / 2 of positions 
+                        var indexTo = ((i + 1) * 2) + (round.Round * 2);//(int)Math.Pow(2, round.Round); //(round.Round + 1)) - 1;
+                        <Bracket Round="round.Round" Matches="round.Matches" IndexFrom="indexFrom-1" IndexTo="indexTo"></Bracket>
+                    }
+                </div>
+            }
         }
         
-        <div class="tournament-brackets">
-          @*  @for (var i = 0; i < countOfPositions; i++)
-            {
-                
-            }*@
-            @{
-                var indexFrom = 0;
-            }
-            @for (var j = model.TournamentRounds.Count - 1; j >= 0; j--)
-            {
-                @* normlizing + 1 and matches count is / 2 of positions *@
-                var indexTo = (countOfPositions / (j + 1)) - 1;
-                var round = model.TournamentRounds[j];
-                <Bracket Round="round.Round" Matches="round.Matches" IndexFrom="indexFrom" IndexTo="indexTo"></Bracket>
-            } 
-     
-        </div>
+        @for (var i = 0; i < matchesCount; i += 2)
+        {
 
-@*        @for (var i = model.TournamentRounds.Count - 1; i >= 0; i--)
+            @for (var indexFrom = ((i + 1) * 2) - 1); indexFrom < matchesCount; i = i)
+            {
+                <div class="tournament-brackets">
+                    @for (var j = model.TournamentRounds.Count - 1; j >= 0; j--)
+                    {
+                        var round = model.TournamentRounds[j];
+                         normlizing + 1 and matches count is / 2 of positions 
+                        var indexTo = ((i + 1) * 2) + (round.Round * 2);//(int)Math.Pow(2, round.Round); //(round.Round + 1)) - 1;
+                        <Bracket Round="round.Round" Matches="round.Matches" IndexFrom="indexFrom-1" IndexTo="indexTo"></Bracket>
+                    }
+                </div>
+            }
+        }
+
+        @for (var i = model.TournamentRounds.Count - 1; i >= 0; i--)
         {
             for (var j = 0; j < countOfTrees; j++)
             {
@@ -81,4 +130,22 @@
         model = new TournamentGroupViewModel(TournamentService, TournamentGroupService, Id, TournamentGroupId);
         await model.Load();
     }
+
+    public string DisplayTime(DateTime? date)
+    {
+        if (date is null)
+        {
+            return "BYE";
+        }
+        return date.Value.ToString("HH:mm");
+    }
+
+    //private int ZiminFunction(int n)
+    //{
+    //    if (n == 1)
+    //    {
+    //        return 1;        
+    //    }
+    //    (n - 1) * ZiminFunction 
+    //}
 }

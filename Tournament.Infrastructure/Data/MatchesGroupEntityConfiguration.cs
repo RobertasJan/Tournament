@@ -16,7 +16,7 @@ namespace Tournament.Infrastructure.Data
             builder.ToTable("MatchesGroups");
 
             builder.Property(x => x.Round).IsRequired();
-            //  builder.Property(x => x.Group).IsRequired();
+            builder.Property(x => x.GroupName).IsRequired();
             builder.Property(x => x.RoundType).IsRequired();
 
             builder
@@ -30,6 +30,15 @@ namespace Tournament.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(x => x.TournamentGroupId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.WinnersGroup)
+                .WithMany()
+                .HasForeignKey(x => x.WinnersGroupId);
+
+
+            builder.HasOne(x => x.LosersGroup)
+                .WithMany()
+                .HasForeignKey(x => x.LosersGroupId);
         }
     }
 }

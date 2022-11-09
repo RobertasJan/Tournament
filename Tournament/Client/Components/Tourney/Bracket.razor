@@ -3,8 +3,10 @@
 <ul class="bracket bracket-@(Round+1)">
     @for (var i = IndexFrom; i < IndexTo; i++)
     {
-        var match = Matches.ElementAtOrDefault(i);
-        @if (match is not null) 
+        var match = Matches.FirstOrDefault(x => x.GroupPosition == i);
+        <li class="team-item"> <time>00:00</time>  POS @(i + 1)</li>
+
+        @if (match is not null && false) 
         {
             <li class="team-item">@match.Team1.Seed @match.Team1.Player1Name <time>00:00</time> @match.Team2.Seed @match.Team2.Player1Name POS @(i+1)</li>
         }
