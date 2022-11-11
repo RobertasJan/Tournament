@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tournament.Infrastructure.Data;
 
@@ -11,9 +12,10 @@ using Tournament.Infrastructure.Data;
 namespace Tournament.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221111170352_Games_Team1LeftSide")]
+    partial class Games_Team1LeftSide
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -337,18 +339,8 @@ namespace Tournament.Infrastructure.Migrations
                     b.Property<int>("Team1Score")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Team1Switched")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
                     b.Property<int>("Team2Score")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Team2Switched")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
 
                     b.HasKey("Id");
 

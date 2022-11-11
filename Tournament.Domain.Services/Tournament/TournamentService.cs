@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Tournament.Domain.Calculation;
 using Tournament.Domain.Games;
 using Tournament.Domain.Players;
+using Tournament.Domain.Services.Games;
 using Tournament.Domain.Services.Players;
 using Tournament.Domain.Tournaments;
 using Tournament.Infrastructure.Data;
@@ -36,11 +37,13 @@ namespace Tournament.Domain.Services.Tournament
     {
         private readonly AppDbContext _db;
         private readonly IPlayerService _playerService;
+        private readonly IMatchService _matchService;
 
-        public TournamentService(AppDbContext db, IPlayerService playerService)
+        public TournamentService(AppDbContext db, IPlayerService playerService, IMatchService matchService)
         {
             this._db = db;
             this._playerService = playerService;
+            this._matchService = matchService;
         }
 
         public async Task AddMatch(MatchEntity matchEntity, CancellationToken cancellationToken)
@@ -186,15 +189,16 @@ namespace Tournament.Domain.Services.Tournament
             }
             group.Tournament = tournament;
             roundGroup.TournamentGroup = group;
-            CreateGroupMatches(roundGroup, true, 0, (int)Math.Pow(2, countOfRounds - 1));
+            depth = 0;
+            CreateGroupMatches(roundGroup, true, (int)Math.Pow(2, countOfRounds - 1));
             group.MatchesGroups = new List<MatchesGroupEntity>()
             {
                 roundGroup
             };
 
         }
-
-        private MatchesGroupEntity CreateGroupMatches(MatchesGroupEntity group, bool skipFirst, int depth, int countOfMatches)
+        int depth = 0;
+        private MatchesGroupEntity CreateGroupMatches(MatchesGroupEntity group, bool skipFirst, int countOfMatches)
         {
             if (!skipFirst)
             {
@@ -212,23 +216,21 @@ namespace Tournament.Domain.Services.Tournament
                 RoundType = RoundType.Tree,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow,
-            }, false, depth, countOfMatches / 2);
+            }, false, countOfMatches / 2);
             group.LosersGroup = CreateGroupMatches(new MatchesGroupEntity()
             {
                 Round = group.Round + 1,
-                GroupName = depth,
+                GroupName = ++depth,
                 TournamentGroup = group.TournamentGroup,
                 RoundType = RoundType.Tree,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow,
-            }, false, ++depth, countOfMatches / 2);
+            }, false, countOfMatches / 2);
             return group;
         }
 
         private ICollection<MatchEntity> CreateMatches(MatchesGroupEntity group, int countOfMatches)
         {
-            var maxPlayerCountInRound = countOfMatches * 2;
-
             ICollection<MatchEntity> matches = new List<MatchEntity>();
             for (var i = 0; i < countOfMatches; i++)
             {
@@ -244,15 +246,77 @@ namespace Tournament.Domain.Services.Tournament
                     MatchesGroup = group,
                     CreatedAt = DateTime.UtcNow,
                     ModifiedAt = DateTime.UtcNow,
-                    
                 });
             }
             return matches;
         }
 
-        public Task StartTournament(Guid id, CancellationToken cancellationToken)
+        public async Task StartTournament(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var tournament = await GetById(id, cancellationToken);
+            foreach (var group in tournament.Groups)
+            {
+                await SetByes(group, cancellationToken);
+            }
+            tournament.State = TournamentState.Ongoing;
+            _db.Update(tournament);
+            await _db.SaveChangesAsync(cancellationToken);
+        }
+
+        private async Task SetByes(TournamentGroupEntity group, CancellationToken cancellationToken)
+        {
+            var matches = _db.Matches.Include(x => x.PlayersMatches).Include(x => x.MatchesGroup)
+                .Where(x => x.MatchesGroup.TournamentGroupId == group.Id)
+                .Where(x => x.PlayersMatches.Count == 1).ToList();
+            foreach (var match in matches)
+            {
+                var playerMatch = match.PlayersMatches.First();
+                match.Result = playerMatch.Team == Team.Team1 ? MatchResult.Team1Victory : MatchResult.Team2Victory;
+                match.Record = MatchRecord.Bye;
+                match.ModifiedAt = DateTime.UtcNow;
+                _db.Update(match);
+                await SetNextMatch(match);
+            }
+        }
+
+        private async Task SetNextMatch(MatchEntity match)
+        {
+            var winnerMatchGroup = _db.MatchesGroups.Include(x => x.Matches).ThenInclude(x => x.PlayersMatches).FirstOrDefault(x => x.Id == match.MatchesGroup.WinnersGroupId);
+            var losersMatchGroup = _db.MatchesGroups.Include(x => x.Matches).ThenInclude(x => x.PlayersMatches).FirstOrDefault(x => x.Id == match.MatchesGroup.LosersGroupId);
+            var nextPositionGroup = (int)Math.Floor(match.GroupPosition.Value / 2d);
+
+            var winners = match.Result == MatchResult.Team1Victory ? match.PlayersMatches.Where(x => x.Team == Team.Team1) : match.PlayersMatches.Where(x => x.Team == Team.Team2);
+            var losers = match.Result == MatchResult.Team1Victory ? match.PlayersMatches.Where(x => x.Team == Team.Team2) : match.PlayersMatches.Where(x => x.Team == Team.Team1);
+
+
+            if (winnerMatchGroup != null)
+            {
+                var nextMatch = winnerMatchGroup.Matches.First(x => x.GroupPosition == nextPositionGroup);
+                await AssignPlayersToMatch(winners, nextMatch, nextMatch.GroupPosition == (match.GroupPosition / 2d));
+                _db.Update(nextMatch);
+            }
+
+            if (losersMatchGroup != null)
+            {
+                var nextMatch = losersMatchGroup.Matches.First(x => x.GroupPosition == nextPositionGroup);
+                await AssignPlayersToMatch(losers, nextMatch, nextMatch.GroupPosition == (match.GroupPosition / 2d));
+                _db.Update(nextMatch);
+            }
+        }
+
+        private async Task AssignPlayersToMatch(IEnumerable<PlayerMatchEntity> players, MatchEntity match, bool team1)
+        {
+            foreach (var player in players)
+            {
+                match.PlayersMatches.Add(new PlayerMatchEntity()
+                {
+                    CreatedAt = DateTime.UtcNow,
+                    ModifiedAt = DateTime.UtcNow,
+                    Team = team1 ? Team.Team1 : Team.Team2,
+                    PlayerId = player.PlayerId,
+                    MatchId = match.Id
+                });
+            }
         }
         public Task FinishTournament(Guid id, CancellationToken cancellationToken)
         {

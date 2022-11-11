@@ -11,6 +11,9 @@
 
         public MatchEntity? Match { get; set; }
         public Guid MatchId { get; set; }
+        public bool Team1LeftSide { get; set; }
+        public bool Team1Switched { get; set; }
+        public bool Team2Switched { get; set; }
     }
     public enum GameResult : byte
     {

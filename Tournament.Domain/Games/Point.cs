@@ -2,22 +2,22 @@
 
 namespace Tournament.Domain.Games
 {
-    public enum ServeLocation
+    public enum CourtLocation
     {
-        SW,
-        NW,
-        NE,
-        SE
+        SW = 1,
+        NW = 2,
+        NE = 3,
+        SE = 4
     }
 
     public class Point
     {
-        public Point(ServeLocation serveLocation, Team scorer)
+        public Point(CourtLocation serveLocation, Team scorer)
         {
             ServeLocation = serveLocation;
             Scorer = scorer;
         }
-        public ServeLocation ServeLocation { get; }
+        public CourtLocation ServeLocation { get; }
         public Team Scorer { get; }
     }
 }

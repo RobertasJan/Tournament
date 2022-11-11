@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tournament.Client.Pages;
 using Tournament.Domain.Games;
 using Tournament.Domain.Players;
 using Tournament.Domain.Services.Games;
@@ -20,14 +21,16 @@ namespace Tournament.Server.Controllers
         private readonly ILogger<TournamentsController> _logger;
         private readonly ITournamentService tournamentService;
         private readonly ITournamentGroupService tournamentGroupService;
+        private readonly IMatchService matchService;
         private readonly IPlayerService playerService;
 
-        public TournamentsController(ILogger<TournamentsController> logger, ITournamentService tournamentService, ITournamentGroupService tournamentGroupService, IPlayerService playerService)
+        public TournamentsController(ILogger<TournamentsController> logger, ITournamentService tournamentService, ITournamentGroupService tournamentGroupService, IPlayerService playerService, IMatchService matchService)
         {
             _logger = logger;
             this.tournamentService = tournamentService;
             this.tournamentGroupService = tournamentGroupService;
             this.playerService = playerService;
+            this.matchService = matchService;
         }
 
         [HttpGet("{id:Guid}")]
@@ -102,6 +105,12 @@ namespace Tournament.Server.Controllers
             {
                 throw new NotImplementedException();
             }
+        }
+
+        [HttpGet("{id:Guid}/matches")]
+        public async Task<ICollection<MatchModel>> GetMatches([FromRoute] Guid id, bool? active, CancellationToken cancellationToken)
+        {
+            return Mapper.Map<ICollection<MatchModel>>(await matchService.Get(tournamentId: id, active: active, cancellationToken: cancellationToken));
         }
     }
 }

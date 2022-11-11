@@ -1,8 +1,10 @@
-﻿using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.JSInterop;
 using System.Net;
 using Tournament.Client.Pages;
 using Tournament.Domain.Tournaments;
 using Tournament.Server.Models;
+using Tournament.Shared.Games;
 using Tournament.Shared.Players;
 using Tournament.Shared.Tournaments;
 
@@ -85,6 +87,21 @@ namespace Tournament.Client.Services
             var httpResponse = await _client.PutAsJsonAsync($"api/tournaments/{tournamentId}/state", model, cancellationToken);
             if (httpResponse.StatusCode != HttpStatusCode.OK)
                 throw new NotImplementedException("No error handling");
+        }
+
+        public async Task<ICollection<MatchModel>> GetUpcomingMatches(Guid tournamentId)
+        {
+            var cancellationToken = new CancellationTokenSource().Token;
+            QueryString queryString = new QueryString();
+            queryString = queryString.Add(nameof(tournamentId), tournamentId.ToString());
+            queryString = queryString.Add("active", true.ToString());
+            var httpResponse = await _client.GetAsync($"api/tournaments/{tournamentId}/matches/{queryString}", cancellationToken).ConfigureAwait(false);
+            if (httpResponse.StatusCode == HttpStatusCode.OK)
+            {
+                return await httpResponse.Content.ReadAsAsync<ICollection<MatchModel>>(cancellationToken).ConfigureAwait(false);
+
+            }
+            throw new NotImplementedException("No error handling");
         }
     }
 }

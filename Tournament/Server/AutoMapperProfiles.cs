@@ -15,6 +15,7 @@ namespace Tournament.Server
         {
             CreateMap(typeof(MatchModel), typeof(MatchEntity)).ReverseMap();
             CreateMap(typeof(GameModel), typeof(GameEntity)).ReverseMap();
+            CreateMap(typeof(MatchesGroupModel), typeof(MatchesGroupEntity)).ReverseMap();
             //  CreateMap(typeof(TournamentModel), typeof(TournamentEntity)).ReverseMap();
             CreateMap<TournamentGroupModel, TournamentGroupEntity>().ReverseMap();
             CreateMap<TournamentModel, TournamentEntity>().ReverseMap();

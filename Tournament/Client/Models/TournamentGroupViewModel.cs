@@ -11,6 +11,7 @@ namespace Tournament.Client.Models
     {
         private readonly TournamentService tournamentService;
         private readonly TournamentGroupService tournamentGroupService;
+        private readonly GameService gameService;
         private readonly Guid tournamentId;
         private readonly Guid tournamentGroupId;
         private ICollection<RegisteredPlayersModel> registeredPlayers;
@@ -20,10 +21,11 @@ namespace Tournament.Client.Models
         public MatchesGroupModel TournamentRounds { get; private set; }
         public int CountOfRounds { get; private set; }
 
-        public TournamentGroupViewModel(TournamentService tournamentService, TournamentGroupService tournamentGroupService, Guid tournamentId, Guid tournamentGroupId)
+        public TournamentGroupViewModel(TournamentService tournamentService, TournamentGroupService tournamentGroupService, GameService gameService, Guid tournamentId, Guid tournamentGroupId)
         {
             this.tournamentService = tournamentService;
             this.tournamentGroupService = tournamentGroupService;
+            this.gameService = gameService;
             this.tournamentId = tournamentId;
             this.tournamentGroupId = tournamentGroupId;
         }
@@ -104,15 +106,78 @@ namespace Tournament.Client.Models
             CountOfRounds = Calculations.GetCountOfRounds(playerCount);
             var maxPlayerCountInRound = (int)Math.Pow(2, CountOfRounds);
             var treeCount = maxPlayerCountInRound / 2;
-
-            TournamentRounds = 
-                CreateGroup(new MatchesGroupModel()
+            if (tournament.State == Domain.Tournaments.TournamentState.Registration || tournament.State == Domain.Tournaments.TournamentState.Created)
+            {
+                TournamentRounds =
+                    CreateGroup(new MatchesGroupModel()
+                    {
+                        RoundType = Domain.Games.RoundType.Tree,
+                        GroupName = 0,
+                        Round = 0,
+                        TournamentGroupId = tournamentGroupId,
+                    }, (int)Math.Pow(2, CountOfRounds - 1), registeredPlayers, true);
+            }
+            else
+            {
+                var matches = await gameService.GetMatches(TournamentGroup.Id.Value);
+                var matchesGroups = await gameService.GetMatchesGroups(TournamentGroup.Id.Value);
+                var firstGroup = matchesGroups.First(x => x.Round == 0 && x.GroupName == 0);
+                var sortedSeeds = Calculations.SortSeeds(firstGroup.Matches.Count * 2);
+                var i = 0;
+                foreach (var match in firstGroup.Matches.OrderBy(x => x.GroupPosition))
                 {
-                    RoundType = Domain.Games.RoundType.Tree,
-                    GroupName = 0,
-                    Round = 0,
-                    TournamentGroupId = tournamentGroupId,
-                }, (int)Math.Pow(2, CountOfRounds - 1), registeredPlayers, true);
+                    match.Round = 0;
+                    if (match.Team1 is null)
+                    {
+                        match.Team1 = new MatchTeamModel()
+                        {
+                            Seed = sortedSeeds[i * 2]
+                        };
+                    } else
+                    {
+                        match.Team1.Seed = sortedSeeds[i * 2];
+                    }
+
+                    if (match.Team2 is null)
+                    {
+                        match.Team2 = new MatchTeamModel()
+                        {
+                            Seed = sortedSeeds[i * 2 + 1]
+                        };
+                    }
+                    else
+                    {
+                        match.Team2.Seed = sortedSeeds[i * 2 + 1];
+                    }
+
+                    match.GroupName = 0;
+                    i++;
+                }
+                var assignedFirstGroup = AssignGroup(firstGroup, matchesGroups);
+                TournamentRounds = assignedFirstGroup;
+            }
+        }
+
+        private MatchesGroupModel AssignGroup(MatchesGroupModel group, ICollection<MatchesGroupModel> groups)
+        {
+            if (group.WinnersGroupId is null && group.LosersGroupId is null)
+            {
+                return group;
+            }
+            group.WinnersGroup = AssignGroup(groups.FirstOrDefault(x => x.Id == group.WinnersGroupId), groups);
+            foreach (var match in group.WinnersGroup.Matches)
+            {
+                match.Round = group.WinnersGroup.Round;
+                match.GroupName = group.WinnersGroup.GroupName;
+            }
+            group.LosersGroup = AssignGroup(groups.FirstOrDefault(x => x.Id == group.LosersGroupId), groups);
+            foreach (var match in group.LosersGroup.Matches)
+            {
+                match.Round = group.LosersGroup.Round;
+                match.GroupName = group.LosersGroup.GroupName;
+            }
+            return group;
+
         }
 
         private int depth = 0;

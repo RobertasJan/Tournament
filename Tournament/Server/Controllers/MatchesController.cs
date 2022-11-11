@@ -10,7 +10,7 @@ using Tournament.Shared.Games;
 namespace Tournament.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class MatchesController : BaseController
     {
         private readonly ILogger<MatchesController> _logger;
@@ -29,6 +29,19 @@ namespace Tournament.Server.Controllers
         {
             return Mapper.Map<MatchModel>(await matchService.GetById(id, cancellationToken));
         }
+
+        [HttpGet]
+        public async Task<ICollection<MatchModel>> GetList([FromQuery] Guid tournamentGroupId, CancellationToken cancellationToken)
+        {
+            return Mapper.Map<ICollection<MatchModel>>(await matchService.Get(tournamentGroupId: tournamentGroupId, cancellationToken: cancellationToken));
+        }
+
+        [HttpGet("groups")]
+        public async Task<ICollection<MatchesGroupModel>> GetGroupList([FromQuery] Guid tournamentGroupId, CancellationToken cancellationToken)
+        {
+            return Mapper.Map<ICollection<MatchesGroupModel>>(await matchService.GetGroups(tournamentGroupId, cancellationToken));
+        }
+
 
         [HttpGet("{id:Guid}/games")]
         public async Task<ICollection<GameModel>> GetGames([FromRoute] Guid id, CancellationToken cancellationToken)

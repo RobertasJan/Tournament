@@ -11,6 +11,7 @@ namespace Tournament.Shared.Games
 {
     public class MatchesGroupModel
     {
+        public Guid? Id { get; set; }
         public int Round { get; set; } // final - 0, semifinal - 1, quarter - 2, r16 - 3, r32 - 4, r64 - 5
         public int GroupName { get; set; } // alphabetical 1 - a, 2 - b, 3 - c and so on
 
@@ -18,7 +19,9 @@ namespace Tournament.Shared.Games
 
         public Guid TournamentGroupId { get; set; }
         public ICollection<MatchModel>? Matches { get; set; }
+        public Guid? WinnersGroupId { get; set; }
         public MatchesGroupModel? WinnersGroup { get; set; }
+        public Guid? LosersGroupId { get; set; }
         public MatchesGroupModel? LosersGroup { get; set; }
     }
 }

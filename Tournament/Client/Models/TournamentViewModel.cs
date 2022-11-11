@@ -2,6 +2,7 @@
 using Tournament.Client.Services;
 using Tournament.Domain.Games;
 using Tournament.Domain.Tournaments;
+using Tournament.Server.Models;
 using Tournament.Shared.Games;
 using Tournament.Shared.Players;
 using Tournament.Shared.Tournaments;
@@ -15,6 +16,7 @@ namespace Tournament.Client.Models
         private TournamentService service { get; set; }
 
         public IEnumerable<RegisteredPlayersModel>? Players { get; set; } 
+        public IEnumerable<MatchModel>? UpcomingMatches { get; set; }
 
         public TournamentViewModel(TournamentService service, TournamentModel tournamentModel = null)
         {
@@ -23,7 +25,6 @@ namespace Tournament.Client.Models
                 this.Data = tournamentModel;
             }
             this.service = service;
-
         }
 
         public async Task<Guid> Save()

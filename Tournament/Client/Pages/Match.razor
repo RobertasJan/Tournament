@@ -22,19 +22,36 @@
                 }
             </MudItem>
             <MudItem xs="4">
-                <MatchPlayerTag ShuttleVisible="match.ServeLocation == ServeLocation.NW" ShuttleAfter="false">@match.Player2</MatchPlayerTag>
-                <MatchPlayerTag ShuttleVisible="match.ServeLocation == ServeLocation.SW" ShuttleAfter="false">@match.Player1</MatchPlayerTag>
-                @if (match.CurrentGame.Team1Score == 0 && match.CurrentGame.Team2Score == 0)
+                @if (match.Team1LeftSide)
                 {
-                    <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchLeftsidePlayers">Switch</MudButton>
+                    <MatchPlayerTag ShuttleVisible="match.ServeLocation == CourtLocation.NW" ShuttleAfter="false">@match.Player2</MatchPlayerTag>
+                    <MatchPlayerTag ShuttleVisible="match.ServeLocation == CourtLocation.SW" ShuttleAfter="false">@match.Player1</MatchPlayerTag>
+                }
+                else 
+                {
+                    <MatchPlayerTag ShuttleVisible="match.ServeLocation == CourtLocation.NW" ShuttleAfter="false">@match.Player4</MatchPlayerTag>
+                    <MatchPlayerTag ShuttleVisible="match.ServeLocation == CourtLocation.SW" ShuttleAfter="false">@match.Player3</MatchPlayerTag>
+                }
+                @if (match.CurrentGame.Team1Score == 0 && match.CurrentGame.Team2Score == 0 && !match.IsSingles)
+                {
+                    <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.Team1LeftSide ? match.SwitchTeam1Players : match.SwitchTeam2Players">Switch</MudButton>
                 }
             </MudItem>
             <MudItem xs="4">
-                <MatchPlayerTag ShuttleVisible="match.ServeLocation == ServeLocation.NE" ShuttleAfter="true">@match.Player3</MatchPlayerTag>
-                <MatchPlayerTag ShuttleVisible="match.ServeLocation == ServeLocation.SE" ShuttleAfter="true">@match.Player4</MatchPlayerTag>
-                @if (match.CurrentGame.Team1Score == 0 && match.CurrentGame.Team2Score == 0)
+                @if (match.Team1LeftSide) 
                 {
-                    <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchRightsidePlayers">Switch</MudButton>
+                    <MatchPlayerTag ShuttleVisible="match.ServeLocation == CourtLocation.NE" ShuttleAfter="true">@match.Player3</MatchPlayerTag>
+                    <MatchPlayerTag ShuttleVisible="match.ServeLocation == CourtLocation.SE" ShuttleAfter="true">@match.Player4</MatchPlayerTag>
+                }
+                else
+                {
+                    <MatchPlayerTag ShuttleVisible="match.ServeLocation == CourtLocation.NE" ShuttleAfter="true">@match.Player1</MatchPlayerTag>
+                    <MatchPlayerTag ShuttleVisible="match.ServeLocation == CourtLocation.SE" ShuttleAfter="true">@match.Player2</MatchPlayerTag>
+
+                }
+                @if (match.CurrentGame.Team1Score == 0 && match.CurrentGame.Team2Score == 0 && !match.IsSingles)
+                {
+                    <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.Team1LeftSide ? match.SwitchTeam2Players : match.SwitchTeam1Players">Switch</MudButton>
                 }
             </MudItem>
             <MudItem Class="my-auto" xs="2">
@@ -51,11 +68,11 @@
                     {
                         @if (match.EndMatch)
                         {
-                            <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="match.ReturnPoint">End match</MudButton>
+                            <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="match.DoEndMatch">End match</MudButton>
                         }
                         else if (match.EndGame)
                         {
-                            <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="match.ReturnPoint">End game</MudButton>
+                            <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="match.DoEndGame">End game</MudButton>
                         }
                         @if (!match.EndMatch)
                         {

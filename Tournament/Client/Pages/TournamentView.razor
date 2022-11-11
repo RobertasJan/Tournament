@@ -25,7 +25,21 @@
                             <Column T="RegisteredPlayersModel" Field="Player1Name" Title="Name"/>
                         </Columns>
                     </MudDataGrid>
-                    <MudText>Content Two</MudText>
+                </MudTabPanel>
+                <MudTabPanel Text="Upcoming matches">
+                    @foreach (var match in model.UpcomingMatches)
+                    {
+                        <MudGrid>
+                            <MudItem Class="upcoming-match" xs="12">
+                                @{
+                                    var url = $"/match/{match.Id}";
+                                }
+                                <MudLink Href="@url"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Calculate" Size="Size.Small" Color="Color.Primary">Score points</MudButton></MudLink>
+                                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Secondary">Set score</MudButton>
+                                <span class="bold-14">@match.Team1.Player1Name @match.Team1.Player2Name vs. @match.Team2.Player1Name @match.Team2.Player2Name</span>
+                            </MudItem>
+                        </MudGrid>
+                    }
                 </MudTabPanel>
             </MudTabs>
         </MudItem>
@@ -79,13 +93,15 @@
         IsAdmin = await UserService.IsAdmin();
         model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
         model.Players = await TournamentService.GetRegisteredPlayers(Id);
+        model.UpcomingMatches = await TournamentService.GetUpcomingMatches(Id);
     }
 
     async Task ConfirmDraft() {
-        TournamentService.SetState(model.Data.Id.Value, Domain.Tournaments.TournamentState.Draws);
+        await TournamentService.SetState(model.Data.Id.Value, Domain.Tournaments.TournamentState.Draws);
         model.Data.State = Domain.Tournaments.TournamentState.Draws;
     }
     async Task StartTournament() {
         await TournamentService.SetState(model.Data.Id.Value, Domain.Tournaments.TournamentState.Ongoing);
+        model.Data.State = Domain.Tournaments.TournamentState.Ongoing;
     }
 }

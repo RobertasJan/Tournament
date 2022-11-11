@@ -14,6 +14,9 @@ namespace Tournament.Infrastructure.Data
             builder.Property(x => x.Scores).IsRequired(false).HasMaxLength(1024);
             builder.Property(x => x.Team1Score).IsRequired();
             builder.Property(x => x.Team2Score).IsRequired();
+            builder.Property(x => x.Team1LeftSide).IsRequired().HasDefaultValue(true);
+            builder.Property(x => x.Team1Switched).IsRequired().HasDefaultValue(false);
+            builder.Property(x => x.Team2Switched).IsRequired().HasDefaultValue(false);
 
             builder
                 .HasOne(x => x.Match)

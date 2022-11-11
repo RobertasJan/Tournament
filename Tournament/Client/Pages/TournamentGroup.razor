@@ -42,14 +42,26 @@
                 {
                     var matches = model.GroupAsList().Where(x => x.Round == j && x.GroupName == i);
                     <ul class="bracket bracket-@(j+1)">
-                        @foreach (var match in matches)
+                        @foreach (var match in matches.OrderBy(x => x.GroupPosition))
                         {
                             <li class="team-item">
                                 <MudGrid>
-                                    <MudItem xs="5">@match.Team1.Seed @match.Team1.Player1Name</MudItem>
-                                    <MudItem xs="2"><time>@DisplayTime(match.MatchDate)</time></MudItem>
-                                    <MudItem xs="5">@match.Team2.Seed @match.Team2.Player1Name @(matches.Count() == 1 ? $"BF({i * 2 + 1}-{i * 2 + 2})" : "")</MudItem>
-                                </MudGrid>
+                                    <MudItem xs="5">
+                                        @if (j == 0)
+                                        {
+                                            <span>@($"S{@match.Team1?.Seed}")</span>
+                                        }
+                                        @match.Team1?.Player1Name
+                                        </MudItem>
+                                    <MudItem xs="2">@*<time>@DisplayTime(match.MatchDate)</time>*@ @match.Record</MudItem>
+                                    <MudItem xs="5">
+                                        @if (j == 0)
+                                        {
+                                            <span>@($"S{@match.Team2?.Seed}")</span>
+                                        }
+                                        @match.Team2?.Player1Name @(matches.Count() == 1 ? $"BF({i * 2 + 1}-{i * 2 + 2})" : "")
+                                    </MudItem>
+                                    </MudGrid>
                             </li>
                         }
                     </ul>
@@ -122,12 +134,13 @@
 
     [Inject] TournamentService TournamentService { get; set; }
     [Inject] TournamentGroupService TournamentGroupService { get; set; }
+    [Inject] GameService GameService { get; set; }
 
     TournamentGroupViewModel model;
 
     protected override async Task OnInitializedAsync()
     {
-        model = new TournamentGroupViewModel(TournamentService, TournamentGroupService, Id, TournamentGroupId);
+        model = new TournamentGroupViewModel(TournamentService, TournamentGroupService, GameService, Id, TournamentGroupId);
         await model.Load();
     }
 

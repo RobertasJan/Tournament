@@ -29,7 +29,7 @@ namespace Tournament.Client.Models
         public MatchRecord Record { get; set; } = MatchRecord.ToBePlayed;
         public MatchResult Result { get; set; } = MatchResult.Undetermined;
 
-        public ServeLocation ServeLocation { get; set; }
+        public CourtLocation ServeLocation { get; set; }
         private Stack<Point> _pointList { get; set; }
         private ICollection<GameViewModel> _gameList { get; set; }
         public GameViewModel CurrentGame { get; set; }
@@ -52,13 +52,37 @@ namespace Tournament.Client.Models
                     var lastGame = games.Last();
                     _pointList = lastGame.Scores != null ? JsonSerializer.Deserialize<Stack<Point>>(games.Last().Scores) : new Stack<Point>();
                     CurrentGame = GameViewModel.FromGameModel(lastGame);
-                    ServeLocation = ServeLocation.SW;
+                    Team1LeftSide = CurrentGame.Team1LeftSide;
                     var pointLast = _pointList?.LastOrDefault();
                     if (pointLast != null)
                     {
                         ServeLocation = pointLast.ServeLocation;
                     }
-          
+                    else
+                    {
+                        ServeLocation = CourtLocation.SW;
+                    }
+                    Player1 = matchModel.Team1?.Player1Name;
+                    Player2 = matchModel.Team1?.Player2Name;
+                    Player3 = matchModel.Team2?.Player1Name;
+                    Player4 = matchModel.Team2?.Player2Name;
+
+                    if (IsSingles)
+                    {
+                        SetServeLocationsForSingles();
+                    }
+                    else
+                    {
+                        if (CurrentGame.Team1Switched)
+                        {
+                            SwitchTeam1Players();
+                        }
+                        if (CurrentGame.Team2Switched)
+                        {
+                            SwitchTeam2Players();
+                        }
+                    }
+
                     _gameList = new List<GameViewModel>();
                     foreach (var game in games)
                     {
@@ -68,7 +92,10 @@ namespace Tournament.Client.Models
                 else
                 {
                     _pointList = new Stack<Point>();
-                    CurrentGame = new GameViewModel();
+                    CurrentGame = new GameViewModel()
+                    {
+                        Team1LeftSide = true,
+                    };
                     _gameList = new List<GameViewModel>() { CurrentGame };
                 }
             }
@@ -79,12 +106,19 @@ namespace Tournament.Client.Models
         public async Task AddTeam1Score()
         {
             CurrentGame.Team1Score++;
-            this.ServeLocation = CurrentGame.Team1Score % 2 == 0 ? ServeLocation.SW : ServeLocation.NW;
-            if (_pointList.TryPeek(out Point point))
+            this.ServeLocation = CurrentGame.Team1Score % 2 == 0 ? CourtLocation.SW : CourtLocation.NW;
+            if (IsSingles)
             {
-                if (point.Scorer == Team.Team1)
+                SetServeLocationsForSingles();
+            }
+            else
+            {
+                if (_pointList.TryPeek(out Point point))
                 {
-                    SwitchLeftsidePlayers();
+                    if (point.Scorer == Team.Team1)
+                    {
+                        SwitchTeam1Players();
+                    }
                 }
             }
             _pointList.Push(new Point(this.ServeLocation, Team.Team1));
@@ -92,15 +126,58 @@ namespace Tournament.Client.Models
             await CheckEndGame();
         }
 
+        private void SetServeLocationsForSingles()
+        {
+            switch (this.ServeLocation)
+            {
+                case CourtLocation.SW:
+                case CourtLocation.NE:
+                    //if (Team1LeftSide)
+                    {
+                        if (!string.IsNullOrWhiteSpace(Player2))
+                        {
+                            Player1 = Player2;
+                            Player2 = "";
+                        }
+                        if (!string.IsNullOrWhiteSpace(Player4))
+                        {
+                            Player3 = Player4;
+                            Player4 = "";
+                        }
+                    }
+                    break;
+                case CourtLocation.NW:
+                case CourtLocation.SE:
+                    if (!string.IsNullOrWhiteSpace(Player1))
+                    {
+                        Player2 = Player1;
+                        Player1 = "";
+                    }
+                    if (!string.IsNullOrWhiteSpace(Player3))
+                    {
+                        Player4 = Player3;
+                        Player3 = "";
+                    }
+                    break;
+            }
+        }
+        
         public async Task AddTeam2Score()
         {
             CurrentGame.Team2Score++;
-            this.ServeLocation = CurrentGame.Team2Score % 2 == 0 ? ServeLocation.NE : ServeLocation.SE;
-            if (_pointList.TryPeek(out Point point))
+            this.ServeLocation = CurrentGame.Team2Score % 2 == 0 ? CourtLocation.NE : CourtLocation.SE;
+            if (IsSingles)
             {
-                if (point.Scorer == Team.Team2)
+                SetServeLocationsForSingles();
+            }
+            else
+            {
+                if (_pointList.TryPeek(out Point point))
                 {
-                    SwitchRightsidePlayers();
+                    if (point.Scorer == Team.Team2)
+                    {
+                        SwitchTeam2Players();
+                    }
                 }
             }
             _pointList.Push(new Point(this.ServeLocation, Team.Team2));
@@ -118,7 +195,10 @@ namespace Tournament.Client.Models
                     Result = CurrentGame.Result,
                     Scores = JsonSerializer.Serialize(_pointList),
                     Team1Score = CurrentGame.Team1Score,
-                    Team2Score = CurrentGame.Team2Score
+                    Team2Score = CurrentGame.Team2Score,
+                    Team1Switched = CurrentGame.Team1Switched,
+                    Team2Switched = CurrentGame.Team2Switched,
+                    Team1LeftSide = CurrentGame.Team1LeftSide,
                 }, MatchId);
             }
             else
@@ -162,41 +242,72 @@ namespace Tournament.Client.Models
             _pointList.Pop();
             if (_pointList.Count == 0)
             {
-                ServeLocation = ServeLocation.SW;
+                ServeLocation = CourtLocation.SW;
             }
             else
             {
                 var previousPoint = _pointList.Peek();
                 this.ServeLocation = previousPoint.ServeLocation;
             }
+            if (IsSingles)
+            {
+                SetServeLocationsForSingles();
+            }
+            CurrentGame.Result = GameResult.Undetermined;
             await CheckEndGame();
         }
 
-        public void SwitchLeftsidePlayers()
+        public async Task DoEndGame()
         {
-            (Player2, Player1) = (Player1, Player2);
+            CurrentGame.Result = CurrentGame.Team1Score > CurrentGame.Team2Score ? GameResult.Team1Victory : GameResult.Team2Victory;
+            await SetMatchGame();
+            _pointList = new Stack<Point>();
+            CurrentGame = new GameViewModel()
+            {
+                Team1LeftSide = !CurrentGame.Team1LeftSide,
+            };
+            _gameList.Add(CurrentGame);
+            EndGame = false;
         }
-        public void SwitchRightsidePlayers()
+
+        public async Task DoEndMatch()
+        {
+
+        }
+
+        public void SwitchTeam1Players()
+        {
+            
+            (Player2, Player1) = (Player1, Player2);
+          //  (Player2Id, Player1Id) = (Player1Id, Player2Id);
+        }
+        public void SwitchTeam2Players()
         {
             (Player4, Player3) = (Player3, Player4);
+            //(Player4Id, Player3Id) = (Player3Id, Player4Id);
         }
 
         public void SwitchTeams()
         {
-            (Player3, Player4, Player1, Player2) = (Player1, Player2, Player3, Player4);
+            Team1LeftSide = !Team1LeftSide;
+            //(Player3, Player4, Player1, Player2) = (Player1, Player2, Player3, Player4);
+            //(Player3Id, Player4Id, Player1Id, Player2Id) = (Player1Id, Player2Id, Player3Id, Player4Id);
         }
 
         public void ChangeServeSide()
         {
-            if (this.ServeLocation == ServeLocation.SW)
+            if (this.ServeLocation == CourtLocation.SW)
             {
-                this.ServeLocation = ServeLocation.NE;
+                this.ServeLocation = CourtLocation.NE;
             }
             else
             {
-                this.ServeLocation = ServeLocation.SW;
+                this.ServeLocation = CourtLocation.SW;
             }
         }
+
+        public bool IsSingles
+            => Type == MatchType.MensSingles || Type == MatchType.WomensSingles;
 
     }
 }
