@@ -76,7 +76,7 @@ namespace Tournament.Server.Models
                 _team2 = value;
             }
         }
-        public MatchesGroupModel MatchesGroup { get; set; }
+        public MatchesGroupModel? MatchesGroup { get; set; }
         public Guid? MatchesGroupId { get; set; }
 
         public int? GroupPosition { get; set; }
@@ -91,7 +91,7 @@ namespace Tournament.Server.Models
     public class MatchTeamModel
     {
         public Guid? Player1Id { get; set; }
-        public string Player1Name { get; set; }
+        public string? Player1Name { get; set; }
         public Guid? Player2Id { get; set; }
         public string? Player2Name { get; set; }
         public int Seed { get; set; }

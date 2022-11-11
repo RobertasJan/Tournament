@@ -39,6 +39,9 @@ namespace Tournament.Domain.Services.Games
             game.Team2Score = entity.Team2Score;
             game.Result = entity.Result;
             game.Scores = entity.Scores;
+            game.Team1LeftSide = entity.Team1LeftSide;
+            game.Team1Switched = entity.Team1Switched;
+            game.Team2Switched = entity.Team2Switched;
             _db.Games.Update(game);
             await _db.SaveChangesAsync(cancellationToken);
         }

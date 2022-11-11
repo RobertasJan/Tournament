@@ -69,5 +69,12 @@ namespace Tournament.Server.Controllers
             model.MatchId = id;
             await gameService.Update(Mapper.Map<GameEntity>(model), cancellationToken);
         }
+
+        [HttpPut("{id:Guid}")]
+        public async Task Update([FromRoute] Guid id, MatchModel model, CancellationToken cancellationToken)
+        {
+            model.Id = id;
+            await matchService.Update(Mapper.Map<MatchEntity>(model), cancellationToken);
+        }
     }
 }

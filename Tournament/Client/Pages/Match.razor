@@ -5,13 +5,16 @@
 
 <PageTitle>Match</PageTitle>
 <MudText Typo="Typo.h4" GutterBottom="true">Match</MudText>
-<MudOverlay Visible="match is null" DarkBackground="true" AutoClose="true"></MudOverlay>
+<MudOverlay Visible="match is null || match.Request" DarkBackground="false" AutoClose="false"></MudOverlay>
 <MudPaper Class="pa-5" Style="background-color: var(--color-court); min-height: 40vh;">
     <MudGrid>
         @if (match is not null)
         {
             <MudItem xs="12">
-                <MudText Class="d-flex align-center justify-center mud-width-full py-2 white-text">@match.CurrentGame.Team1Score - @match.CurrentGame.Team2Score</MudText>
+                <MudText Class="d-flex align-center justify-center mud-width-full py-2 red-text">@DisplayPreviousScores()</MudText>
+            </MudItem>
+            <MudItem xs="12">
+                <MudText Typo="Typo.h5" Class="d-flex align-center justify-center mud-width-full py-2 white-text">@(match.Team1LeftSide ? $"{match.CurrentGame.Team1Score} - {match.CurrentGame.Team2Score}" : $"{match.CurrentGame.Team2Score} - {match.CurrentGame.Team1Score}")</MudText>
             </MudItem>
             <MudItem Class="my-auto" xs="2">
                 @if (!match.EndGame)
@@ -79,7 +82,7 @@
                             <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="match.ReturnPoint">Return</MudButton>
                         }
                     }
-                    else
+                    else if (match.FirstGame)
                     {
                         <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.ChangeServeSide">Change Serve Side</MudButton>
                         <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchTeams">Switch teams</MudButton>
@@ -100,4 +103,21 @@
     {
         match = new MatchViewModel(GameService, await GameService.GetMatchById(Id), await GameService.GetMatchGames(Id));
     }
+
+    private string DisplayPreviousScores()
+    {
+        var displayString = "";
+        foreach (var game in match.GameList.SkipLast(1))
+        {
+            if (match.Team1LeftSide)
+            {
+                displayString += $"{game.Team1Score} : {game.Team2Score}  ";
+            } else {
+                displayString += $"{game.Team2Score} : {game.Team1Score}  ";
+            }
+        }
+
+        return displayString;
+    }
+
 }

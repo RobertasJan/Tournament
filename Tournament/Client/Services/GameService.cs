@@ -91,6 +91,16 @@ namespace Tournament.Client.Services
             }
         }
 
+        public async Task UpdateMatch(MatchModel model)
+        {
+            var cancellationToken = new CancellationTokenSource().Token;
+            var httpResponse = await _client.PutAsJsonAsync($"api/matches/{model.Id}", model, cancellationToken).ConfigureAwait(false);
+            if (httpResponse.StatusCode != HttpStatusCode.OK)
+            {
+                throw new NotImplementedException("No error handling");
+            }
+        }
+
         public async Task<Guid> CreateMatch(MatchModel model)
         {
             var cancellationToken = new CancellationTokenSource().Token;

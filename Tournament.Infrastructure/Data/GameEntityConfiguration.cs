@@ -11,7 +11,7 @@ namespace Tournament.Infrastructure.Data
             builder.ToTable("Games");
 
             builder.Property(x => x.Result).IsRequired(false);
-            builder.Property(x => x.Scores).IsRequired(false).HasMaxLength(1024);
+            builder.Property(x => x.Scores).IsRequired(false).HasMaxLength(2048);
             builder.Property(x => x.Team1Score).IsRequired();
             builder.Property(x => x.Team2Score).IsRequired();
             builder.Property(x => x.Team1LeftSide).IsRequired().HasDefaultValue(true);
