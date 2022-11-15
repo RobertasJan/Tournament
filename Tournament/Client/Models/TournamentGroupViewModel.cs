@@ -119,7 +119,7 @@ namespace Tournament.Client.Models
             }
             else
             {
-                var matches = await gameService.GetMatches(TournamentGroup.Id.Value);
+               // var matches = await gameService.GetMatches(TournamentGroup.Id.Value);
                 var matchesGroups = await gameService.GetMatchesGroups(TournamentGroup.Id.Value);
                 var firstGroup = matchesGroups.First(x => x.Round == 0 && x.GroupName == 0);
                 var sortedSeeds = Calculations.SortSeeds(firstGroup.Matches.Count * 2);

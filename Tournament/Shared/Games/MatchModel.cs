@@ -77,6 +77,7 @@ namespace Tournament.Server.Models
             }
         }
         public MatchesGroupModel? MatchesGroup { get; set; }
+        public ICollection<GameModel>? Games { get; set; }
         public Guid? MatchesGroupId { get; set; }
 
         public int? GroupPosition { get; set; }

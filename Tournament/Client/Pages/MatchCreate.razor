@@ -76,7 +76,6 @@
 </MudForm>
 
 @code {
-    [Inject] ISnackbar Snackbar { get; set; }
     [Inject] GameService GameService { get; set; }
 
     bool success = false;
@@ -106,5 +105,4 @@
             NavigationManager.NavigateTo($"/match/{id}", false);
         }
     }
-
 }

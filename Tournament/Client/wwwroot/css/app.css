@@ -17,7 +17,7 @@
 
 .team-item {
     line-height: 14px !important;
-    height: 50px !important;
+    height: 65px !important;
 }
 
 .upcoming-match {
@@ -28,6 +28,20 @@
 .bold-14 {
     font-size: 18px;
     font-weight: bold;
+}
+
+.table-victor {
+    color: green;
+    font-weight: bold;
+}
+
+.table-game-score-div {
+    padding-bottom: 0px;
+}
+
+.table-game-score {
+    padding: 0px !important;
+    text-align: left !important;
 }
 /* Tournament tree */
 

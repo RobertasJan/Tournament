@@ -30,6 +30,7 @@ namespace Tournament.Domain.Services.Tournament
         Task StartDraws(Guid id, CancellationToken cancellationToken);
         Task StartTournament(Guid id, CancellationToken cancellationToken);
         Task FinishTournament(Guid id, CancellationToken cancellationToken);
+        Task EndTournament(Guid id, CancellationToken cancellationToken);
     }
 
 
@@ -256,69 +257,14 @@ namespace Tournament.Domain.Services.Tournament
             var tournament = await GetById(id, cancellationToken);
             foreach (var group in tournament.Groups)
             {
-                await SetByes(group, cancellationToken);
+                await _matchService.SetByes(group.Id.Value, cancellationToken);
             }
             tournament.State = TournamentState.Ongoing;
             _db.Update(tournament);
             await _db.SaveChangesAsync(cancellationToken);
         }
 
-        private async Task SetByes(TournamentGroupEntity group, CancellationToken cancellationToken)
-        {
-            var matches = _db.Matches.Include(x => x.PlayersMatches).Include(x => x.MatchesGroup)
-                .Where(x => x.MatchesGroup.TournamentGroupId == group.Id)
-                .Where(x => x.PlayersMatches.Count == 1).ToList();
-            foreach (var match in matches)
-            {
-                var playerMatch = match.PlayersMatches.First();
-                match.Result = playerMatch.Team == Team.Team1 ? MatchResult.Team1Victory : MatchResult.Team2Victory;
-                match.Record = MatchRecord.Bye;
-                match.ModifiedAt = DateTime.UtcNow;
-                _db.Update(match);
-                await SetNextMatch(match);
-            }
-        }
-
-        private async Task SetNextMatch(MatchEntity match)
-        {
-            var winnerMatchGroup = _db.MatchesGroups.Include(x => x.Matches).ThenInclude(x => x.PlayersMatches).FirstOrDefault(x => x.Id == match.MatchesGroup.WinnersGroupId);
-            var losersMatchGroup = _db.MatchesGroups.Include(x => x.Matches).ThenInclude(x => x.PlayersMatches).FirstOrDefault(x => x.Id == match.MatchesGroup.LosersGroupId);
-            var nextPositionGroup = (int)Math.Floor(match.GroupPosition.Value / 2d);
-
-            var winners = match.Result == MatchResult.Team1Victory ? match.PlayersMatches.Where(x => x.Team == Team.Team1) : match.PlayersMatches.Where(x => x.Team == Team.Team2);
-            var losers = match.Result == MatchResult.Team1Victory ? match.PlayersMatches.Where(x => x.Team == Team.Team2) : match.PlayersMatches.Where(x => x.Team == Team.Team1);
-
-
-            if (winnerMatchGroup != null)
-            {
-                var nextMatch = winnerMatchGroup.Matches.First(x => x.GroupPosition == nextPositionGroup);
-                await AssignPlayersToMatch(winners, nextMatch, nextMatch.GroupPosition == (match.GroupPosition / 2d));
-                _db.Update(nextMatch);
-            }
-
-            if (losersMatchGroup != null)
-            {
-                var nextMatch = losersMatchGroup.Matches.First(x => x.GroupPosition == nextPositionGroup);
-                await AssignPlayersToMatch(losers, nextMatch, nextMatch.GroupPosition == (match.GroupPosition / 2d));
-                _db.Update(nextMatch);
-            }
-        }
-
-        private async Task AssignPlayersToMatch(IEnumerable<PlayerMatchEntity> players, MatchEntity match, bool team1)
-        {
-            foreach (var player in players)
-            {
-                match.PlayersMatches.Add(new PlayerMatchEntity()
-                {
-                    CreatedAt = DateTime.UtcNow,
-                    ModifiedAt = DateTime.UtcNow,
-                    Team = team1 ? Team.Team1 : Team.Team2,
-                    PlayerId = player.PlayerId,
-                    MatchId = match.Id
-                });
-            }
-        }
-        public Task FinishTournament(Guid id, CancellationToken cancellationToken)
+        public async Task FinishTournament(Guid id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
@@ -327,6 +273,11 @@ namespace Tournament.Domain.Services.Tournament
         {
             _db.Update(tournament);
             await _db.SaveChangesAsync(cancellationToken);
+        }
+
+        public Task EndTournament(Guid id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

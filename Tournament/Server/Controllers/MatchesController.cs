@@ -71,10 +71,22 @@ namespace Tournament.Server.Controllers
         }
 
         [HttpPut("{id:Guid}")]
-        public async Task Update([FromRoute] Guid id, MatchModel model, CancellationToken cancellationToken)
+        public async Task Update([FromRoute] Guid id, UpdateMatchModel model, CancellationToken cancellationToken)
         {
-            model.Id = id;
-            await matchService.Update(Mapper.Map<MatchEntity>(model), cancellationToken);
+            var match = await matchService.GetById(id, cancellationToken);
+            match.ModifiedAt = DateTime.UtcNow;
+            match.Record = model.Record;
+            match.Result = model.Result;
+            await matchService.Update(match, cancellationToken);
+        }
+
+
+        [HttpPut("{id:Guid}/setnextmatch")]
+        public async Task SetNextMatch([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            var match = await matchService.GetById(id, cancellationToken);
+            await matchService.SetNextMatch(match);
+            await matchService.SetByes(match.MatchesGroup.TournamentGroupId, cancellationToken);
         }
     }
 }

@@ -45,22 +45,50 @@
                         @foreach (var match in matches.OrderBy(x => x.GroupPosition))
                         {
                             <li class="team-item">
-                                <MudGrid>
+                                <MudGrid Class="table-game-score-div">
                                     <MudItem xs="5">
                                         @if (j == 0)
                                         {
                                             <span>@($"S{@match.Team1?.Seed}")</span>
                                         }
-                                        @match.Team1?.Player1Name
+                                        @if (match.Result == Domain.Games.MatchResult.Team1Victory) {
+                                            <span class="table-victor">
+                                                @match.Team1?.Player1Name @match.Team1?.Player2Name
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            @match.Team1?.Player1Name @match.Team1?.Player2Name
+                                        }
                                         </MudItem>
-                                    <MudItem xs="2">@*<time>@DisplayTime(match.MatchDate)</time>*@ @match.Record</MudItem>
+                                    <MudItem xs="2">@*<time>@DisplayTime(match.MatchDate)</time>*@ @match.Record 
+                                    </MudItem>
                                     <MudItem xs="5">
                                         @if (j == 0)
                                         {
                                             <span>@($"S{@match.Team2?.Seed}")</span>
                                         }
-                                        @match.Team2?.Player1Name @(matches.Count() == 1 ? $"BF({i * 2 + 1}-{i * 2 + 2})" : "")
-                                    </MudItem>
+                                        @if (match.Result == Domain.Games.MatchResult.Team2Victory) 
+                                        {
+                                            <span class="table-victor">
+                                            @match.Team2?.Player1Name @match.Team2?.Player2Name
+                                            </span>
+                                        }
+                                        else 
+                                        {
+                                            @match.Team2?.Player1Name @match.Team2?.Player2Name
+                                        }
+                                        @(matches.Count() == 1 ? $"BF({i * 2 + 1}-{i * 2 + 2})" : "")
+                                    </MudItem xs="12">
+                                        @if (match.Record == Domain.Games.MatchRecord.Played)
+                                        {
+                                            <MudItem Class="table-game-score" xs="12">
+                                            @foreach (var game in match.Games)
+                                            {
+                                                <span class="pl-3">@game.Team1Score:@game.Team2Score &nbsp;</span>
+                                            }
+                                            </MudItem>
+                                        }
                                     </MudGrid>
                             </li>
                         }
@@ -68,60 +96,6 @@
                 }
             </div>
         }
-
-      @*  @for (var i = 0; i < matchesCount; i++)
-        {
-            <div class="tournament-brackets">
-                @for (var j = model.TournamentRounds.Count - 1; j >= 0; j--)
-                {
-                   @* var indexFrom = (((i + 1) * 2) - 1) - 1;
-                    var round = model.TournamentRounds[j];
-                    var indexTo = ((int) (Math.Pow(2, round.Round + 1)) + (i * 2)) / 2; // ((i + 1) * 2) + ((round.Round + 1) * 2);
-                  @*  <Bracket Round="round.Round" Matches="round.Matches" IndexFrom="indexFrom" IndexTo="indexTo"></Bracket>
-                }
-            </div>
-        }*@
-     @*       @for (var indexFrom = ((i + 1) * 2) - 1); indexFrom < matchesCount; i = i)
-            {
-                <div class="tournament-brackets">
-                    @for (var j = model.TournamentRounds.Count - 1; j >= 0; j--)
-                    {
-                        var round = model.TournamentRounds[j];
-                        //normlizing + 1 and matches count is / 2 of positions 
-                        var indexTo = ((i + 1) * 2) + (round.Round * 2);//(int)Math.Pow(2, round.Round); //(round.Round + 1)) - 1;
-                        <Bracket Round="round.Round" Matches="round.Matches" IndexFrom="indexFrom-1" IndexTo="indexTo"></Bracket>
-                    }
-                </div>
-            }
-        }
-        
-        @for (var i = 0; i < matchesCount; i += 2)
-        {
-
-            @for (var indexFrom = ((i + 1) * 2) - 1); indexFrom < matchesCount; i = i)
-            {
-                <div class="tournament-brackets">
-                    @for (var j = model.TournamentRounds.Count - 1; j >= 0; j--)
-                    {
-                        var round = model.TournamentRounds[j];
-                         normlizing + 1 and matches count is / 2 of positions 
-                        var indexTo = ((i + 1) * 2) + (round.Round * 2);//(int)Math.Pow(2, round.Round); //(round.Round + 1)) - 1;
-                        <Bracket Round="round.Round" Matches="round.Matches" IndexFrom="indexFrom-1" IndexTo="indexTo"></Bracket>
-                    }
-                </div>
-            }
-        }
-
-        @for (var i = model.TournamentRounds.Count - 1; i >= 0; i--)
-        {
-            for (var j = 0; j < countOfTrees; j++)
-            {
-                var round = model.TournamentRounds[i];
-                <div class="tournament-brackets">
-                    <Bracket Round="round.Round" Matches="round.Matches"></Bracket>
-                </div>
-            }
-        }*@
     </div>
 }
 

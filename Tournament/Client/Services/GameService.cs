@@ -109,5 +109,15 @@ namespace Tournament.Client.Services
                 return await httpResponse.Content.ReadAsAsync<Guid>(cancellationToken).ConfigureAwait(false);
             throw new NotImplementedException("No error handling");
         }
+
+
+        public async Task<Guid> SetNextMatch(Guid matchId)
+        {
+            var cancellationToken = new CancellationTokenSource().Token;
+            var httpResponse = await _client.PutAsJsonAsync($"api/matches/{matchId}/setnextmatch", cancellationToken);
+            if (httpResponse.StatusCode == HttpStatusCode.OK)
+                return await httpResponse.Content.ReadAsAsync<Guid>(cancellationToken).ConfigureAwait(false);
+            throw new NotImplementedException("No error handling");
+        }
     }
 }

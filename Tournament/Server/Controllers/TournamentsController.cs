@@ -99,7 +99,7 @@ namespace Tournament.Server.Controllers
             }
             else if (model.State == TournamentState.Finished)
             {
-                await tournamentService.StartTournament(id, cancellationToken);
+                await tournamentService.EndTournament(id, cancellationToken);
             }
             else
             {

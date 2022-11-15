@@ -312,6 +312,7 @@ namespace Tournament.Client.Models
             Data.Record = MatchRecord.Played;
             Data.Result = GameList.Last().Result == GameResult.Team1Victory ? MatchResult.Team1Victory : MatchResult.Team2Victory; 
             await service.UpdateMatch(Data);
+            await service.SetNextMatch(Data.Id);
         }
 
         public void SwitchTeam1Players()

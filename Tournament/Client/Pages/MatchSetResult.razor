@@ -1,0 +1,145 @@
+﻿@page "/tournament/{TourneyId:guid}/match/{Id:guid}/result"
+
+@using MudBlazor;
+@using Tournament.Client.Services;
+@using Tournament.Domain.Games;
+@using Tournament.Server.Models;
+@using Tournament.Shared.Games;
+
+<PageTitle>Match</PageTitle>
+<MudForm @ref="@form" @bind-IsValid="@success">
+    @if (Match is not null)
+    {
+        <MudGrid>
+        <MudItem xs="12">
+        <MudPaper Class="pa-2" Elevation="3">
+            <MudText Typo="Typo.subtitle1">Games</MudText>
+            <MudGrid>
+                <MudItem xs="6">Team 1 @Match.Team1.Player1Name @Match.Team1.Player2Name</MudItem>
+                <MudItem xs="6">Team 2 @Match.Team2.Player1Name @Match.Team2.Player2Name</MudItem>
+                @{
+                    var i = 0;
+                }
+                @foreach (var game in Games)
+                {
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.subtitle2">@(
+                           ++i
+                           ) Game</MudText>
+                       </MudItem>
+                    <MudItem xs="6"><MudNumericField @bind-Value="game.Team1Score" Label="Team 1 score" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
+                    <MudItem xs="6"><MudNumericField @bind-Value="game.Team2Score" Label="Team 2 score" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
+                }
+                @if (Games.Count < MaxGameCount)
+                {
+                    <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await AddGame())" FullWidth="true">Add game</MudButton>
+                }
+                @if (Games.Count > Match.GamesToWin)
+                {
+                    <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Warning" OnClick="@(async () => await RemoveGame())" FullWidth="true">Remove game</MudButton>
+                }
+            </MudGrid>
+        </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudPaper Class="pa-2" Elevation="3">
+                <MudText Typo="Typo.subtitle2">Match ending</MudText>
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudSelect @bind-Value="Match.Result" Label="Result" Variant="Variant.Outlined">
+                            <MudSelectItem Value="MatchResult.Team1Victory">Team 1 victory</MudSelectItem>
+                            <MudSelectItem Value="MatchResult.Team2Victory">Team 2 victory</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudSelect @bind-Value="Match.Record" Label="Record" Variant="Variant.Outlined">
+                            <MudSelectItem Value="MatchRecord.Played">Played</MudSelectItem>
+                            <MudSelectItem Value="MatchRecord.Disqualified">Disqualified</MudSelectItem>
+                            <MudSelectItem Value="MatchRecord.Walkover">Walkover</MudSelectItem>
+                            <MudSelectItem Value="MatchRecord.Injury">Injury</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6"></MudItem>
+                    <MudItem xs="12" sm="6"></MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+        <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" FullWidth="true">Set score</MudButton>
+        </MudGrid>
+    }
+</MudForm>
+
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Parameter]
+    public Guid? TourneyId { get; set; }
+
+    [Inject] GameService GameService { get; set; }
+
+    bool success = false;
+    MudForm? form = new MudForm();
+    ICollection<GameModel> Games { get; set; }
+    MatchModel Match { get; set; }
+    int MaxGameCount { get; set; } = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Match = await GameService.GetMatchById(Id);
+        Match.Result = MatchResult.Team1Victory;
+        Match.Record = MatchRecord.Played;
+        MaxGameCount = Match.GamesToWin * 2 - 1;
+        Games = new List<GameModel>();
+        for (var i = 0; i < Match.GamesToWin; i++)
+        {
+            Games.Add(new GameModel()
+            {
+               Team1Score = 0,
+               Team2Score = 0,
+               Result = Domain.Games.GameResult.Undetermined,
+               MatchId = Id,
+               Team1LeftSide = true,
+               Team1Switched = true,
+               Team2Switched = true
+            });
+        }
+    }
+
+    private async Task AddGame()
+    {
+        Games.Add(new GameModel()
+        {
+            Team1Score = 0,
+            Team2Score = 0,
+            Result = Domain.Games.GameResult.Undetermined,
+            MatchId = Id,
+            Team1LeftSide = true,
+            Team1Switched = true,
+            Team2Switched = true
+        });
+    }
+
+    private async Task RemoveGame()
+    {
+        Games.Remove(Games.Last());
+    }
+
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            foreach (var game in Games)
+            {
+                await GameService.CreateGame(game, Match.Id);
+            }
+            await GameService.UpdateMatch(Match);
+            await GameService.SetNextMatch(Match.Id);
+            NavigationManager.NavigateTo($"/tournament/{TourneyId}", false);
+
+        }
+    }
+}

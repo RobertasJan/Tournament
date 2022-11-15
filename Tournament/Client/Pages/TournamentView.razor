@@ -26,21 +26,25 @@
                         </Columns>
                     </MudDataGrid>
                 </MudTabPanel>
-                <MudTabPanel Text="Upcoming matches">
-                    @foreach (var match in model.UpcomingMatches)
-                    {
-                        <MudGrid>
-                            <MudItem Class="upcoming-match" xs="12">
-                                @{
-                                    var url = $"/match/{match.Id}";
-                                }
-                                <MudLink Href="@url"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Calculate" Size="Size.Small" Color="Color.Primary">Score points</MudButton></MudLink>
-                                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Secondary">Set score</MudButton>
-                                <span class="bold-14">@match.Team1.Player1Name @match.Team1.Player2Name vs. @match.Team2.Player1Name @match.Team2.Player2Name</span>
-                            </MudItem>
-                        </MudGrid>
-                    }
-                </MudTabPanel>
+                @if (model.Data.State == Domain.Tournaments.TournamentState.Ongoing)
+                {
+                    <MudTabPanel Text="Upcoming matches">
+                        @foreach (var match in model.UpcomingMatches)
+                        {
+                            <MudGrid>
+                                <MudItem Class="upcoming-match" xs="12">
+                                    @{
+                                        var url = $"tournament/{Id}/match/{match.Id}";
+                                        var url2 = $"tournament/{Id}/match/{match.Id}/result";
+                                    }
+                                    <MudLink Href="@url"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Calculate" Size="Size.Small" Color="Color.Primary">Score points</MudButton></MudLink>
+                                    <MudLink Href="@url2"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Secondary">Set score</MudButton></MudLink>
+                                    <span class="bold-14">@match.Team1.Player1Name @match.Team1.Player2Name vs. @match.Team2.Player1Name @match.Team2.Player2Name</span>
+                                </MudItem>
+                            </MudGrid>
+                        }
+                    </MudTabPanel>
+                }
             </MudTabs>
         </MudItem>
         @if (model.Data.State == Domain.Tournaments.TournamentState.Registration)
@@ -75,6 +79,15 @@
                 </MudButton>
             </MudItem>
         }
+        else if (model.Data.State == Domain.Tournaments.TournamentState.Ongoing && IsAdmin)
+        {
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary" OnClick="EndTournament">
+                    END TOURNAMENT
+                </MudButton>
+            </MudItem>
+        }
     </MudGrid>
 }
 @code {
@@ -103,5 +116,10 @@
     async Task StartTournament() {
         await TournamentService.SetState(model.Data.Id.Value, Domain.Tournaments.TournamentState.Ongoing);
         model.Data.State = Domain.Tournaments.TournamentState.Ongoing;
+    }
+
+    async Task EndTournament() {
+        await TournamentService.SetState(model.Data.Id.Value, Domain.Tournaments.TournamentState.Finished);
+        model.Data.State = Domain.Tournaments.TournamentState.Finished;
     }
 }
