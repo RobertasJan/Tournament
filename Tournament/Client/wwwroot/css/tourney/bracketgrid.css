@@ -81,42 +81,85 @@
         top: 50%;
     }
 
-
-.bracket-1 .team-item:nth-of-type(odd):after {
+.grid16 > .bracket-1 .team-item:nth-of-type(odd):after {
     height: 100%;
     top: 50%;
 }
 
-.bracket-1 .team-item:nth-of-type(even):after {
+.grid16 > .bracket-1 .team-item:nth-of-type(even):after {
     height: 50%;
     top: 0%;
 }
 
-.bracket-2 .team-item:nth-of-type(odd):after {
+.grid16 > .bracket-2 .team-item:nth-of-type(odd):after {
     height: 135%;
     top: 50%;
 }
 
-.bracket-2 .team-item:nth-of-type(even):after {
+.grid16 > .bracket-2 .team-item:nth-of-type(even):after {
     height: 135%;
     top: -85%;
 }
 
-.bracket-3 .team-item:nth-of-type(odd):after {
+.grid16 > .bracket-3 .team-item:nth-of-type(odd):after {
     height: 270%;
     top: 50%;
 }
 
-.bracket-3 .team-item:nth-of-type(even):after {
+.grid16 > .bracket-3 .team-item:nth-of-type(even):after {
     height: 270%;
     top: -220%;
 }
 
-.bracket:first-of-type .team-item:before {
+.grid16 > .bracket-4 .team-item:after {
     display: none;
 }
 
-.bracket-4 .team-item:after {
+.grid8 > .bracket-1 .team-item:nth-of-type(odd):after {
+    height: 100%;
+    top: 50%;
+}
+
+.grid8 > .bracket-1 .team-item:nth-of-type(even):after {
+    height: 50%;
+    top: 0%;
+}
+
+.grid8 > .bracket-2 .team-item:nth-of-type(odd):after {
+    height: 135%;
+    top: 50%;
+}
+
+.grid8 > .bracket-2 .team-item:nth-of-type(even):after {
+    height: 135%;
+    top: -85%;
+}
+
+.grid8 > .bracket-3 .team-item:after {
+    display: none;
+}
+
+.grid4 > .bracket-1 .team-item:nth-of-type(odd):after {
+    height: 100%;
+    top: 50%;
+}
+
+.grid4 > .bracket-1 .team-item:nth-of-type(even):after {
+    height: 50%;
+    top: 0%;
+}
+
+.grid4 > .bracket-2 .team-item:after {
+    display: none;
+}
+
+.grid2 > .bracket-1 .team-item:after {
+    display: none;
+}
+
+
+
+.bracket:first-of-type .team-item:before {
     display: none;
 }
 

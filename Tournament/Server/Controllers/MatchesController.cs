@@ -75,6 +75,10 @@ namespace Tournament.Server.Controllers
         {
             var match = await matchService.GetById(id, cancellationToken);
             match.ModifiedAt = DateTime.UtcNow;
+            if (model.Result != MatchResult.Undetermined && match.MatchEnd is null)
+            {
+                match.MatchEnd = DateTime.UtcNow;
+            }
             match.Record = model.Record;
             match.Result = model.Result;
             await matchService.Update(match, cancellationToken);

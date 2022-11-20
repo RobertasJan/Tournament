@@ -7,6 +7,7 @@ using Tournament.Domain.Tournaments;
 using Tournament.Domain.User;
 using Duende.IdentityServer.EntityFramework.Options;
 using Microsoft.Extensions.Options;
+using Tournament.Domain.Results;
 
 namespace Tournament.Infrastructure.Data;
 
@@ -26,6 +27,7 @@ public class AppDbContext : ApiAuthorizationDbContext<ApplicationUserEntity>
     public DbSet<TournamentEntity> Tournaments { get; set; }
     public DbSet<TournamentGroupEntity> TournamentGroups { get; set; }
     public DbSet<RegisteredPlayersEntity> RegisteredPlayers { get; set; }
+    public DbSet<ResultEntity> Results { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

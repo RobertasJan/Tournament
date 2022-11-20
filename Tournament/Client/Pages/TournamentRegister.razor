@@ -49,11 +49,11 @@
                         <MudItem xs="12">
                             @if (MatchType1 == MatchType.MixedDoubles)
                             {
-                                <AddPartner Player="Partner1" PartnerGender="Player.GetOppositeGender()" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+                                <AddPartner Player="Partner1" PlayerChanged="OnPartner1Changed" PartnerGender="Player.GetOppositeGender()" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
                             }
                             else if (MatchType1 == MatchType.MensDoubles || MatchType1 == MatchType.WomensDoubles)
                             {
-                                <AddPartner Player="Partner1" PartnerGender="Player.Gender" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+                                <AddPartner Player="Partner1" PlayerChanged="OnPartner1Changed" PartnerGender="Player.Gender" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
 
                             }
                         </MudItem>
@@ -89,11 +89,11 @@
                             <MudItem xs="12">
                                 @if (MatchType2 == MatchType.MixedDoubles)
                                 {
-                                    <AddPartner Player="Partner2" PartnerGender="Player.GetOppositeGender()" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+                                    <AddPartner Player="Partner2" PlayerChanged="OnPartner2Changed" PartnerGender="Player.GetOppositeGender()" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
                                 }
                                 else if (MatchType2 == MatchType.MensDoubles || MatchType2 == MatchType.WomensDoubles)
                                 {
-                                    <AddPartner Player="Partner2" PartnerGender="Player.Gender" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+                                    <AddPartner Player="Partner2" PlayerChanged="OnPartner2Changed" PartnerGender="Player.Gender" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
                                 }
                             </MudItem>
                             @if (!AddedGroup3)
@@ -130,11 +130,11 @@
                             <MudItem xs="12">
                                 @if (MatchType3 == MatchType.MixedDoubles)
                                 {
-                                    <AddPartner Player="Partner3" PartnerGender="Player.GetOppositeGender()" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+                                    <AddPartner Player="Partner3" PlayerChanged="OnPartner3Changed" PartnerGender="Player.GetOppositeGender()" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
                                 }
                                 else if (MatchType3 == MatchType.MensDoubles || MatchType3 == MatchType.WomensDoubles)
                                 {
-                                    <AddPartner Player="Partner3" PartnerGender="Player.Gender" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
+                                    <AddPartner Player="Partner3" PlayerChanged="OnPartner3Changed" PartnerGender="Player.Gender" PlayerId="Player.Id" TournamentId="model.Data.Id.Value"></AddPartner>
                                 }
                             </MudItem>
                             <MudItem xs="12">
@@ -150,42 +150,6 @@
                 </MudGrid>
             </MudPaper>
         </MudItem>
-        @*<AuthorizeView>
-    <Authorized>
-    <MudGrid>
-    <MudItem xs=12 sm="6">
-    <MudSelect @bind-Value="MatchType1" Label="Match type" Variant="Variant.Outlined">
-    @foreach (MatchType type in Enum.GetValues(typeof(MatchType)))
-    {
-    <MudSelectItem Value="@type">@type zaza</MudSelectItem>
-    }
-    </MudSelect>
-    </MudItem>
-    <MudItem xs="12" sm="6">
-    <MudSelect @bind-Value="Group1" Label="Group" Variant="Variant.Outlined">
-    @foreach (TournamentGroupTypes type in Enum.GetValues(typeof(TournamentGroupTypes)))
-    {
-    <MudSelectItem Value="@type">@type zaza</MudSelectItem>
-    }
-    </MudSelect>
-    </MudItem>
-    </MudGrid>
-    </Authorized>
-    <NotAuthorized>
-    <MudLink Href="login">
-    <MudButton Variant="Variant.Text"
-    Color="Color.Secondary">
-    LOGIN
-    </MudButton>
-    </MudLink>
-    <MudLink Href="register">
-    <MudButton Variant="Variant.Text"
-    Color="Color.Secondary">
-    REGISTER
-    </MudButton>
-    </MudLink>
-    </NotAuthorized>
-    </AuthorizeView>*@
     </MudGrid>
 
 }
@@ -291,6 +255,24 @@
         Partner3 = null;
         MatchType1 = Player.GetGenderMatchTypes(model.Data.GetMatchTypes()).First();
         StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task OnPartner1Changed(PlayerModel player)
+    {
+        Partner1 = player;
+        return Task.CompletedTask;
+    }
+
+    private Task OnPartner2Changed(PlayerModel player)
+    {
+        Partner2 = player;
+        return Task.CompletedTask;
+    }
+
+    private Task OnPartner3Changed(PlayerModel player)
+    {
+        Partner3 = player;
         return Task.CompletedTask;
     }
 

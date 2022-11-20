@@ -66,6 +66,7 @@ namespace Tournament.Domain.Services.Games
         public async Task Update(MatchEntity entity, CancellationToken cancellationToken)
         {
             _db.Update(entity);
+            
             await _db.SaveChangesAsync(cancellationToken);
         }
 
@@ -74,7 +75,7 @@ namespace Tournament.Domain.Services.Games
 
             var matches = _db.Matches.Include(x => x.PlayersMatches).Include(x => x.MatchesGroup)
                 .Where(x => x.MatchesGroup.TournamentGroupId == tournamentGroupId
-                    && x.PlayersMatches.Count < 2
+                    && (x.PlayersMatches.Where(x => x.Team == Team.Team1).Count() == 0 || x.PlayersMatches.Where(x => x.Team == Team.Team2).Count() == 0)
                     && x.Result == MatchResult.Undetermined
                     && x.Record == MatchRecord.ToBePlayed).ToList();
 
@@ -83,13 +84,8 @@ namespace Tournament.Domain.Services.Games
                 if (await CanAdvanceToNextGroup(match.MatchesGroupId.Value))
                 {
                     var playerMatch = match.PlayersMatches.FirstOrDefault();
-                    if (playerMatch is null) {
-                        match.Result = MatchResult.Undetermined;
-                    }
-                    else
-                    {
-                        match.Result = playerMatch.Team == Team.Team1 ? MatchResult.Team1Victory : MatchResult.Team2Victory;
-                    }
+     
+                    match.Result = playerMatch.Team == Team.Team1 || playerMatch is null ? MatchResult.Team1Victory : MatchResult.Team2Victory;
                     match.Record = MatchRecord.Bye;
                     match.ModifiedAt = DateTime.UtcNow;
                     _db.Update(match);
@@ -125,7 +121,7 @@ namespace Tournament.Domain.Services.Games
             var winners = match.Result == MatchResult.Team1Victory ? match.PlayersMatches.Where(x => x.Team == Team.Team1) : match.PlayersMatches.Where(x => x.Team == Team.Team2);
             var losers = match.Result == MatchResult.Team1Victory ? match.PlayersMatches.Where(x => x.Team == Team.Team2) : match.PlayersMatches.Where(x => x.Team == Team.Team1);
 
-
+            
             if (winnerMatchGroup != null)
             {
                 var nextMatch = winnerMatchGroup.Matches.First(x => x.GroupPosition == nextPositionGroup);

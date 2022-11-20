@@ -2,6 +2,7 @@
 using Microsoft.JSInterop;
 using System.Net;
 using Tournament.Client.Pages;
+using Tournament.Domain.Players;
 using Tournament.Domain.Tournaments;
 using Tournament.Server.Models;
 using Tournament.Shared.Games;
@@ -74,8 +75,21 @@ namespace Tournament.Client.Services
             var httpResponse = await _client.GetAsync(routeParams, cancellationToken).ConfigureAwait(false);
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
-                var tournaments = await httpResponse.Content.ReadAsAsync<ICollection<RegisteredPlayersModel>>(cancellationToken).ConfigureAwait(false);
-                return tournaments;
+                var players = await httpResponse.Content.ReadAsAsync<ICollection<RegisteredPlayersModel>>(cancellationToken).ConfigureAwait(false);
+                return players;
+            }
+            throw new NotImplementedException("No error handling");
+        }
+
+        public async Task<ICollection<TournamentPlayerModel>> GetAggregatedRegisteredPlayers(Guid tournamentId, Guid? tournamentGroupId = null)
+        {
+            var cancellationToken = new CancellationTokenSource().Token;
+            var routeParams = tournamentGroupId is null ? $"api/tournaments/{tournamentId}/players/aggregated" : $"api/tournaments/{tournamentId}/groups/{tournamentGroupId}/players/aggregated";
+            var httpResponse = await _client.GetAsync(routeParams, cancellationToken).ConfigureAwait(false);
+            if (httpResponse.StatusCode == HttpStatusCode.OK)
+            {
+                var players = await httpResponse.Content.ReadAsAsync<ICollection<TournamentPlayerModel>>(cancellationToken).ConfigureAwait(false);
+                return players;
             }
             throw new NotImplementedException("No error handling");
         }

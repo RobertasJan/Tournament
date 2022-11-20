@@ -2,9 +2,12 @@
 using Microsoft.JSInterop;
 using System.Net;
 using System.Text.Json;
+using Tournament.Domain.Games;
 using Tournament.Domain.Players;
 using Tournament.Shared.Players;
+using Tournament.Shared.Results;
 using Tournament.Shared.Tournaments;
+using MatchType = Tournament.Domain.Games.MatchType;
 
 namespace Tournament.Client.Services
 {
@@ -56,6 +59,20 @@ namespace Tournament.Client.Services
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
                 return await httpResponse.Content.ReadAsAsync<ICollection<PlayerModel>>(cancellationToken).ConfigureAwait(false);
+
+            }
+            throw new NotImplementedException("No error handling");
+        }
+
+        public async Task<ICollection<ResultModel>> GetResults(Guid playerId, MatchType matchType)
+        {
+            var cancellationToken = new CancellationTokenSource().Token;
+            QueryString queryString = new QueryString();
+            queryString = queryString.Add(nameof(matchType), ((int)matchType).ToString());
+            var httpResponse = await _client.GetAsync($"api/players/{playerId}/results/{queryString.Value}", cancellationToken).ConfigureAwait(false);
+            if (httpResponse.StatusCode == HttpStatusCode.OK)
+            {
+                return await httpResponse.Content.ReadAsAsync<ICollection<ResultModel>>(cancellationToken).ConfigureAwait(false);
 
             }
             throw new NotImplementedException("No error handling");

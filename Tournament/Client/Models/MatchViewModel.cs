@@ -10,8 +10,6 @@ namespace Tournament.Client.Models
 {
     public class MatchViewModel
     {
-        public Guid MatchId { get; set; } = Guid.Empty;
-
         public string Player1 { get; set; } = "Player 1";
         public string Player2 { get; set; } = "Player 2";
         public string Player3 { get; set; } = "Player 3";
@@ -37,6 +35,7 @@ namespace Tournament.Client.Models
             if (matchModel != null)
             {
                 Data = matchModel;
+
                 this.GameList = games;
                 if (GameList.Count > 0)
                 {
@@ -92,6 +91,7 @@ namespace Tournament.Client.Models
                     Player2 = matchModel.Team1?.Player2Name;
                     Player3 = matchModel.Team2?.Player1Name;
                     Player4 = matchModel.Team2?.Player2Name;
+                    ServeLocation = CourtLocation.SW;
                     GameList = new List<GameModel>() { CurrentGame };
                     FirstGame = true;
                 }
@@ -210,13 +210,13 @@ namespace Tournament.Client.Models
                     Team1Switched = CurrentGame.Team1Switched,
                     Team2Switched = CurrentGame.Team2Switched,
                     Team1LeftSide = CurrentGame.Team1LeftSide,
-                }, MatchId);
+                }, Data.Id);
                 Request = false;
             }
             else
             {
                 Request = true;
-                CurrentGame.Id = await service.CreateGame(new GameModel(), MatchId);
+                CurrentGame.Id = await service.CreateGame(new GameModel(), Data.Id);
                 Request = false;
             }
         }
@@ -291,7 +291,6 @@ namespace Tournament.Client.Models
                 {
                     Team1LeftSide = !Team1LeftSide,
                 };
-                Team1LeftSide = !Team1LeftSide;
                 if ((Team1LeftSide && previousResult == GameResult.Team1Victory) || (!Team1LeftSide && previousResult == GameResult.Team2Victory))
                 {
                     ServeLocation = CourtLocation.NE;
@@ -300,6 +299,8 @@ namespace Tournament.Client.Models
                 {
                     ServeLocation = CourtLocation.SW;
                 }
+                Team1LeftSide = !Team1LeftSide;
+
                 GameList.Add(CurrentGame);
                 EndGame = false;
                 FirstGame = false;

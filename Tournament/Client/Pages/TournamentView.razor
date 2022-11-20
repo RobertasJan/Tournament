@@ -1,4 +1,5 @@
 ﻿@page "/tournament/{Id:guid}"
+@using Tournament.Domain.Players;
 @using Tournament.Shared.Players
 @using Tournament.Shared.Tournaments
 
@@ -19,10 +20,11 @@
                     <MudText Typo="Typo.body2" GutterBottom="true">@model.Data.LongDescription</MudText>
                 </MudTabPanel>
                 <MudTabPanel Text="Players">
-                    <MudDataGrid T="RegisteredPlayersModel" Items="model.Players" Filterable="true">
+                    <MudDataGrid T="TournamentPlayerModel" Items="model.TournamentPlayers" Filterable="true">
                         <Columns>
-                            <SelectColumn T="RegisteredPlayersModel" />
-                            <Column T="RegisteredPlayersModel" Field="Player1Name" Title="Name"/>
+                            <Column T="TournamentPlayerModel" Field="PlayerName" Title="Player"/>
+                            <Column T="TournamentPlayerModel" Field="PartnerDoublesName" Title="Doubles partner" />
+                            <Column T="TournamentPlayerModel" Field="PartnerMixedName" Title="Mixed partner" />
                         </Columns>
                     </MudDataGrid>
                 </MudTabPanel>
@@ -106,6 +108,7 @@
         IsAdmin = await UserService.IsAdmin();
         model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
         model.Players = await TournamentService.GetRegisteredPlayers(Id);
+        model.TournamentPlayers = await TournamentService.GetAggregatedRegisteredPlayers(Id);
         model.UpcomingMatches = await TournamentService.GetUpcomingMatches(Id);
     }
 

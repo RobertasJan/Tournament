@@ -33,9 +33,9 @@ namespace Tournament.Server.Models
                         _team1 = new MatchTeamModel()
                         {
                             Player1Id = player1?.PlayerId,
-                            Player1Name = player1?.Player?.FullName,
+                            Player1Name = player1?.Player?.ShortenedFullName,
                             Player2Id = player2?.PlayerId,
-                            Player2Name = player2?.Player?.FullName,
+                            Player2Name = player2?.Player?.ShortenedFullName,
                         };
                     }
                 }
@@ -63,9 +63,9 @@ namespace Tournament.Server.Models
                         _team2 = new MatchTeamModel()
                         {
                             Player1Id = player1?.PlayerId,
-                            Player1Name = player1?.Player?.FullName,
+                            Player1Name = player1?.Player?.ShortenedFullName,
                             Player2Id = player2?.PlayerId,
-                            Player2Name = player2?.Player?.FullName,
+                            Player2Name = player2?.Player?.ShortenedFullName,
                         };
                     }
                 }

@@ -2,26 +2,7 @@
 
 @if (model != null && model.TournamentRounds != null)
 {
-    @if (model.CountOfRounds == 6)
-    {
-        <link href="css/tourney/64grid.css" rel="stylesheet" />
-    }
-    else if (model.CountOfRounds == 5)
-    {
-        <link href="css/tourney/32grid.css" rel="stylesheet" />
-    }
-    else if (model.CountOfRounds == 4)
-    {
-        <link href="css/tourney/16grid.css" rel="stylesheet" />
-    }
-    else if (model.CountOfRounds == 3) 
-    {
-        <link href="css/tourney/8grid.css" rel="stylesheet" />
-    }
-    else 
-    {
-        <link href="css/tourney/4grid.css" rel="stylesheet" />
-    }
+    <link href="css/tourney/bracketgrid.css" rel="stylesheet" />
     <div class="tournament-container">
         <div class="tournament-headers">
             @for (var i = 0; i < model.CountOfRounds; i++) 
@@ -32,16 +13,23 @@
         @{
             var countOfPositions = (int)Math.Pow(2, model.CountOfRounds);
             var matchesCount = countOfPositions / 2;
+            var allMatches = model.GroupAsList();
         }
-
 
         @for (var i = 0; i < matchesCount; i++)
         {
-            <div class="tournament-brackets">
+            var gridCount = allMatches.Where(x => x.GroupName == i).Count();
+            var bracketCount = 0;
+            <div class="tournament-brackets grid@(gridCount+1)">
                 @for (var j = 0; j < model.CountOfRounds; j++)
                 {
-                    var matches = model.GroupAsList().Where(x => x.Round == j && x.GroupName == i);
-                    <ul class="bracket bracket-@(j+1)">
+                    var matches = allMatches.Where(x => x.Round == j && x.GroupName == i);
+                    var copyOfJ = j;
+                    if (matches.Count() != 0)
+                    {
+                        bracketCount++;
+                    }
+                    <ul class="bracket bracket-@(bracketCount)">
                         @foreach (var match in matches.OrderBy(x => x.GroupPosition))
                         {
                             <li class="team-item">
@@ -53,12 +41,14 @@
                                         }
                                         @if (match.Result == Domain.Games.MatchResult.Team1Victory) {
                                             <span class="table-victor">
-                                                @match.Team1?.Player1Name @match.Team1?.Player2Name
+                                                <BracketPlayerName PlayerId="@match.Team1?.Player1Id" PlayerName="@match.Team1?.Player1Name"></BracketPlayerName>
+                                                <BracketPlayerName PlayerId="@match.Team1?.Player2Id" PlayerName="@match.Team1?.Player2Name"></BracketPlayerName>
                                             </span>
                                         }
                                         else
                                         {
-                                            @match.Team1?.Player1Name @match.Team1?.Player2Name
+                                            <BracketPlayerName PlayerId="@match.Team1?.Player1Id" PlayerName="@match.Team1?.Player1Name"></BracketPlayerName>
+                                            <BracketPlayerName PlayerId="@match.Team1?.Player2Id" PlayerName="@match.Team1?.Player2Name"></BracketPlayerName>
                                         }
                                         </MudItem>
                                     <MudItem xs="2">@*<time>@DisplayTime(match.MatchDate)</time>*@ @match.Record 
@@ -71,24 +61,32 @@
                                         @if (match.Result == Domain.Games.MatchResult.Team2Victory) 
                                         {
                                             <span class="table-victor">
-                                            @match.Team2?.Player1Name @match.Team2?.Player2Name
+                                                <BracketPlayerName PlayerId="@match.Team2?.Player1Id" PlayerName="@match.Team2?.Player1Name"></BracketPlayerName>
+                                                <BracketPlayerName PlayerId="@match.Team2?.Player2Id" PlayerName="@match.Team2?.Player2Name"></BracketPlayerName>
                                             </span>
                                         }
                                         else 
                                         {
-                                            @match.Team2?.Player1Name @match.Team2?.Player2Name
+                                            <BracketPlayerName PlayerId="@match.Team2?.Player1Id" PlayerName="@match.Team2?.Player1Name"></BracketPlayerName>
+                                            <BracketPlayerName PlayerId="@match.Team2?.Player2Id" PlayerName="@match.Team2?.Player2Name"></BracketPlayerName>
                                         }
-                                        @(matches.Count() == 1 ? $"BF({i * 2 + 1}-{i * 2 + 2})" : "")
                                     </MudItem xs="12">
+                                    <MudItem Class="table-game-score pl-2" xs="6">
                                         @if (match.Record == Domain.Games.MatchRecord.Played)
                                         {
-                                            <MudItem Class="table-game-score" xs="12">
                                             @foreach (var game in match.Games)
                                             {
-                                                <span class="pl-3">@game.Team1Score:@game.Team2Score &nbsp;</span>
+                                                <span class="pl-1">@game.Team1Score:@game.Team2Score &nbsp;</span>
                                             }
-                                            </MudItem>
                                         }
+                                    </MudItem>
+                                    <MudItem Class="table-game-position" xs="6">
+                                        @{
+                                            var from = match.GroupName * 2 + 1;
+                                            var to = (from - 1) + (countOfPositions / allMatches.Where(x => x.Round == copyOfJ).DistinctBy(x => x.GroupName).Count());
+                                        }
+                                        <span class="pr-3">@($"P({from}-{to})")</span>
+                                    </MudItem>
                                     </MudGrid>
                             </li>
                         }

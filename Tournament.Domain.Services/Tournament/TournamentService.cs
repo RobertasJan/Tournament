@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Tournament.Domain.Calculation;
 using Tournament.Domain.Games;
 using Tournament.Domain.Players;
+using Tournament.Domain.Results;
 using Tournament.Domain.Services.Games;
 using Tournament.Domain.Services.Players;
 using Tournament.Domain.Tournaments;
@@ -30,7 +31,6 @@ namespace Tournament.Domain.Services.Tournament
         Task StartDraws(Guid id, CancellationToken cancellationToken);
         Task StartTournament(Guid id, CancellationToken cancellationToken);
         Task FinishTournament(Guid id, CancellationToken cancellationToken);
-        Task EndTournament(Guid id, CancellationToken cancellationToken);
     }
 
 
@@ -63,7 +63,7 @@ namespace Tournament.Domain.Services.Tournament
         }
 
         public async Task<ICollection<TournamentEntity>> Get(CancellationToken cancellationToken)
-            => await _db.Tournaments.ToListAsync(cancellationToken);
+            => await _db.Tournaments.Where(x => x.Public).ToListAsync(cancellationToken);
 
         public async Task<TournamentEntity> GetById(Guid id, CancellationToken cancellationToken)
         {
@@ -123,7 +123,6 @@ namespace Tournament.Domain.Services.Tournament
             {
                 return;
             }
-
 
             for (var i = 0; i < matchesCount; i++)
             {
@@ -266,18 +265,49 @@ namespace Tournament.Domain.Services.Tournament
 
         public async Task FinishTournament(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var tournament = await GetById(id, cancellationToken);
+            foreach (var group in tournament.Groups)
+            {
+                await _matchService.SetByes(group.Id.Value, cancellationToken);
+            }
+            foreach (var group in tournament.Groups)
+            {
+                var groupPlayers = await _playerService.GetAggregatedTournamentPlayers(id, group.Id, cancellationToken);
+                foreach (var player in groupPlayers)
+                {
+                    var match = _db.Matches.Include(x => x.PlayersMatches).Include(x => x.MatchesGroup).Where(x => x.PlayersMatches.Any(y => y.PlayerId == player.PlayerId)).Where(x => x.MatchesGroup.TournamentGroupId == group.Id)
+                        .OrderByDescending(x => x.MatchEnd).First();
+
+                    var playerMatch = match.PlayersMatches.First(x => x.PlayerId == player.PlayerId);
+                    var team = playerMatch.Team;
+                    var position = match.MatchesGroup.GroupName * 2 + 1;
+                    if ((team != Team.Team1 || match.Result != MatchResult.Team1Victory)
+                        && (team != Team.Team2 || match.Result != MatchResult.Team2Victory))
+                    {
+                        position += 1;
+                    }
+
+                    _db.Results.Add(new ResultEntity()
+                    {
+                        CreatedAt = DateTime.UtcNow,
+                        ModifiedAt = DateTime.UtcNow,
+                        RatingPoints = 256 / (position+2),
+                        PlayerId = player.PlayerId,
+                        Position = position,
+                        TournamentGroupId = group.Id.Value
+                    });
+                }
+
+            }
+            tournament.State = TournamentState.Finished;
+            _db.Update(tournament);
+            await _db.SaveChangesAsync(cancellationToken);
         }
 
         public async Task Update(TournamentEntity tournament, CancellationToken cancellationToken)
         {
             _db.Update(tournament);
             await _db.SaveChangesAsync(cancellationToken);
-        }
-
-        public Task EndTournament(Guid id, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

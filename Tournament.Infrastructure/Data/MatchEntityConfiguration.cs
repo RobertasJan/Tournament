@@ -16,6 +16,7 @@ namespace Tournament.Infrastructure.Data
             builder.Property(x => x.PointsToFinalize).IsRequired();
             builder.Property(x => x.Type).IsRequired();
             builder.Property(x => x.Court);
+            builder.Property(x => x.MatchEnd);
 
             builder
              .HasMany(x => x.Games)

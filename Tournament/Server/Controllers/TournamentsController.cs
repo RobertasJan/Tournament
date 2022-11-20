@@ -73,6 +73,12 @@ namespace Tournament.Server.Controllers
             return Mapper.Map<ICollection<RegisteredPlayersModel>>(await playerService.GetTournamentPlayers(id, null, cancellationToken));
         }
 
+        [HttpGet("{id:Guid}/players/aggregated")]
+        public async Task<ICollection<TournamentPlayerModel>> GetPlayersAggregated([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            return await playerService.GetAggregatedTournamentPlayers(id, null, cancellationToken);
+        }
+
         [HttpGet("{id:Guid}/groups/{tournamentGroupId:Guid}/players")]
         public async Task<ICollection<RegisteredPlayersModel>> GetPlayers([FromRoute] Guid id, [FromRoute] Guid tournamentGroupId, CancellationToken cancellationToken)
         {
@@ -99,7 +105,7 @@ namespace Tournament.Server.Controllers
             }
             else if (model.State == TournamentState.Finished)
             {
-                await tournamentService.EndTournament(id, cancellationToken);
+                await tournamentService.FinishTournament(id, cancellationToken);
             }
             else
             {

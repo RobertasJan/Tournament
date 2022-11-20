@@ -232,7 +232,9 @@ namespace Tournament.Client.Models
                 {
                     var match = matches.Last();
                     match.Team1.Player1Name = playersOrdered.ElementAtOrDefault(match.Team1.Seed - 1)?.Player1Name;
+                    match.Team1.Player2Name = playersOrdered.ElementAtOrDefault(match.Team1.Seed - 1)?.Player2Name;
                     match.Team2.Player1Name = playersOrdered.ElementAtOrDefault(match.Team2.Seed - 1)?.Player1Name;
+                    match.Team2.Player2Name = playersOrdered.ElementAtOrDefault(match.Team2.Seed - 1)?.Player2Name;
                 }
             }
             return matches;

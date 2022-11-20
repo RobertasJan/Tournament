@@ -1,0 +1,10 @@
+﻿@if (PlayerId is not null) {
+    <a href="players/@PlayerId.Value">
+        <div class="table-player-name">@PlayerName</div>
+    </a>
+}
+
+@code {
+    [Parameter] public string? PlayerName { get; set; }
+    [Parameter] public Guid? PlayerId { get; set; }
+}

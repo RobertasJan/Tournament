@@ -43,6 +43,15 @@
     padding: 0px !important;
     text-align: left !important;
 }
+
+.table-game-position {
+    padding: 0px !important;
+    text-align: right !important;
+}
+
+.table-player-name {
+    white-space: nowrap;
+}
 /* Tournament tree */
 
 

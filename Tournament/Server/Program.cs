@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
 using Tournament.Domain.Services.Games;
 using Tournament.Domain.Services.Players;
+using Tournament.Domain.Services.Results;
 using Tournament.Domain.Services.Tournament;
 using Tournament.Domain.Services.User;
 using Tournament.Domain.User;
@@ -66,6 +67,7 @@ builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<ITournamentGroupService, TournamentGroupService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IResultService, ResultService>();
 
 builder.WebHost.UseStaticWebAssets();
 
