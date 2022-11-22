@@ -4,8 +4,8 @@
 @using Tournament.Client.Components.Match
 @using Tournament.Domain.Games
 
-<PageTitle>Match</PageTitle>
-<MudText Typo="Typo.h4" GutterBottom="true">Match</MudText>
+<PageTitle>@Loc["Label_Match"]</PageTitle>
+<MudText Typo="Typo.h4" GutterBottom="true">@Loc["Label_Match"]</MudText>
 <MudOverlay Visible="match is null || match.Request" DarkBackground="false" AutoClose="false"></MudOverlay>
 <MudPaper Class="pa-5" Style="background-color: var(--color-court); min-height: 40vh;">
     <MudGrid>

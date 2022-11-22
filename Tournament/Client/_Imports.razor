@@ -6,8 +6,10 @@
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.AspNetCore.Components.WebAssembly.Http
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.Extensions.Localization;
 @using Microsoft.JSInterop
 @using Tournament.Client
+@using Tournament.Client.Localization;
 @using Tournament.Client.Shared
 @using MudBlazor
 @using Tournament.Client.Models
@@ -18,3 +20,4 @@
 
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
+@inject IStringLocalizer<Resource> Loc

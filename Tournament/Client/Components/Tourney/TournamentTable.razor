@@ -7,7 +7,7 @@
     <MudSimpleTable Dense="true" Striped="true" Bordered="true">
         <thead>
             <tr>
-                <th>Group</th>
+                <th>@Loc["Label_Group"]</th>
                 @foreach (var type in GetMatchTypes())
                 {
                     <th>@type.ToString()</th>

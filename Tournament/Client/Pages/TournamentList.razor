@@ -1,4 +1,4 @@
-﻿@page "/players"
+﻿@page "/tournaments"
 @using Tournament.Shared.Players
 
 <PageTitle>Players</PageTitle>
@@ -6,7 +6,7 @@
 <MudGrid>
     <MudItem xs="12">
         <MudGrid>
-            <MudItem xs="12" sm="4">        
+            <MudItem xs="12" sm="4">
                 <MudTextField T="string" @bind-Text="searchText" Label="Search" Variant="Variant.Text" OnKeyPress="OnEnterKey"></MudTextField>
             </MudItem>
             <MudItem xs="12" sm="4">
@@ -17,7 +17,7 @@
     <MudItem xs="12">
         <MudDataGrid T="PlayerModel" Items="players">
             <Columns>
-                <Column T="PlayerModel" Field="FullName" Title="@Loc["Label_Name2"]">
+                <Column T="PlayerModel" Field="FullName" Title="Name">
                     <CellTemplate>
                         @{
                             var href = $"players/{@context.Item.Id}";
@@ -25,11 +25,10 @@
                         <MudLink Href="@href">@context.Item.FullName</MudLink>
                     </CellTemplate>
                 </Column>
-                <Column T="PlayerModel" Field="Gender" Title="@Loc["Label_Gender"]" />
-                <Column T="PlayerModel" Field="BirthDate" Title="@Loc["Label_BirthDate"]" />
-                <Column T="PlayerModel" Field="RatingSingles" Title="@Loc["Label_Rating_Singles"]" />
-                <Column T="PlayerModel" Field="RatingDoubles" Title="@Loc["Label_Rating_Doubles"]" />
-                <Column T="PlayerModel" Field="RatingMixed" Title="@Loc["Label_Rating_Mixed"]" />
+                <Column T="PlayerModel" Field="Gender" Title="Gender" />
+                <Column T="PlayerModel" Field="BirthDate" Title="Birth date" />
+                <Column T="PlayerModel" Field="RatingSingles" Title="Rating" />
+                <Column T="PlayerModel" Field="PositionSinglesString" Title="Rating" />
             </Columns>
         </MudDataGrid>
     </MudItem>
@@ -43,13 +42,16 @@
 
     IEnumerable<PlayerModel> players { get; set; }
 
-    private async Task OnEnterKey(KeyboardEventArgs args) {
-        if (args.Key == "Enter") {
+    private async Task OnEnterKey(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
             _ = Search();
         }
     }
 
-    private async Task Search() {
+    private async Task Search()
+    {
         players = await PlayerService.GetPlayers(searchText: searchText);
     }
 

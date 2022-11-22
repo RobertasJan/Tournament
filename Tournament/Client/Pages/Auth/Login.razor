@@ -11,17 +11,17 @@
     <MudItem xs="0" sm="3"></MudItem>
     <MudItem xs="12" sm="6">
         <MudPaper Class="pa-2" Elevation="3">
-            <MudText Typo="Typo.subtitle2">Login</MudText>
+            <MudText Typo="Typo.subtitle2">@Loc["Header_Login"]</MudText>
             <MudGrid>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="user.Email" Label="Enter email" Variant="Variant.Text" InputType="InputType.Email" Required="true" RequiredError="Email is required!"></MudTextField>
+                    <MudTextField @bind-Value="user.Email" Label="@Loc["Label_Email"]" Variant="Variant.Text" InputType="InputType.Email" Required="true" RequiredError="Email is required!"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="user.Password" Label="Enter password" Variant="Variant.Text" InputType="InputType.Password" Required="true" RequiredError="Password is required!"></MudTextField>
+                    <MudTextField @bind-Value="user.Password" Label="@Loc["Label_Password"]" Variant="Variant.Text" InputType="InputType.Password" Required="true" RequiredError="Password is required!"></MudTextField>
                 </MudItem>
               
                 <MudItem xs="12">
-                    <MudButton Class="mt-4" Variant="Variant.Filled" Disabled="isDisabled" Color="Color.Primary" FullWidth="true" OnClick="@(async () => await DoLogin())">Login</MudButton>
+                    <MudButton Class="mt-4" Variant="Variant.Filled" Disabled="isDisabled" Color="Color.Primary" FullWidth="true" OnClick="@(async () => await DoLogin())">@Loc["Header_Login"]</MudButton>
                 </MudItem>
                 <p>@message</p>
             </MudGrid>

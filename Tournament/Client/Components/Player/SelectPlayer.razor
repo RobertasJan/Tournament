@@ -1,7 +1,7 @@
 ﻿@using Tournament.Domain.Players
 @using Tournament.Shared.Players
 
-<MudAutocomplete T="PlayerModel" Label="Player" ValueChanged="OnPlayerChanged" SearchFunc="@SearchPlayer" ToStringFunc="@(e => e== null ? null : $"{e.FullName}")">
+<MudAutocomplete T="PlayerModel" Label="@Loc["Label_Player"]" ValueChanged="OnPlayerChanged" SearchFunc="@SearchPlayer" ToStringFunc="@(e => e== null ? null : $"{e.FullName}")">
     <ItemTemplate Context="e">
         <MudText>@e.FullName</MudText>
     </ItemTemplate>

@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.Identity
+@using Tournament.Client.Components.Culture
 @using Tournament.Domain.User
 @inherits LayoutComponentBase
 
@@ -11,6 +12,8 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
+        <CultureSelector />
+
         <Tournament.Client.Pages.UserComponent />
 
         @* <AuthorizeView>

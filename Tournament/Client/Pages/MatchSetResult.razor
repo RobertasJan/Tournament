@@ -6,17 +6,17 @@
 @using Tournament.Server.Models;
 @using Tournament.Shared.Games;
 
-<PageTitle>Match</PageTitle>
+<PageTitle>@Loc["Label_Match"]</PageTitle>
 <MudForm @ref="@form" @bind-IsValid="@success">
     @if (Match is not null)
     {
         <MudGrid>
         <MudItem xs="12">
         <MudPaper Class="pa-2" Elevation="3">
-            <MudText Typo="Typo.subtitle1">Games</MudText>
+            <MudText Typo="Typo.subtitle1">@Loc["Label_Games"]</MudText>
             <MudGrid>
-                <MudItem xs="6">Team 1 @Match.Team1.Player1Name @Match.Team1.Player2Name</MudItem>
-                <MudItem xs="6">Team 2 @Match.Team2.Player1Name @Match.Team2.Player2Name</MudItem>
+                <MudItem xs="6">@Loc["Label_Team1"] @Match.Team1.Player1Name @Match.Team1.Player2Name</MudItem>
+                <MudItem xs="6">@Loc["Label_Team2"] @Match.Team2.Player1Name @Match.Team2.Player2Name</MudItem>
                 @{
                     var i = 0;
                 }
@@ -25,25 +25,25 @@
                     <MudItem xs="12">
                         <MudText Typo="Typo.subtitle2">@(
                            ++i
-                           ) Game</MudText>
+                           ) @Loc["Label_Game"]</MudText>
                        </MudItem>
                     <MudItem xs="6"><MudNumericField @bind-Value="game.Team1Score" Label="Team 1 score" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
                     <MudItem xs="6"><MudNumericField @bind-Value="game.Team2Score" Label="Team 2 score" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
                 }
                 @if (Games.Count < MaxGameCount)
                 {
-                    <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await AddGame())" FullWidth="true">Add game</MudButton>
+                    <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await AddGame())" FullWidth="true">@Loc["Label_AddGame"]</MudButton>
                 }
                 @if (Games.Count > Match.GamesToWin)
                 {
-                    <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Warning" OnClick="@(async () => await RemoveGame())" FullWidth="true">Remove game</MudButton>
+                    <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Warning" OnClick="@(async () => await RemoveGame())" FullWidth="true">@Loc["Label_RemoveGame"]</MudButton>
                 }
             </MudGrid>
         </MudPaper>
         </MudItem>
         <MudItem xs="12">
             <MudPaper Class="pa-2" Elevation="3">
-                <MudText Typo="Typo.subtitle2">Match ending</MudText>
+                <MudText Typo="Typo.subtitle2">@Loc["Label_MatchEnding"]</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6">
                         <MudSelect @bind-Value="Match.Result" Label="Result" Variant="Variant.Outlined">
@@ -53,10 +53,10 @@
                     </MudItem>
                     <MudItem xs="12" sm="6">
                         <MudSelect @bind-Value="Match.Record" Label="Record" Variant="Variant.Outlined">
-                            <MudSelectItem Value="MatchRecord.Played">Played</MudSelectItem>
-                            <MudSelectItem Value="MatchRecord.Disqualified">Disqualified</MudSelectItem>
-                            <MudSelectItem Value="MatchRecord.Walkover">Walkover</MudSelectItem>
-                            <MudSelectItem Value="MatchRecord.Injury">Injury</MudSelectItem>
+                            <MudSelectItem Value="MatchRecord.Played">@Loc["Enum_MatchRecord_Played"]</MudSelectItem>
+                            <MudSelectItem Value="MatchRecord.Disqualified">@Loc["Enum_MatchRecord_Disqualified"]</MudSelectItem>
+                            <MudSelectItem Value="MatchRecord.Walkover">@Loc["Enum_MatchRecord_Walkover"]</MudSelectItem>
+                            <MudSelectItem Value="MatchRecord.Injury">@Loc["Enum_MatchRecord_Injury"]</MudSelectItem>
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="12" sm="6"></MudItem>
@@ -64,7 +64,7 @@
                 </MudGrid>
             </MudPaper>
         </MudItem>
-        <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" FullWidth="true">Set score</MudButton>
+            <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" FullWidth="true">@Loc["Label_SetScore"]</MudButton>
         </MudGrid>
     }
 </MudForm>
