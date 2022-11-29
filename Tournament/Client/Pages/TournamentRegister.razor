@@ -34,7 +34,7 @@
                             <MudSelect @bind-Value="MatchType1" Label="Match type" Variant="Variant.Outlined">
                                 @foreach (MatchType type in Player.GetGenderMatchTypes(model.Data.GetMatchTypes()))
                                 {
-                                    <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                    <MudSelectItem Value="@type">@Loc[$"Enum_MatchType_{type}"]</MudSelectItem>
                                 }
                             </MudSelect>
                         </MudItem>
@@ -42,7 +42,7 @@
                             <MudSelect @bind-Value="Group1" Label="Group" Variant="Variant.Outlined">
                                 @foreach (TournamentGroupTypes type in model.Data.GetGroupTypes())
                                 {
-                                    <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                    <MudSelectItem Value="@type">@type</MudSelectItem>
                                 }
                             </MudSelect>
                         </MudItem>
@@ -63,7 +63,7 @@
                             @if (Player.GetGenderMatchTypes(model.Data.GetMatchTypes()).Where(x => x != MatchType1).Count() > 0)
                             {
                                 <MudItem xs="12">
-                                    <MudButton OnClick="AddGroup2" Variant="Variant.Filled" Color="Color.Primary">Add group</MudButton>
+                                    <MudButton OnClick="AddGroup2" Variant="Variant.Filled" Color="Color.Primary">@Loc["Label_AddGroup"]</MudButton>
                                 </MudItem>
                             }
                         }
@@ -74,7 +74,7 @@
                                 <MudSelect @bind-Value="MatchType2" Label="Match type" Variant="Variant.Outlined">
                                     @foreach (MatchType type in Player.GetGenderMatchTypes(model.Data.GetMatchTypes()).Where(x => x != MatchType1 && (!AddedGroup3 || x != MatchType3)))
                                     {
-                                        <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                        <MudSelectItem Value="@type">@Loc[$"Enum_MatchType_{type}"]</MudSelectItem>
                                     }
                                 </MudSelect>
                             </MudItem>
@@ -82,7 +82,7 @@
                                 <MudSelect @bind-Value="Group2" Label="Group" Variant="Variant.Outlined">
                                     @foreach (TournamentGroupTypes type in model.Data.GetGroupTypes())
                                     {
-                                        <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                        <MudSelectItem Value="@type">@type</MudSelectItem>
                                     }
                                 </MudSelect>
                             </MudItem>
@@ -101,9 +101,9 @@
                                 <MudItem xs="12">
                                     @if (Player.GetGenderMatchTypes(model.Data.GetMatchTypes()).Where(x => x != MatchType1 && x != MatchType2).Count() > 0)
                                     {
-                                        <MudButton OnClick="AddGroup3" Variant="Variant.Filled" Color="Color.Primary">Add group</MudButton>
+                                        <MudButton OnClick="AddGroup3" Variant="Variant.Filled" Color="Color.Primary">@Loc["Label_AddGroup"]</MudButton>
                                     }
-                                    <MudButton OnClick="RemoveGroup2" Variant="Variant.Filled" Color="Color.Secondary">Remove group</MudButton>
+                                    <MudButton OnClick="RemoveGroup2" Variant="Variant.Filled" Color="Color.Secondary">@Loc["Label_RemoveGroup"]</MudButton>
                                 </MudItem>
                             }
                         }
@@ -115,7 +115,7 @@
                                 <MudSelect @bind-Value="MatchType3" Label="Match type" Variant="Variant.Outlined">
                                     @foreach (MatchType type in Player.GetGenderMatchTypes(model.Data.GetMatchTypes()).Where(x => x != MatchType1 && x != MatchType2))
                                     {
-                                        <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                        <MudSelectItem Value="@type">@Loc[$"Enum_MatchType_{type}"]</MudSelectItem>
                                     }
                                 </MudSelect>
                             </MudItem>
@@ -123,7 +123,7 @@
                                 <MudSelect @bind-Value="Group3" Label="Group" Variant="Variant.Outlined">
                                     @foreach (TournamentGroupTypes type in model.Data.GetGroupTypes())
                                     {
-                                        <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                        <MudSelectItem Value="@type">@type</MudSelectItem>
                                     }
                                 </MudSelect>
                             </MudItem>
@@ -138,13 +138,13 @@
                                 }
                             </MudItem>
                             <MudItem xs="12">
-                                <MudButton OnClick="RemoveGroup3" Variant="Variant.Filled" Color="Color.Secondary">Remove group</MudButton>
+                                <MudButton OnClick="RemoveGroup3" Variant="Variant.Filled" Color="Color.Secondary">@Loc["Label_RemoveGroup"]</MudButton>
                             </MudItem>
                         }
 
                         <MudDivider></MudDivider>
                         <MudItem xs="12">
-                            <MudButton OnClick="AddMatch" Variant="Variant.Filled" Color="Color.Primary">Register</MudButton>
+                            <MudButton OnClick="AddMatch" Variant="Variant.Filled" Color="Color.Primary">@Loc["Label_Register"]</MudButton>
                         </MudItem>
                     }
                 </MudGrid>

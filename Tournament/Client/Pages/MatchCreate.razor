@@ -13,7 +13,7 @@
                 <MudText Typo="Typo.subtitle2">@Loc["Label_MatchRules"]</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6" md="4">
-                        <MudSelect @bind-Value="model.Type" Label="Match type" Variant="Variant.Outlined">
+                        <MudSelect @bind-Value="model.Type" Label="@Loc["Label_MatchType"]" Variant="Variant.Outlined">
                             @foreach (MatchType type in Enum.GetValues(typeof(MatchType)))
                             {
                                 <MudSelectItem Value="@type">@Loc[$"Enum_MatchType_{type}"]</MudSelectItem>
@@ -21,14 +21,14 @@
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="12" sm="6" md="4">
-                        <MudSelect @bind-Value="model.PointsToWin" Label="Points to win" Variant="Variant.Outlined">
+                        <MudSelect @bind-Value="model.PointsToWin" Label="@Loc["Label_PointsToWin"]" Variant="Variant.Outlined">
                             <MudSelectItem Value="11">11 (deuce 15)</MudSelectItem>
                             <MudSelectItem Value="15">15 (deuce 17)</MudSelectItem>
                             <MudSelectItem Value="21">21 (deuce 30)</MudSelectItem>
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="12" sm="6" md="4">
-                        <MudSelect @bind-Value="model.GamesToWin" Label="Games to win" Variant="Variant.Outlined">
+                        <MudSelect @bind-Value="model.GamesToWin" Label="@Loc["Label_GamesToWin"]" Variant="Variant.Outlined">
                             <MudSelectItem Value="1">@Loc["Label_BestOf1"]</MudSelectItem>
                             <MudSelectItem Value="2">@Loc["Label_BestOf3"]</MudSelectItem>
                             <MudSelectItem Value="3">@Loc["Label_BestOf5"]</MudSelectItem>

@@ -9,16 +9,16 @@
             <MudText Typo="Typo.subtitle2">Login</MudText>
             <MudGrid>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="Name" Label="Enter email" Variant="Variant.Text" Required="true" RequiredError="Email is required!"></MudTextField>
+                    <MudTextField @bind-Value="Name" Label="@Loc["Label_Email"]" Variant="Variant.Text" Required="true" RequiredError="Email is required!"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="Password" Label="Enter password" Variant="Variant.Text" Required="true" RequiredError="Password is required!"></MudTextField>
+                    <MudTextField @bind-Value="Password" Label="@Loc["Label_Password"]" Variant="Variant.Text" Required="true" RequiredError="Password is required!"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="RepeatPassword" Label="Repeat password" Variant="Variant.Text" Required="true" RequiredError="Repeated password is required!"></MudTextField>
+                    <MudTextField @bind-Value="RepeatPassword" Label="@Loc["Label_RepeatPassword"]" Variant="Variant.Text" Required="true" RequiredError="Repeated password is required!"></MudTextField>
                 </MudItem>
             </MudGrid>
-            <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="@(async () => await Submit())">Register</MudButton>
+            <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="@(async () => await Submit())">@Loc["Label_Register"]</MudButton>
         </MudPaper>
     </MudItem>
     <MudItem xs="0" sm="3"></MudItem>

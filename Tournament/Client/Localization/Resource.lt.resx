@@ -117,11 +117,95 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Enum_Gender_1" xml:space="preserve">
-    <value>Vyras</value>
+  <data name="Calendar_DayAbr_0" xml:space="preserve">
+    <value>Se</value>
+  </data>
+  <data name="Calendar_DayAbr_1" xml:space="preserve">
+    <value>Pr</value>
+  </data>
+  <data name="Calendar_DayAbr_2" xml:space="preserve">
+    <value>An</value>
+  </data>
+  <data name="Calendar_DayAbr_3" xml:space="preserve">
+    <value>Tr</value>
+  </data>
+  <data name="Calendar_DayAbr_4" xml:space="preserve">
+    <value>Ke</value>
+  </data>
+  <data name="Calendar_DayAbr_5" xml:space="preserve">
+    <value>Pe</value>
+  </data>
+  <data name="Calendar_DayAbr_6" xml:space="preserve">
+    <value>Še</value>
+  </data>
+  <data name="Calendar_Day_0" xml:space="preserve">
+    <value>Sekmadienis</value>
+  </data>
+  <data name="Calendar_Day_1" xml:space="preserve">
+    <value>Pirmadienis</value>
+  </data>
+  <data name="Calendar_Day_2" xml:space="preserve">
+    <value>Antradienis</value>
+  </data>
+  <data name="Calendar_Day_3" xml:space="preserve">
+    <value>Trečiadienis</value>
+  </data>
+  <data name="Calendar_Day_4" xml:space="preserve">
+    <value>Ketvirtadienis</value>
+  </data>
+  <data name="Calendar_Day_5" xml:space="preserve">
+    <value>Penktadienis</value>
+  </data>
+  <data name="Calendar_Day_6" xml:space="preserve">
+    <value>Šeštadienis</value>
+  </data>
+  <data name="Calendar_Month_0" xml:space="preserve">
+    <value>Sausis</value>
+  </data>
+  <data name="Calendar_Month_1" xml:space="preserve">
+    <value>Vasaris</value>
+  </data>
+  <data name="Calendar_Month_10" xml:space="preserve">
+    <value>Lapkritis</value>
+  </data>
+  <data name="Calendar_Month_11" xml:space="preserve">
+    <value>Gruodis</value>
+  </data>
+  <data name="Calendar_Month_2" xml:space="preserve">
+    <value>Kovas</value>
+  </data>
+  <data name="Calendar_Month_3" xml:space="preserve">
+    <value>Balandis</value>
+  </data>
+  <data name="Calendar_Month_4" xml:space="preserve">
+    <value>Gegužė</value>
+  </data>
+  <data name="Calendar_Month_5" xml:space="preserve">
+    <value>Birželis</value>
+  </data>
+  <data name="Calendar_Month_6" xml:space="preserve">
+    <value>Liepa</value>
+  </data>
+  <data name="Calendar_Month_7" xml:space="preserve">
+    <value>Rugpjūtis</value>
+  </data>
+  <data name="Calendar_Month_8" xml:space="preserve">
+    <value>Rugsėjis</value>
+  </data>
+  <data name="Calendar_Month_9" xml:space="preserve">
+    <value>Spalis</value>
   </data>
   <data name="Enum_Gender_2" xml:space="preserve">
     <value>Moteris</value>
+  </data>
+  <data name="Enum_Gender_Female" xml:space="preserve">
+    <value>Moteris</value>
+  </data>
+  <data name="Enum_Gender_Male" xml:space="preserve">
+    <value>Vyras</value>
+  </data>
+  <data name="Enum_MatchRecord_Bye" xml:space="preserve">
+    <value>Bye</value>
   </data>
   <data name="Enum_MatchRecord_Disqualified" xml:space="preserve">
     <value>Diskvalifikacija</value>
@@ -165,14 +249,26 @@
   <data name="Header_Players" xml:space="preserve">
     <value>Žaidėjai</value>
   </data>
+  <data name="Header_PreviousTournaments" xml:space="preserve">
+    <value>Buvę turnyrai</value>
+  </data>
   <data name="Header_Register" xml:space="preserve">
     <value>Registruotis</value>
   </data>
   <data name="Header_Tournaments" xml:space="preserve">
     <value>Turnyrai</value>
   </data>
+  <data name="Header_UpcomingTournaments" xml:space="preserve">
+    <value>Artimiausi turnyrai</value>
+  </data>
   <data name="Label_AddGame" xml:space="preserve">
     <value>Pridėti žaidimą</value>
+  </data>
+  <data name="Label_AddGroup" xml:space="preserve">
+    <value>Pridėti grupę</value>
+  </data>
+  <data name="Label_Address" xml:space="preserve">
+    <value>Adresas</value>
   </data>
   <data name="Label_Badminton" xml:space="preserve">
     <value>Badmintonas</value>
@@ -181,7 +277,7 @@
     <value>Vieno žaidimo pergalė</value>
   </data>
   <data name="Label_BestOf3" xml:space="preserve">
-    <value>Dvejų žaidimų pergalė</value>
+    <value>Dviejų žaidimų pergalė</value>
   </data>
   <data name="Label_BestOf5" xml:space="preserve">
     <value>Trejų žaidimų pergalė</value>
@@ -189,14 +285,35 @@
   <data name="Label_BirthDate" xml:space="preserve">
     <value>Gimimo diena</value>
   </data>
+  <data name="Label_CreateTournament" xml:space="preserve">
+    <value>Sukurti turnyrą</value>
+  </data>
+  <data name="Label_Description" xml:space="preserve">
+    <value>Aprašymas</value>
+  </data>
+  <data name="Label_Doubles" xml:space="preserve">
+    <value>Dvejetai</value>
+  </data>
+  <data name="Label_DoublesPartner" xml:space="preserve">
+    <value>Dvejetų partneris</value>
+  </data>
   <data name="Label_Email" xml:space="preserve">
     <value>El. paštas</value>
+  </data>
+  <data name="Label_EndDate" xml:space="preserve">
+    <value>Pabaigos data</value>
+  </data>
+  <data name="Label_EndTournament" xml:space="preserve">
+    <value>Pabaigti turnyrą</value>
   </data>
   <data name="Label_Game" xml:space="preserve">
     <value>Žaidimas</value>
   </data>
   <data name="Label_Games" xml:space="preserve">
     <value>Žaidimai</value>
+  </data>
+  <data name="Label_GamesToWin" xml:space="preserve">
+    <value>Žaidimai iki pergalės</value>
   </data>
   <data name="Label_Gender" xml:space="preserve">
     <value>Lytis</value>
@@ -222,6 +339,18 @@
   <data name="Label_MatchRules" xml:space="preserve">
     <value>Susitikimo taisyklės</value>
   </data>
+  <data name="Label_MatchType" xml:space="preserve">
+    <value>Žaidimo tipas</value>
+  </data>
+  <data name="Label_MatchTypes" xml:space="preserve">
+    <value>Žaidimų tipai</value>
+  </data>
+  <data name="Label_MixedDoubles" xml:space="preserve">
+    <value>Mišrūs dvejetai</value>
+  </data>
+  <data name="Label_MixedPartner" xml:space="preserve">
+    <value>Mišraus dv. partneris</value>
+  </data>
   <data name="Label_Name" xml:space="preserve">
     <value>Pavadinimas</value>
   </data>
@@ -240,6 +369,21 @@
   <data name="Label_Players" xml:space="preserve">
     <value>Žaidėjai</value>
   </data>
+  <data name="Label_PointsToWin" xml:space="preserve">
+    <value>Taškai iki pergalės</value>
+  </data>
+  <data name="Label_Position" xml:space="preserve">
+    <value>Pozicija</value>
+  </data>
+  <data name="Label_Public" xml:space="preserve">
+    <value>Viešas</value>
+  </data>
+  <data name="Label_Rated" xml:space="preserve">
+    <value>Reitinguojamas</value>
+  </data>
+  <data name="Label_Rating" xml:space="preserve">
+    <value>Reitingas</value>
+  </data>
   <data name="Label_Rating_Doubles" xml:space="preserve">
     <value>Dvejetų reitingas</value>
   </data>
@@ -249,8 +393,20 @@
   <data name="Label_Rating_Singles" xml:space="preserve">
     <value>Vienetų reitingas</value>
   </data>
+  <data name="Label_Register" xml:space="preserve">
+    <value>Registruoti</value>
+  </data>
   <data name="Label_RemoveGame" xml:space="preserve">
     <value>Ištrinti žaidimą</value>
+  </data>
+  <data name="Label_RemoveGroup" xml:space="preserve">
+    <value>Ištrinti grupę</value>
+  </data>
+  <data name="Label_RepeatPassword" xml:space="preserve">
+    <value>Pakartoti slaptažodį</value>
+  </data>
+  <data name="Label_Scorer" xml:space="preserve">
+    <value>Skaičiuoklė</value>
   </data>
   <data name="Label_Search" xml:space="preserve">
     <value>Paieška</value>
@@ -258,11 +414,41 @@
   <data name="Label_SetScore" xml:space="preserve">
     <value>Užsaugoti rezultatą</value>
   </data>
+  <data name="Label_ShortDescription" xml:space="preserve">
+    <value>Trumpas aprašymas</value>
+  </data>
+  <data name="Label_Singles" xml:space="preserve">
+    <value>Vienetai</value>
+  </data>
+  <data name="Label_StartDate" xml:space="preserve">
+    <value>Pradžios laikas</value>
+  </data>
+  <data name="Label_StartDraws" xml:space="preserve">
+    <value>Pradėti traukimą</value>
+  </data>
+  <data name="Label_StartTournament" xml:space="preserve">
+    <value>Pradėti turnyrą</value>
+  </data>
   <data name="Label_Team1" xml:space="preserve">
     <value>1-a komanda</value>
   </data>
   <data name="Label_Team2" xml:space="preserve">
     <value>2-a komanda</value>
+  </data>
+  <data name="Label_Tournament" xml:space="preserve">
+    <value>Turnyras</value>
+  </data>
+  <data name="Label_TournamentGroups" xml:space="preserve">
+    <value>Turnyrų grupės</value>
+  </data>
+  <data name="Label_TournamentName" xml:space="preserve">
+    <value>Turnyro pavadinimas</value>
+  </data>
+  <data name="Label_Tournaments" xml:space="preserve">
+    <value>Turnyrai</value>
+  </data>
+  <data name="Label_UpcomingMatches" xml:space="preserve">
+    <value>Būsimi susitikimai</value>
   </data>
   <data name="Placeholder_EnterPlayerName" xml:space="preserve">
     <value>Žaidėjo vardas</value>

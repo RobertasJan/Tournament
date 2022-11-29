@@ -14,23 +14,23 @@
         </MudItem>
         <MudItem xs="12">
             <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-                <MudTabPanel Text="Description">
+                <MudTabPanel Text="@Loc["Label_Description"]">
                     <MudText Typo="Typo.h4" GutterBottom="true">@model.Data.Name</MudText>
                     <MudText Typo="Typo.caption" GutterBottom="true">@model.Data.Description</MudText>
                     <MudText Typo="Typo.body2" GutterBottom="true">@model.Data.LongDescription</MudText>
                 </MudTabPanel>
-                <MudTabPanel Text="Players">
+                <MudTabPanel Text="@Loc["Label_Players"]">
                     <MudDataGrid T="TournamentPlayerModel" Items="model.TournamentPlayers" Filterable="true">
                         <Columns>
-                            <Column T="TournamentPlayerModel" Field="PlayerName" Title="Player"/>
-                            <Column T="TournamentPlayerModel" Field="PartnerDoublesName" Title="Doubles partner" />
-                            <Column T="TournamentPlayerModel" Field="PartnerMixedName" Title="Mixed partner" />
+                            <Column T="TournamentPlayerModel" Field="PlayerName" Title="@Loc["Label_Player"]"/>
+                            <Column T="TournamentPlayerModel" Field="PartnerDoublesName" Title="@Loc["Label_DoublesPartner"]" />
+                            <Column T="TournamentPlayerModel" Field="PartnerMixedName" Title="@Loc["Label_MixedPartner"]" />
                         </Columns>
                     </MudDataGrid>
                 </MudTabPanel>
                 @if (model.Data.State == Domain.Tournaments.TournamentState.Ongoing)
                 {
-                    <MudTabPanel Text="Upcoming matches">
+                    <MudTabPanel Text="@Loc["Label_UpcomingMatches"]">
                         @foreach (var match in model.UpcomingMatches)
                         {
                             <MudGrid>
@@ -39,8 +39,8 @@
                                         var url = $"tournament/{Id}/match/{match.Id}";
                                         var url2 = $"tournament/{Id}/match/{match.Id}/result";
                                     }
-                                    <MudLink Href="@url"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Calculate" Size="Size.Small" Color="Color.Primary">Score points</MudButton></MudLink>
-                                    <MudLink Href="@url2"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Secondary">Set score</MudButton></MudLink>
+                                    <MudLink Href="@url"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Calculate" Size="Size.Small" Color="Color.Primary">@Loc["Label_Scorer"]</MudButton></MudLink>
+                                    <MudLink Href="@url2"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Secondary">@Loc["Label_SetScore"]</MudButton></MudLink>
                                     <span class="bold-14">@match.Team1.Player1Name @match.Team1.Player2Name vs. @match.Team2.Player1Name @match.Team2.Player2Name</span>
                                 </MudItem>
                             </MudGrid>
@@ -58,7 +58,7 @@
                 <MudLink Href="@href">
                     <MudButton Variant="Variant.Filled"
                             Color="Color.Primary">
-                        REGISTER
+                        @Loc["Label_Register"].Value.ToUpper()
                     </MudButton>
                 </MudLink>
             </MudItem>
@@ -68,7 +68,7 @@
             <MudItem xs="12">
                 <MudButton Variant="Variant.Filled"
                     Color="Color.Primary" OnClick="ConfirmDraft">
-                    START DRAWS
+                    @Loc["Label_StartDraws"].Value.ToUpper()
                 </MudButton>
             </MudItem>
         }
@@ -76,8 +76,8 @@
         {
             <MudItem xs="12">
                 <MudButton Variant="Variant.Filled"
-                       Color="Color.Primary" OnClick="StartTournament">
-                    START TOURNAMENT
+                    Color="Color.Primary" OnClick="StartTournament">
+                    @Loc["Label_StartTournament"].Value.ToUpper()
                 </MudButton>
             </MudItem>
         }
@@ -86,7 +86,7 @@
             <MudItem xs="12">
                 <MudButton Variant="Variant.Filled"
                    Color="Color.Primary" OnClick="EndTournament">
-                    END TOURNAMENT
+                    @Loc["Label_EndTournament"].Value.ToUpper()
                 </MudButton>
             </MudItem>
         }

@@ -30,10 +30,12 @@ namespace Tournament.Client.Services
             throw new NotImplementedException("No error handling");
         }
 
-        public async Task<ICollection<TournamentModel>> GetTournaments()
+        public async Task<ICollection<TournamentModel>> GetTournaments(bool? finished = null)
         {
             var cancellationToken = new CancellationTokenSource().Token;
-            var httpResponse = await _client.GetAsync($"api/tournaments", cancellationToken).ConfigureAwait(false);
+            QueryString queryString = new QueryString();
+            queryString = queryString.Add(nameof(finished), finished.ToString());
+            var httpResponse = await _client.GetAsync($"api/tournaments/{queryString}", cancellationToken).ConfigureAwait(false);
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
                 var tournaments = await httpResponse.Content.ReadAsAsync<ICollection<TournamentModel>>(cancellationToken).ConfigureAwait(false);

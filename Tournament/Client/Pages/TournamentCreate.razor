@@ -15,32 +15,32 @@
                 <MudText Typo="Typo.subtitle2">Tournament description</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6">
-                        <MudTextField @bind-Value="model.Data.Name" Label="Enter tournament name" Variant="Variant.Text" Required="true" RequiredError="Tournament name is required!"></MudTextField>
+                        <MudTextField @bind-Value="model.Data.Name" Label="@Loc["Label_TournamentName"]" Variant="Variant.Text" Required="true" RequiredError="Tournament name is required!"></MudTextField>
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <MudTextField @bind-Value="model.Data.Description" Label="Enter short description" Variant="Variant.Text" Required="true" RequiredError="Tournament short description is required!"></MudTextField>
+                        <MudTextField @bind-Value="model.Data.Description" Label="@Loc["Label_ShortDescription"]" Variant="Variant.Text" Required="true" RequiredError="Tournament short description is required!"></MudTextField>
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <MudTextField @bind-Value="model.Data.Address" Label="Tournament address" Variant="Variant.Text" Required="true" RequiredError="Tournament address is required!"></MudTextField>
+                        <MudTextField @bind-Value="model.Data.Address" Label="@Loc["Label_Address"]" Variant="Variant.Text" Required="true" RequiredError="Tournament address is required!"></MudTextField>
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <MudDatePicker Label="Start date" @bind-Date="model.Data.StartDate" Culture="@GetLithuanianCultureInfo()" TitleDateFormat="dddd, dd MMMM" />
+                        <MudDatePicker Label="@Loc["Label_StartDate"]" @bind-Date="model.Data.StartDate" Culture="@GetCultureInfo()" TitleDateFormat="yyyy-MM-dd" />
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <MudDatePicker Label="End date" @bind-Date="model.Data.EndDate" Culture="@GetLithuanianCultureInfo()" TitleDateFormat="dddd, dd MMMM" />
+                        <MudDatePicker Label="@Loc["Label_EndDate"]" @bind-Date="model.Data.EndDate" Culture="@GetCultureInfo()" TitleDateFormat="yyyy-MM-dd" />
                     </MudItem>
-                    <MudItem xs="12" sm="6">
+    @*                <MudItem xs="12" sm="6">
                         <MudTimePicker Label="Average match time" @bind-Time="model.Data.AverageTimePerMatch" TimeEditMode="TimeEditMode.OnlyMinutes" />
                     </MudItem>
                     <MudItem xs="12" sm="6">
                         <MudNumericField @bind-Value="model.Data.CourtsAvailable" Label="Courts count" Min="1" Max="100" Step="1" />
+                    </MudItem>*@
+                    <MudItem xs="12">
+                        <MudCheckBox @bind-Checked="@model.Data.Public" Label="@Loc["Label_Public"]" Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox @bind-Checked="@model.Data.Rated" Label="@Loc["Label_Rated"]" Color="Color.Primary"></MudCheckBox>
                     </MudItem>
                     <MudItem xs="12">
-                        <MudCheckBox @bind-Checked="@model.Data.Public" Label="Public" Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox @bind-Checked="@model.Data.Rated" Label="Rated" Color="Color.Primary"></MudCheckBox>
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudTextField Lines="8" @bind-Value="model.Data.LongDescription" Label="Enter full description" Variant="Variant.Text" Required="true" RequiredError="Tournament full description is required!"></MudTextField>
+                        <MudTextField Lines="8" @bind-Value="model.Data.LongDescription" Label="@Loc["Label_Description"]" Variant="Variant.Text" Required="true" RequiredError="Tournament full description is required!"></MudTextField>
                     </MudItem>
                 </MudGrid>
             </MudPaper>
@@ -49,7 +49,7 @@
     <MudGrid>
         <MudItem xs="12" sm="7">
             <MudPaper Class="pa-2" Elevation="3">
-                <MudText Typo="Typo.subtitle2">Match rules</MudText>
+                <MudText Typo="Typo.subtitle2">@Loc["Label_MatchRules"]</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6" md="4">
                         <MudSelect @bind-Value="model.Data.PointsToWin" Label="Points to win" Variant="Variant.Outlined">
@@ -60,9 +60,9 @@
                     </MudItem>
                     <MudItem xs="12" sm="6" md="4">
                         <MudSelect @bind-Value="model.Data.GamesToWin" Label="Games to win" Variant="Variant.Outlined">
-                            <MudSelectItem Value="1">Best of 1</MudSelectItem>
-                            <MudSelectItem Value="2">Best of 3</MudSelectItem>
-                            <MudSelectItem Value="3">Best of 5</MudSelectItem>
+                            <MudSelectItem Value="1">@Loc["Label_BestOf1"]</MudSelectItem>
+                            <MudSelectItem Value="2">@Loc["Label_BestOf3"]</MudSelectItem>
+                            <MudSelectItem Value="3">@Loc["Label_BestOf5"]</MudSelectItem>
                         </MudSelect>
                     </MudItem>
                 </MudGrid>
@@ -72,21 +72,21 @@
     <MudGrid Class="pt-4">
         <MudItem xs="12">
             <MudPaper Class="pa-2" Elevation="3">
-                <MudText Typo="Typo.subtitle2">Tournament groups</MudText>
+                <MudText Typo="Typo.subtitle2">@Loc["Label_TournamentGroups"]</MudText>
                 <MudGrid>
                     <MudItem xs=12 sm="6">
-                        <MudSelect SelectedValuesChanged="OnMatchSelected" T="MatchType" Label="Match types" Variant="Variant.Outlined" MultiSelection="true">
+                        <MudSelect SelectedValuesChanged="OnMatchSelected" T="MatchType" Label="@Loc["Label_MatchTypes"]" Variant="Variant.Outlined" MultiSelection="true">
                             @foreach (MatchType type in Enum.GetValues(typeof(Tournament.Domain.Games.MatchType)))
                             {
-                                <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                <MudSelectItem Value="@type">@Loc[$"Enum_MatchType_{type}"]</MudSelectItem>
                             }
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <MudSelect SelectedValuesChanged="OnGroupSelected" T="TournamentGroupTypes" Label="Tournament group types" Variant="Variant.Outlined" MultiSelection="true">
+                        <MudSelect SelectedValuesChanged="OnGroupSelected" T="TournamentGroupTypes" Label="@Loc["Label_TournamentGroups"]" Variant="Variant.Outlined" MultiSelection="true">
                             @foreach (TournamentGroupTypes type in Enum.GetValues(typeof(TournamentGroupTypes)))
                             {
-                                <MudSelectItem Value="@type">@type zaza</MudSelectItem>
+                                <MudSelectItem Value="@type">@type</MudSelectItem>
                             }
                         </MudSelect>
                     </MudItem>
@@ -109,21 +109,32 @@
     IEnumerable<MatchType> MatchTypes { get; set; } = new HashSet<MatchType>();
     IEnumerable<TournamentGroupTypes> Groups { get; set; } = new HashSet<TournamentGroupTypes>();
 
-    public CultureInfo GetLithuanianCultureInfo()
+    public CultureInfo GetCultureInfo()
     {
         var culture = new CultureInfo("lt");
         DateTimeFormatInfo formatInfo = culture.DateTimeFormat;
-        formatInfo.AbbreviatedDayNames = new[] { "ی", "د", "س", "چ", "پ", "ج", "ش" };
-        formatInfo.DayNames = new[] { "یکشنبه", "دوشنبه", "سه شنبه", "چهار شنبه", "پنجشنبه", "جمعه", "شنبه" };
-        var monthNames = new[]
+        formatInfo.FirstDayOfWeek = DayOfWeek.Monday;
+        int[] dayArray = Enumerable.Range(0, 7).ToArray();
+        var abrDays = new List<string>();
+        var days = new List<string>();
+        var monthNames = new List<string>();
+        foreach (var day in dayArray)
         {
-            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن",
-            "اسفند",
-            "",
-    };
+            days.Add(Loc[$"Calendar_Day_{day}"]);
+            abrDays.Add(Loc[$"Calendar_DayAbr_{day}"]);
+        }
+        formatInfo.AbbreviatedDayNames = abrDays.ToArray();
+        formatInfo.DayNames = days.ToArray();
+        int[] monthArray = Enumerable.Range(0, 12).ToArray();
+        foreach (var month in monthArray)
+        {
+            monthNames.Add(Loc[$"Calendar_Month_{month}"]);
+        }
+        monthNames.Add("");
+
         formatInfo.AbbreviatedMonthNames =
             formatInfo.MonthNames =
-                formatInfo.MonthGenitiveNames = formatInfo.AbbreviatedMonthGenitiveNames = monthNames;
+                formatInfo.MonthGenitiveNames = formatInfo.AbbreviatedMonthGenitiveNames = monthNames.ToArray();
         System.Globalization.Calendar cal = new GregorianCalendar();
         FieldInfo fieldInfo = culture.GetType().GetField("calendar", BindingFlags.NonPublic | BindingFlags.Instance);
         if (fieldInfo != null)

@@ -52,6 +52,10 @@
 .table-player-name {
     white-space: nowrap;
 }
+
+.tourney-skeleton .mud-grid-item {
+    border-right: 1px dashed #ccc;
+}
 /* Tournament tree */
 
 

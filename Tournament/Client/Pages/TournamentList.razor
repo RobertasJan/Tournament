@@ -1,62 +1,42 @@
 ﻿@page "/tournaments"
 @using Tournament.Shared.Players
+@using Tournament.Shared.Tournaments;
 
-<PageTitle>Players</PageTitle>
+<PageTitle>@Loc["Label_Tournaments"]</PageTitle>
 
-<MudGrid>
-    <MudItem xs="12">
-        <MudGrid>
-            <MudItem xs="12" sm="4">
-                <MudTextField T="string" @bind-Text="searchText" Label="Search" Variant="Variant.Text" OnKeyPress="OnEnterKey"></MudTextField>
-            </MudItem>
-            <MudItem xs="12" sm="4">
-                <MudIconButton Style="margin-top: 10px;" Icon="@Icons.Material.Filled.Search" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="Search" />
-            </MudItem>
-        </MudGrid>
-    </MudItem>
-    <MudItem xs="12">
-        <MudDataGrid T="PlayerModel" Items="players">
-            <Columns>
-                <Column T="PlayerModel" Field="FullName" Title="Name">
-                    <CellTemplate>
-                        @{
-                            var href = $"players/{@context.Item.Id}";
-                        }
-                        <MudLink Href="@href">@context.Item.FullName</MudLink>
-                    </CellTemplate>
-                </Column>
-                <Column T="PlayerModel" Field="Gender" Title="Gender" />
-                <Column T="PlayerModel" Field="BirthDate" Title="Birth date" />
-                <Column T="PlayerModel" Field="RatingSingles" Title="Rating" />
-                <Column T="PlayerModel" Field="PositionSinglesString" Title="Rating" />
-            </Columns>
-        </MudDataGrid>
-    </MudItem>
-</MudGrid>
-
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+    <MudTabPanel Text="@Loc["Header_UpcomingTournaments"]">
+        @foreach (var tourney in Tournaments)
+        {
+            var href = $"tournament/{tourney.Id}";
+            <MudLink Href="@href">
+                <MudText Typo="Typo.h4" GutterBottom="true">@tourney.Name</MudText>
+                <MudText Typo="Typo.caption" GutterBottom="true">@tourney.Description</MudText>
+            </MudLink>
+        }
+    </MudTabPanel>
+    <MudTabPanel Text="@Loc["Header_PreviousTournaments"]">
+        @foreach (var tourney in PreviousTournaments)
+        {
+            var href = $"tournament/{tourney.Id}";
+            <MudLink Href="@href">
+                <MudText Typo="Typo.h4" GutterBottom="true">@tourney.Name</MudText>
+                <MudText Typo="Typo.caption" GutterBottom="true">@tourney.Description</MudText>
+            </MudLink>
+        }
+    </MudTabPanel>
+</MudTabs>
 
 @code {
-    [Inject] PlayerService PlayerService { get; set; }
+    [Inject] TournamentService TournamentService { get; set; }
 
-    string searchText = "";
-
-    IEnumerable<PlayerModel> players { get; set; }
-
-    private async Task OnEnterKey(KeyboardEventArgs args)
-    {
-        if (args.Key == "Enter")
-        {
-            _ = Search();
-        }
-    }
-
-    private async Task Search()
-    {
-        players = await PlayerService.GetPlayers(searchText: searchText);
-    }
+    ICollection<TournamentModel>? Tournaments { get; set; } = new List<TournamentModel>();
+    ICollection<TournamentModel>? PreviousTournaments { get; set; } = new List<TournamentModel>();
 
     protected override async Task OnInitializedAsync()
     {
-        players = await PlayerService.GetPlayers();
+        Tournaments = await TournamentService.GetTournaments(false);
+        PreviousTournaments = await TournamentService.GetTournaments(true);
     }
+    [Inject] PlayerService PlayerService { get; set; }
 }

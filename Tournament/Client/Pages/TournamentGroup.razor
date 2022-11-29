@@ -1,100 +1,119 @@
 ﻿@page "/tournament/{Id:guid}/group/{TournamentGroupId:guid}"
 
-@if (model != null && model.TournamentRounds != null)
+@if (loading)
 {
-    <link href="css/tourney/bracketgrid.css" rel="stylesheet" />
-    <div class="tournament-container">
-        <div class="tournament-headers">
-            @for (var i = 0; i < model.CountOfRounds; i++) 
-            {
-                <h3>Round of @(model.CountOfRounds - i)</h3>
-            }
-        </div>
-        @{
-            var countOfPositions = (int)Math.Pow(2, model.CountOfRounds);
-            var matchesCount = countOfPositions / 2;
-            var allMatches = model.GroupAsList();
-        }
-
-        @for (var i = 0; i < matchesCount; i++)
-        {
-            var gridCount = allMatches.Where(x => x.GroupName == i).Count();
-            var bracketCount = 0;
-            <div class="tournament-brackets grid@(gridCount+1)">
-                @for (var j = 0; j < model.CountOfRounds; j++)
+    <MudGrid Class="tourney-skeleton">
+        <MudItem xs="3">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="700px"></MudSkeleton>
+        </MudItem>
+        <MudItem xs="3">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="700px"></MudSkeleton>
+        </MudItem>
+        <MudItem xs="3">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="700px"></MudSkeleton>
+        </MudItem>
+        <MudItem xs="3">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="700px"></MudSkeleton>
+        </MudItem>
+    </MudGrid>
+}
+else 
+{
+    @if (model != null && model.TournamentRounds != null)
+    {
+        <link href="css/tourney/bracketgrid.css" rel="stylesheet" />
+        <div class="tournament-container">
+            <div class="tournament-headers">
+                @for (var i = 0; i < model.CountOfRounds; i++) 
                 {
-                    var matches = allMatches.Where(x => x.Round == j && x.GroupName == i);
-                    var copyOfJ = j;
-                    if (matches.Count() != 0)
-                    {
-                        bracketCount++;
-                    }
-                    <ul class="bracket bracket-@(bracketCount)">
-                        @foreach (var match in matches.OrderBy(x => x.GroupPosition))
-                        {
-                            <li class="team-item">
-                                <MudGrid Class="table-game-score-div">
-                                    <MudItem xs="5">
-                                        @if (j == 0)
-                                        {
-                                            <span>@($"S{@match.Team1?.Seed}")</span>
-                                        }
-                                        @if (match.Result == Domain.Games.MatchResult.Team1Victory) {
-                                            <span class="table-victor">
-                                                <BracketPlayerName PlayerId="@match.Team1?.Player1Id" PlayerName="@match.Team1?.Player1Name"></BracketPlayerName>
-                                                <BracketPlayerName PlayerId="@match.Team1?.Player2Id" PlayerName="@match.Team1?.Player2Name"></BracketPlayerName>
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <BracketPlayerName PlayerId="@match.Team1?.Player1Id" PlayerName="@match.Team1?.Player1Name"></BracketPlayerName>
-                                            <BracketPlayerName PlayerId="@match.Team1?.Player2Id" PlayerName="@match.Team1?.Player2Name"></BracketPlayerName>
-                                        }
-                                        </MudItem>
-                                    <MudItem xs="2">@*<time>@DisplayTime(match.MatchDate)</time>*@ @match.Record 
-                                    </MudItem>
-                                    <MudItem xs="5">
-                                        @if (j == 0)
-                                        {
-                                            <span>@($"S{@match.Team2?.Seed}")</span>
-                                        }
-                                        @if (match.Result == Domain.Games.MatchResult.Team2Victory) 
-                                        {
-                                            <span class="table-victor">
-                                                <BracketPlayerName PlayerId="@match.Team2?.Player1Id" PlayerName="@match.Team2?.Player1Name"></BracketPlayerName>
-                                                <BracketPlayerName PlayerId="@match.Team2?.Player2Id" PlayerName="@match.Team2?.Player2Name"></BracketPlayerName>
-                                            </span>
-                                        }
-                                        else 
-                                        {
-                                            <BracketPlayerName PlayerId="@match.Team2?.Player1Id" PlayerName="@match.Team2?.Player1Name"></BracketPlayerName>
-                                            <BracketPlayerName PlayerId="@match.Team2?.Player2Id" PlayerName="@match.Team2?.Player2Name"></BracketPlayerName>
-                                        }
-                                    </MudItem xs="12">
-                                    <MudItem Class="table-game-score pl-2" xs="6">
-                                        @if (match.Record == Domain.Games.MatchRecord.Played)
-                                        {
-                                            @foreach (var game in match.Games)
-                                            {
-                                                <span class="pl-1">@game.Team1Score:@game.Team2Score &nbsp;</span>
-                                            }
-                                        }
-                                    </MudItem>
-                                    <MudItem Class="table-game-position" xs="6">
-                                        @{
-                                            var from = match.GroupName * 2 + 1;
-                                            var to = (from - 1) + (countOfPositions / allMatches.Where(x => x.Round == copyOfJ).DistinctBy(x => x.GroupName).Count());
-                                        }
-                                        <span class="pr-3">@($"P({from}-{to})")</span>
-                                    </MudItem>
-                                    </MudGrid>
-                            </li>
-                        }
-                    </ul>
+                    <h3>Round of @(model.CountOfRounds - i)</h3>
                 }
             </div>
-        }
-    </div>
+            @{
+                var countOfPositions = (int)Math.Pow(2, model.CountOfRounds);
+                var matchesCount = countOfPositions / 2;
+                var allMatches = model.GroupAsList();
+            }
+            @for (var i = 0; i < matchesCount; i++)
+            {
+                var gridCount = allMatches.Where(x => x.GroupName == i).Count();
+                var bracketCount = 0;
+                <div class="tournament-brackets grid@(gridCount+1)">
+                    @for (var j = 0; j < model.CountOfRounds; j++)
+                    {
+                        var matches = allMatches.Where(x => x.Round == j && x.GroupName == i);
+                        var copyOfJ = j;
+                        if (matches.Count() != 0)
+                        {
+                            bracketCount++;
+                        }
+                        <ul class="bracket bracket-@(bracketCount)">
+                            @foreach (var match in matches.OrderBy(x => x.GroupPosition))
+                            {
+                                <li class="team-item">
+                                    <MudGrid Class="table-game-score-div">
+                                        <MudItem xs="5">
+                                            @if (j == 0)
+                                            {
+                                                <span>@($"S{@match.Team1?.Seed}")</span>
+                                            }
+                                            @if (match.Result == Domain.Games.MatchResult.Team1Victory) {
+                                                <span class="table-victor">
+                                                    <BracketPlayerName PlayerId="@match.Team1?.Player1Id" PlayerName="@match.Team1?.Player1Name"></BracketPlayerName>
+                                                    <BracketPlayerName PlayerId="@match.Team1?.Player2Id" PlayerName="@match.Team1?.Player2Name"></BracketPlayerName>
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <BracketPlayerName PlayerId="@match.Team1?.Player1Id" PlayerName="@match.Team1?.Player1Name"></BracketPlayerName>
+                                                <BracketPlayerName PlayerId="@match.Team1?.Player2Id" PlayerName="@match.Team1?.Player2Name"></BracketPlayerName>
+                                            }
+                                            </MudItem>
+                                        <MudItem xs="2">@*<time>@DisplayTime(match.MatchDate)</time>*@ @Loc[$"Enum_MatchRecord_{match.Record}"] 
+                                        </MudItem>
+                                        <MudItem xs="5">
+                                            @if (j == 0)
+                                            {
+                                                <span>@($"S{@match.Team2?.Seed}")</span>
+                                            }
+                                            @if (match.Result == Domain.Games.MatchResult.Team2Victory) 
+                                            {
+                                                <span class="table-victor">
+                                                    <BracketPlayerName PlayerId="@match.Team2?.Player1Id" PlayerName="@match.Team2?.Player1Name"></BracketPlayerName>
+                                                    <BracketPlayerName PlayerId="@match.Team2?.Player2Id" PlayerName="@match.Team2?.Player2Name"></BracketPlayerName>
+                                                </span>
+                                            }
+                                            else 
+                                            {
+                                                <BracketPlayerName PlayerId="@match.Team2?.Player1Id" PlayerName="@match.Team2?.Player1Name"></BracketPlayerName>
+                                                <BracketPlayerName PlayerId="@match.Team2?.Player2Id" PlayerName="@match.Team2?.Player2Name"></BracketPlayerName>
+                                            }
+                                        </MudItem xs="12">
+                                        <MudItem Class="table-game-score pl-2" xs="6">
+                                            @if (match.Record == Domain.Games.MatchRecord.Played)
+                                            {
+                                                @foreach (var game in match.Games)
+                                                {
+                                                    <span class="pl-1">@game.Team1Score:@game.Team2Score &nbsp;</span>
+                                                }
+                                            }
+                                        </MudItem>
+                                        <MudItem Class="table-game-position" xs="6">
+                                            @{
+                                                var from = match.GroupName * 2 + 1;
+                                                var to = (from - 1) + (countOfPositions / allMatches.Where(x => x.Round == copyOfJ).DistinctBy(x => x.GroupName).Count());
+                                            }
+                                            <span class="pr-3">@($"P({from}-{to})")</span>
+                                        </MudItem>
+                                        </MudGrid>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            }
+        </div>
+    }
 }
 
 @code {
@@ -109,11 +128,14 @@
     [Inject] GameService GameService { get; set; }
 
     TournamentGroupViewModel model;
+    bool loading = false;
 
     protected override async Task OnInitializedAsync()
     {
+        loading = true;
         model = new TournamentGroupViewModel(TournamentService, TournamentGroupService, GameService, Id, TournamentGroupId);
         await model.Load();
+        loading = false;
     }
 
     public string DisplayTime(DateTime? date)

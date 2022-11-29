@@ -40,9 +40,9 @@ namespace Tournament.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ICollection<TournamentModel>> Get(CancellationToken cancellationToken)
+        public async Task<ICollection<TournamentModel>> Get(bool? finished = null, CancellationToken cancellationToken = default)
         {
-            return Mapper.Map<ICollection<TournamentModel>>(await tournamentService.Get(cancellationToken));
+            return Mapper.Map<ICollection<TournamentModel>>(await tournamentService.Get(finished, cancellationToken));
         }
 
         [HttpPost]

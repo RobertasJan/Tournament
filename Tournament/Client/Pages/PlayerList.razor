@@ -7,7 +7,7 @@
     <MudItem xs="12">
         <MudGrid>
             <MudItem xs="12" sm="4">        
-                <MudTextField T="string" @bind-Text="searchText" Label="Search" Variant="Variant.Text" OnKeyPress="OnEnterKey"></MudTextField>
+                <MudTextField T="string" @bind-Text="searchText" Label="@Loc["Label_Search"]" Variant="Variant.Text" OnKeyPress="OnEnterKey"></MudTextField>
             </MudItem>
             <MudItem xs="12" sm="4">
                 <MudIconButton Style="margin-top: 10px;" Icon="@Icons.Material.Filled.Search" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="Search" />
@@ -25,8 +25,16 @@
                         <MudLink Href="@href">@context.Item.FullName</MudLink>
                     </CellTemplate>
                 </Column>
-                <Column T="PlayerModel" Field="Gender" Title="@Loc["Label_Gender"]" />
-                <Column T="PlayerModel" Field="BirthDate" Title="@Loc["Label_BirthDate"]" />
+                <Column T="PlayerModel" Field="Gender" Title="@Loc["Label_Gender"]">
+                    <CellTemplate>
+                        @Loc[$"Enum_Gender_{context.Item.Gender}"]
+                    </CellTemplate>
+                </Column>
+                <Column T="PlayerModel" Field="BirthDate" Title="@Loc["Label_BirthDate"]" >
+                    <CellTemplate>
+                        @context.Item.BirthDate.ToString("yyyy-MM-dd")
+                    </CellTemplate>
+                </Column>
                 <Column T="PlayerModel" Field="RatingSingles" Title="@Loc["Label_Rating_Singles"]" />
                 <Column T="PlayerModel" Field="RatingDoubles" Title="@Loc["Label_Rating_Doubles"]" />
                 <Column T="PlayerModel" Field="RatingMixed" Title="@Loc["Label_Rating_Mixed"]" />

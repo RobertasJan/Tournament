@@ -10,7 +10,7 @@
                 <th>@Loc["Label_Group"]</th>
                 @foreach (var type in GetMatchTypes())
                 {
-                    <th>@type.ToString()</th>
+                    <th>@Loc[$"Enum_MatchType_{type.ToString()}"]</th>
                 }
             </tr>
         </thead>

@@ -23,7 +23,7 @@ namespace Tournament.Domain.Services.Tournament
     public interface ITournamentService
     {
         Task<TournamentEntity> GetById(Guid id, CancellationToken cancellationToken);
-        Task<ICollection<TournamentEntity>> Get(CancellationToken cancellationToken);
+        Task<ICollection<TournamentEntity>> Get(bool? finished = null, CancellationToken cancellationToken = default);
         Task<Guid> Create(TournamentEntity tournament, CancellationToken cancellationToken);
         Task Update(TournamentEntity tournament, CancellationToken cancellationToken);
         Task AddMatch(MatchEntity matchEntity, CancellationToken cancellationToken);
@@ -62,8 +62,22 @@ namespace Tournament.Domain.Services.Tournament
             return tournament.Id.Value;
         }
 
-        public async Task<ICollection<TournamentEntity>> Get(CancellationToken cancellationToken)
-            => await _db.Tournaments.Where(x => x.Public).ToListAsync(cancellationToken);
+        public async Task<ICollection<TournamentEntity>> Get(bool? finished = null, CancellationToken cancellationToken = default)
+        {
+            var query = _db.Tournaments.Where(x => x.Public);
+            if (finished != null)
+            {
+                if (finished.Value)
+                {
+                    query = query.Where(x => x.State == TournamentState.Finished);
+                }
+                else
+                {
+                    query = query.Where(x => x.State != TournamentState.Finished);
+                }
+            }
+            return await query.ToListAsync(cancellationToken);
+        }
 
         public async Task<TournamentEntity> GetById(Guid id, CancellationToken cancellationToken)
         {
