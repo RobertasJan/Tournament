@@ -216,6 +216,9 @@
   <data name="Enum_MatchRecord_Played" xml:space="preserve">
     <value>Sužaista</value>
   </data>
+  <data name="Enum_MatchRecord_ToBePlayed" xml:space="preserve">
+    <value />
+  </data>
   <data name="Enum_MatchRecord_Walkover" xml:space="preserve">
     <value>Nepasirodymas</value>
   </data>
@@ -340,10 +343,10 @@
     <value>Susitikimo taisyklės</value>
   </data>
   <data name="Label_MatchType" xml:space="preserve">
-    <value>Žaidimo tipas</value>
+    <value>Susitikimo tipas</value>
   </data>
   <data name="Label_MatchTypes" xml:space="preserve">
-    <value>Žaidimų tipai</value>
+    <value>Susitikimo tipai</value>
   </data>
   <data name="Label_MixedDoubles" xml:space="preserve">
     <value>Mišrūs dvejetai</value>
@@ -405,6 +408,24 @@
   <data name="Label_RepeatPassword" xml:space="preserve">
     <value>Pakartoti slaptažodį</value>
   </data>
+  <data name="Label_RoundOf1" xml:space="preserve">
+    <value>Finalas</value>
+  </data>
+  <data name="Label_RoundOf2" xml:space="preserve">
+    <value>Pusfinalis</value>
+  </data>
+  <data name="Label_RoundOf3" xml:space="preserve">
+    <value>Ketvirtfinalis</value>
+  </data>
+  <data name="Label_RoundOf4" xml:space="preserve">
+    <value>Aštunfinalis</value>
+  </data>
+  <data name="Label_RoundOf5" xml:space="preserve">
+    <value>16-f</value>
+  </data>
+  <data name="Label_RoundOf6" xml:space="preserve">
+    <value>32-f</value>
+  </data>
   <data name="Label_Scorer" xml:space="preserve">
     <value>Skaičiuoklė</value>
   </data>
@@ -441,6 +462,9 @@
   <data name="Label_TournamentGroups" xml:space="preserve">
     <value>Turnyrų grupės</value>
   </data>
+  <data name="Label_TournamentInfo" xml:space="preserve">
+    <value>Turnyro informacija</value>
+  </data>
   <data name="Label_TournamentName" xml:space="preserve">
     <value>Turnyro pavadinimas</value>
   </data>
@@ -449,6 +473,24 @@
   </data>
   <data name="Label_UpcomingMatches" xml:space="preserve">
     <value>Būsimi susitikimai</value>
+  </data>
+  <data name="MatchButton_ChangeServer" xml:space="preserve">
+    <value>Pakeisti padavėją</value>
+  </data>
+  <data name="MatchButton_ChangeSides" xml:space="preserve">
+    <value>Apkeisti puses</value>
+  </data>
+  <data name="MatchButton_EndGame" xml:space="preserve">
+    <value>Užbaigti žaidimą</value>
+  </data>
+  <data name="MatchButton_EndMatch" xml:space="preserve">
+    <value>Užbaigti susitikimą</value>
+  </data>
+  <data name="MatchButton_Return" xml:space="preserve">
+    <value>Grąžinti tašką</value>
+  </data>
+  <data name="MatchButton_Switch" xml:space="preserve">
+    <value>Apkeisti</value>
   </data>
   <data name="Placeholder_EnterPlayerName" xml:space="preserve">
     <value>Žaidėjo vardas</value>

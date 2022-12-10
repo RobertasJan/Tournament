@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using System.Transactions;
 using Tournament.Client.Services;
 using Tournament.Domain.Games;
 using Tournament.Domain.Services.Games;
+using Tournament.Server.Hubs;
 using Tournament.Server.Models;
 using Tournament.Shared;
 using Tournament.Shared.Games;
@@ -16,12 +19,14 @@ namespace Tournament.Server.Controllers
         private readonly ILogger<MatchesController> _logger;
         private readonly IMatchService matchService;
         private readonly IGameService gameService;
+        private readonly IHubContext<MatchScoreHub> hub;
 
-        public MatchesController(ILogger<MatchesController> logger, IMatchService matchService, IGameService gameService)
+        public MatchesController(ILogger<MatchesController> logger, IMatchService matchService, IGameService gameService, IHubContext<MatchScoreHub> hub)
         {
             _logger = logger;
             this.matchService = matchService;
             this.gameService = gameService;
+            this.hub = hub;
         }
 
         [HttpGet("{id:Guid}")]
@@ -68,6 +73,7 @@ namespace Tournament.Server.Controllers
             model.Id = gameId;
             model.MatchId = id;
             await gameService.Update(Mapper.Map<GameEntity>(model), cancellationToken);
+            var match = Mapper.Map<MatchModel>(await matchService.GetById(id, cancellationToken));
         }
 
         [HttpPut("{id:Guid}")]

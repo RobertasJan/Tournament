@@ -55,7 +55,7 @@
     {
         if (RegisteredPlayers is null)
         {
-            return matchType.ToString();
+            return Loc["Enum_MatchType_" + matchType.ToString()];
         }
         return RegisteredPlayers.Where(x => x.TournamentGroup.MatchType == matchType && x.TournamentGroup.Type == groupType).Count().ToString();
     }

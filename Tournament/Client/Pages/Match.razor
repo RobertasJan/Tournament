@@ -1,6 +1,7 @@
 ﻿@page "/match/{Id:guid}"
 @page "/tournament/{TourneyId:guid}/match/{Id:guid}"
 
+@using Microsoft.AspNetCore.SignalR.Client;
 @using Tournament.Client.Components.Match
 @using Tournament.Domain.Games
 
@@ -21,7 +22,7 @@
                 @if (!match.EndGame)
                 {
                     <MudElement Class="d-flex align-center justify-center">
-                        <MudButton Class="mud-width-full py-2" Color="Color.Primary" Variant="Variant.Filled" @onclick="match.Team1LeftSide ? match.AddTeam1Score : match.AddTeam2Score">Click me</MudButton>
+                        <MudButton Class="mud-width-full py-2" Color="Color.Primary" Variant="Variant.Filled" @onclick="match.Team1LeftSide ? match.AddTeam1Score : match.AddTeam2Score"><MudIcon Icon="@Icons.Filled.ExposurePlus1"></MudIcon></MudButton>
                     </MudElement>
                 }
             </MudItem>
@@ -38,7 +39,7 @@
                 }
                 @if (match.CurrentGame.Team1Score == 0 && match.CurrentGame.Team2Score == 0 && !match.IsSingles)
                 {
-                    <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.Team1LeftSide ? match.SwitchTeam1Players : match.SwitchTeam2Players">Switch</MudButton>
+                    <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.Team1LeftSide ? match.SwitchTeam1Players : match.SwitchTeam2Players">@Loc["MatchButton_Switch"]</MudButton>
                 }
             </MudItem>
             <MudItem xs="4">
@@ -55,14 +56,14 @@
                 }
                 @if (match.CurrentGame.Team1Score == 0 && match.CurrentGame.Team2Score == 0 && !match.IsSingles)
                 {
-                    <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.Team1LeftSide ? match.SwitchTeam2Players : match.SwitchTeam1Players">Switch</MudButton>
+                    <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.Team1LeftSide ? match.SwitchTeam2Players : match.SwitchTeam1Players">@Loc["MatchButton_Switch"]</MudButton>
                 }
             </MudItem>
             <MudItem Class="my-auto" xs="2">
                 @if (!match.EndGame)
                 {
                     <MudElement Class="d-flex align-center justify-center">
-                        <MudButton Class="mud-width-full py-2" Color="Color.Primary" Variant="Variant.Filled" @onclick="match.Team1LeftSide ? match.AddTeam2Score : match.AddTeam1Score">Click me</MudButton>
+                        <MudButton Class="mud-width-full py-2" Color="Color.Primary" Variant="Variant.Filled" @onclick="match.Team1LeftSide ? match.AddTeam2Score : match.AddTeam1Score"><MudIcon Icon="@Icons.Filled.ExposurePlus1"></MudIcon></MudButton>
                     </MudElement>
                 }
             </MudItem>
@@ -72,21 +73,21 @@
                     {
                         @if (match.EndMatch)
                         {
-                            <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="EndMatch">End match</MudButton>
+                            <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="EndMatch">@Loc["MatchButton_EndMatch"]</MudButton>
                         }
                         else if (match.EndGame)
                         {
-                            <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="match.DoEndGame">End game</MudButton>
+                            <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="match.DoEndGame">@Loc["MatchButton_EndGame"]</MudButton>
                         }
                         @if (!match.EndMatch)
                         {
-                            <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="match.ReturnPoint">Return</MudButton>
+                            <MudButton Class="py-2" Color="Color.Warning" Variant="Variant.Filled" @onclick="match.ReturnPoint">@Loc["MatchButton_Return"]</MudButton>
                         }
                     }
                     else if (match.FirstGame)
                     {
-                        <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.ChangeServeSide">Change Serve Side</MudButton>
-                        <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchTeams">Switch teams</MudButton>
+                        <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.ChangeServeSide">@Loc["MatchButton_ChangeServer"]</MudButton>
+                        <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchTeams">@Loc["MatchButton_ChangeSides"]</MudButton>
                     }
                 </MudElement>
             </MudItem>
@@ -101,12 +102,15 @@
     public Guid? TourneyId { get; set; }
 
     [Inject] GameService GameService { get; set; }
+    HubConnection connection;
 
     private MatchViewModel match;
 
     protected override async Task OnInitializedAsync()
     {
-        match = new MatchViewModel(GameService, await GameService.GetMatchById(Id), await GameService.GetMatchGames(Id));
+        connection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/match-score-hub")).Build();
+
+        match = new MatchViewModel(GameService, await GameService.GetMatchById(Id), await GameService.GetMatchGames(Id), connection);
     }
 
     private string DisplayPreviousScores()

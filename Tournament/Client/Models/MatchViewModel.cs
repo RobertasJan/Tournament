@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using System.Text.Json;
 using Tournament.Client.Services;
 using Tournament.Domain.Games;
 using Tournament.Domain.Players;
@@ -29,9 +30,12 @@ namespace Tournament.Client.Models
         public GameModel CurrentGame { get; set; }
 
         private readonly GameService service;
+        private readonly HubConnection connection;
 
-        public MatchViewModel(GameService service, MatchModel matchModel, ICollection<GameModel> games)
+        public MatchViewModel(GameService service, MatchModel matchModel, ICollection<GameModel> games, HubConnection connection)
         {
+            this.connection = connection;
+            this.connection.StartAsync();
             if (matchModel != null)
             {
                 Data = matchModel;
@@ -219,6 +223,7 @@ namespace Tournament.Client.Models
                 CurrentGame.Id = await service.CreateGame(new GameModel(), Data.Id);
                 Request = false;
             }
+            await connection.SendAsync("UpdateMatchScore", CurrentGame);
         }
 
         private async Task CheckEndGame()

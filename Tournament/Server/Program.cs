@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
@@ -12,6 +12,7 @@ using Tournament.Domain.User;
 using Tournament.Infrastructure;
 using Tournament.Infrastructure.Data;
 using Tournament.Server;
+using Tournament.Server.Hubs;
 using Tournament.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +60,16 @@ builder.Services.AddCors(options =>
 });
 #endif
 
+builder.Services.AddSignalR().AddHubOptions<MatchScoreHub>(options =>
+{
+    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+}).AddJsonProtocol(options =>
+{
+    options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+});
+builder.Services.AddResponseCompression(options => {
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream"});    
+});
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 builder.Services.AddScoped<IMatchService, MatchService>();
@@ -68,12 +79,15 @@ builder.Services.AddScoped<ITournamentGroupService, TournamentGroupService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IResultService, ResultService>();
+builder.Services.AddScoped<MatchScoreHub>();
 
 builder.WebHost.UseStaticWebAssets();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseResponseCompression();
+
+// Configure th e HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
@@ -98,6 +112,7 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();
+app.MapHub<MatchScoreHub>("/match-score-hub");
 app.MapFallbackToFile("index.html");
 
 MigrateDb(app);

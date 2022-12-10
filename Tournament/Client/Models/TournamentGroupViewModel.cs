@@ -34,7 +34,7 @@ namespace Tournament.Client.Models
         {
             var list = new List<MatchModel>();
             RecursiveTake(list, TournamentRounds);
-            SetTimes(list);
+          //  SetTimes(list);
             return list;
             
         }
@@ -231,10 +231,22 @@ namespace Tournament.Client.Models
                 if (firstRound)
                 {
                     var match = matches.Last();
-                    match.Team1.Player1Name = playersOrdered.ElementAtOrDefault(match.Team1.Seed - 1)?.Player1Name;
-                    match.Team1.Player2Name = playersOrdered.ElementAtOrDefault(match.Team1.Seed - 1)?.Player2Name;
-                    match.Team2.Player1Name = playersOrdered.ElementAtOrDefault(match.Team2.Seed - 1)?.Player1Name;
-                    match.Team2.Player2Name = playersOrdered.ElementAtOrDefault(match.Team2.Seed - 1)?.Player2Name;
+                    var team1 = playersOrdered.ElementAtOrDefault(match.Team1.Seed - 1);
+                    var team2 = playersOrdered.ElementAtOrDefault(match.Team2.Seed - 1);
+                    if (team1 != null)
+                    {
+                        match.Team1.Player1Name = team1.Player1Name;
+                        match.Team1.Player2Name = team1.Player2Name;
+                        match.Team1.Player1Id = team1.Player1Id;
+                        match.Team1.Player2Id = team1.Player2Id;
+                    }
+                    if (team2 != null)
+                    {
+                        match.Team2.Player1Name = team2.Player1Name;
+                        match.Team2.Player2Name = team2.Player2Name;
+                        match.Team2.Player1Id = team2.Player1Id;
+                        match.Team2.Player2Id = team2.Player2Id;
+                    }
                 }
             }
             return matches;

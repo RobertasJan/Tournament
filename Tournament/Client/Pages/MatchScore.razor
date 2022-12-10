@@ -1,0 +1,112 @@
+﻿@page "/match/{Id:guid}/live"
+@page "/tournament/{TourneyId:guid}/match/{Id:guid}/live"
+@using Microsoft.AspNetCore.SignalR.Client;
+@using Tournament.Server.Models;
+@using Tournament.Shared.Games;
+@layout EmptyLayout
+
+@if (currentMatch != null)
+{
+    <style>
+        body {
+        height: 100%;
+        width: 100%;
+        background-color: #111;
+        color: #fff;
+        font-size: 75px;
+        text-align: center;
+        }
+        .match-score {
+        display: inline-block;
+        margin: 10px;
+        padding: 20px;
+        border: 5px solid #fff;
+        border-radius: 10px;
+        animation: score-change 1s;
+        }
+
+        @@keyframes score-change {
+        from {
+        transform: scale(1);
+        color: #fff;
+        }
+        to {
+        transform: scale(1.5);
+        color: #ff0;
+        }
+        }
+    </style>
+
+    <div class="match-score">
+        @if (currentMatch.Type != MatchType.MensSingles && currentMatch.Type != MatchType.WomensSingles)
+        {
+            <p>
+                @currentMatch.Team1.Player1Name/@currentMatch.Team1.Player2Name @DisplayScore() @currentMatch.Team2.Player1Name/@currentMatch.Team2.Player2Name
+            </p>
+        }
+        else
+        {
+            <p>@currentMatch.Team1.Player1Name @DisplayScore() @currentMatch.Team2.Player1Name</p>
+        }
+    </div>
+}
+else
+{
+    <p>No current match available.</p>
+}
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Parameter]
+    public Guid? TourneyId { get; set; }
+
+    [Inject] GameService GameService { get; set; }
+    MatchModel currentMatch;
+
+    HubConnection connection;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentMatch = await GameService.GetMatchById(Id);
+        connection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/match-score-hub")).Build();
+
+        connection.On<GameModel?>("UpdateMatchScore", this.ReceiveMessage);
+
+        await connection.StartAsync();
+
+
+
+        //// Real-time updating of match scores from server
+        //var connection = new Microsoft.AspNetCore.SignalR.HubConnectionBuilder()
+        //    .WithUrl("/match-score-hub")
+        //    .Build();
+
+        //connection.On<MatchModel>("UpdateMatchScore", match =>
+        //{
+        //    currentMatch = match;
+        //});
+
+        //connection.Start().Wait();
+    }
+    Task ReceiveMessage(GameModel? model)
+    {
+        Console.WriteLine("Haha");
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    private string DisplayScore()
+    {
+        var team1Score = 0;
+        var team2Score = 0;
+
+        if (currentMatch.Games?.LastOrDefault() != null)
+        {
+            team1Score = currentMatch.Games.Last().Team1Score;
+            team2Score = currentMatch.Games.Last().Team2Score;
+        }
+        return $"{team1Score} - {team2Score}";
+    }
+}

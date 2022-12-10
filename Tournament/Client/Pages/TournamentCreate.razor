@@ -12,7 +12,7 @@
     <MudGrid>
         <MudItem xs="12">
             <MudPaper Class="pa-2" Elevation="3">
-                <MudText Typo="Typo.subtitle2">Tournament description</MudText>
+                <MudText Typo="Typo.subtitle2">@Loc["Label_TournamentInfo"]</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6">
                         <MudTextField @bind-Value="model.Data.Name" Label="@Loc["Label_TournamentName"]" Variant="Variant.Text" Required="true" RequiredError="Tournament name is required!"></MudTextField>
@@ -52,14 +52,14 @@
                 <MudText Typo="Typo.subtitle2">@Loc["Label_MatchRules"]</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6" md="4">
-                        <MudSelect @bind-Value="model.Data.PointsToWin" Label="Points to win" Variant="Variant.Outlined">
+                        <MudSelect @bind-Value="model.Data.PointsToWin" Label="@Loc["Label_PointsToWin"]" Variant="Variant.Outlined">
                             <MudSelectItem Value="11">11 (deuce 15)</MudSelectItem>
                             <MudSelectItem Value="15">15 (deuce 17)</MudSelectItem>
                             <MudSelectItem Value="21">21 (deuce 30)</MudSelectItem>
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="12" sm="6" md="4">
-                        <MudSelect @bind-Value="model.Data.GamesToWin" Label="Games to win" Variant="Variant.Outlined">
+                        <MudSelect @bind-Value="model.Data.GamesToWin" Label="@Loc["Label_GamesToWin"]" Variant="Variant.Outlined">
                             <MudSelectItem Value="1">@Loc["Label_BestOf1"]</MudSelectItem>
                             <MudSelectItem Value="2">@Loc["Label_BestOf3"]</MudSelectItem>
                             <MudSelectItem Value="3">@Loc["Label_BestOf5"]</MudSelectItem>
@@ -75,7 +75,7 @@
                 <MudText Typo="Typo.subtitle2">@Loc["Label_TournamentGroups"]</MudText>
                 <MudGrid>
                     <MudItem xs=12 sm="6">
-                        <MudSelect SelectedValuesChanged="OnMatchSelected" T="MatchType" Label="@Loc["Label_MatchTypes"]" Variant="Variant.Outlined" MultiSelection="true">
+                        <MudSelect SelectedValuesChanged="OnMatchSelected" T="MatchType" Label="@Loc["Label_MatchTypes"]" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))" Variant="Variant.Outlined" MultiSelection="true">
                             @foreach (MatchType type in Enum.GetValues(typeof(Tournament.Domain.Games.MatchType)))
                             {
                                 <MudSelectItem Value="@type">@Loc[$"Enum_MatchType_{type}"]</MudSelectItem>
@@ -96,7 +96,7 @@
                 </MudGrid>
             </MudPaper>
         </MudItem>
-        <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" FullWidth="true">Create tournament</MudButton>
+        <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" FullWidth="true">@Loc["Label_CreateTournament"]</MudButton>
     </MudGrid>
 </MudForm>
 
@@ -157,6 +157,16 @@
             });
         MatchTypes = new HashSet<MatchType>();
         Groups = new HashSet<TournamentGroupTypes>();
+    }
+
+    private string GetMultiSelectionText(List<string> selectedValues)
+    {
+        var str = "";
+        foreach (var selectedValue in selectedValues) 
+        {
+            str += @Loc["Enum_MatchType_" + selectedValue] + " ";
+        }
+        return str;
     }
 
     private void OnMatchSelected(IEnumerable<MatchType> values)

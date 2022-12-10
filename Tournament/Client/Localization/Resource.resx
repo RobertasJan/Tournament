@@ -216,6 +216,9 @@
   <data name="Enum_MatchRecord_Played" xml:space="preserve">
     <value>Played</value>
   </data>
+  <data name="Enum_MatchRecord_ToBePlayed" xml:space="preserve">
+    <value />
+  </data>
   <data name="Enum_MatchRecord_Walkover" xml:space="preserve">
     <value>Walkover</value>
   </data>
@@ -405,6 +408,24 @@
   <data name="Label_RepeatPassword" xml:space="preserve">
     <value>Repeat password</value>
   </data>
+  <data name="Label_RoundOf1" xml:space="preserve">
+    <value>Final</value>
+  </data>
+  <data name="Label_RoundOf2" xml:space="preserve">
+    <value>Semifinals</value>
+  </data>
+  <data name="Label_RoundOf3" xml:space="preserve">
+    <value>Quarterfinals</value>
+  </data>
+  <data name="Label_RoundOf4" xml:space="preserve">
+    <value>Eight-finals</value>
+  </data>
+  <data name="Label_RoundOf5" xml:space="preserve">
+    <value>16th-finals</value>
+  </data>
+  <data name="Label_RoundOf6" xml:space="preserve">
+    <value>32th-finals</value>
+  </data>
   <data name="Label_Scorer" xml:space="preserve">
     <value>Scorer</value>
   </data>
@@ -441,6 +462,9 @@
   <data name="Label_TournamentGroups" xml:space="preserve">
     <value>Tournament groups</value>
   </data>
+  <data name="Label_TournamentInfo" xml:space="preserve">
+    <value>Tournament info</value>
+  </data>
   <data name="Label_TournamentName" xml:space="preserve">
     <value>Tournament name</value>
   </data>
@@ -449,6 +473,24 @@
   </data>
   <data name="Label_UpcomingMatches" xml:space="preserve">
     <value>Upcoming matches</value>
+  </data>
+  <data name="MatchButton_ChangeServer" xml:space="preserve">
+    <value>Change server</value>
+  </data>
+  <data name="MatchButton_ChangeSides" xml:space="preserve">
+    <value>Change sides</value>
+  </data>
+  <data name="MatchButton_EndGame" xml:space="preserve">
+    <value>End game</value>
+  </data>
+  <data name="MatchButton_EndMatch" xml:space="preserve">
+    <value>End match</value>
+  </data>
+  <data name="MatchButton_Return" xml:space="preserve">
+    <value>Return</value>
+  </data>
+  <data name="MatchButton_Switch" xml:space="preserve">
+    <value>Switch</value>
   </data>
   <data name="Placeholder_EnterPlayerName" xml:space="preserve">
     <value>Enter player name</value>

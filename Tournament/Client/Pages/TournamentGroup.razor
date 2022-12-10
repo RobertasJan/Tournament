@@ -26,7 +26,7 @@ else
             <div class="tournament-headers">
                 @for (var i = 0; i < model.CountOfRounds; i++) 
                 {
-                    <h3>Round of @(model.CountOfRounds - i)</h3>
+                    <h3>@Loc[$"Label_RoundOf{(model.CountOfRounds - i)}"]</h3>
                 }
             </div>
             @{
@@ -53,7 +53,7 @@ else
                                 <li class="team-item">
                                     <MudGrid Class="table-game-score-div">
                                         <MudItem xs="5">
-                                            @if (j == 0)
+                                            @if (copyOfJ == 0)
                                             {
                                                 <span>@($"S{@match.Team1?.Seed}")</span>
                                             }
@@ -72,7 +72,7 @@ else
                                         <MudItem xs="2">@*<time>@DisplayTime(match.MatchDate)</time>*@ @Loc[$"Enum_MatchRecord_{match.Record}"] 
                                         </MudItem>
                                         <MudItem xs="5">
-                                            @if (j == 0)
+                                            @if (copyOfJ == 0)
                                             {
                                                 <span>@($"S{@match.Team2?.Seed}")</span>
                                             }
