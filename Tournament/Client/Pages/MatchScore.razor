@@ -1,6 +1,7 @@
 ﻿@page "/match/{Id:guid}/live"
 @page "/tournament/{TourneyId:guid}/match/{Id:guid}/live"
 @using Microsoft.AspNetCore.SignalR.Client;
+@using System.Text.Json;
 @using Tournament.Server.Models;
 @using Tournament.Shared.Games;
 @layout EmptyLayout
@@ -9,44 +10,66 @@
 {
     <style>
         body {
-        height: 100%;
-        width: 100%;
-        background-color: #111;
-        color: #fff;
-        font-size: 75px;
-        text-align: center;
+            height: 100%;
+            width: 100%;
+            background-color: #111;
+            color: #ddd;
+            font-size: 10vw;
+            text-align: center;
         }
+
         .match-score {
-        display: inline-block;
-        margin: 10px;
-        padding: 20px;
-        border: 5px solid #fff;
-        border-radius: 10px;
-        animation: score-change 1s;
+            display: inline-block;
+            margin: 10px;
+            padding: 20px;
         }
 
-        @@keyframes score-change {
-        from {
-        transform: scale(1);
-        color: #fff;
+        .previous-score {
+            color: red;
+            font-size: 7vw;
         }
-        to {
-        transform: scale(1.5);
-        color: #ff0;
-        }
-        }
+
     </style>
+    @if (currentMatch.Games != null && currentMatch.Games.Count > 0)
+    {
+        <div class="previous-score">
 
+            <MudGrid>
+                @{
+                    var last = currentMatch.Games.Last();
+                }
+                @foreach (var game in currentMatch.Games)
+                {
+                    if (!last.Equals(game)) {
+                    <MudItem xs="3">@game.Team1Score : @game.Team2Score</MudItem>
+                    }
+                }
+            </MudGrid>
+        </div>
+    }
     <div class="match-score">
         @if (currentMatch.Type != MatchType.MensSingles && currentMatch.Type != MatchType.WomensSingles)
         {
-            <p>
-                @currentMatch.Team1.Player1Name/@currentMatch.Team1.Player2Name @DisplayScore() @currentMatch.Team2.Player1Name/@currentMatch.Team2.Player2Name
-            </p>
+            <MudGrid>
+                <MudItem xs="10">@currentMatch.Team1.Player1Name</MudItem>
+                <MudItem xs="2"></MudItem>
+                <MudItem xs="10">@currentMatch.Team1.Player2Name</MudItem>
+                <MudItem xs="2">@DisplayTeam1Score()</MudItem>
+                <MudItem xs="10">@currentMatch.Team2.Player1Name</MudItem>
+                <MudItem xs="2"></MudItem>
+                <MudItem xs="10">@currentMatch.Team2.Player2Name</MudItem>
+                <MudItem xs="2">@DisplayTeam2Score()</MudItem>
+            </MudGrid>
+
         }
         else
         {
-            <p>@currentMatch.Team1.Player1Name @DisplayScore() @currentMatch.Team2.Player1Name</p>
+            <MudGrid>
+                <MudItem xs="10">@currentMatch.Team1.Player1Name</MudItem>
+                <MudItem xs="2">@DisplayTeam1Score()</MudItem>
+                <MudItem xs="10">@currentMatch.Team2.Player1Name</MudItem>
+                <MudItem xs="2">@DisplayTeam2Score()</MudItem>
+            </MudGrid>
         }
     </div>
 }
@@ -71,29 +94,18 @@ else
     protected override async Task OnInitializedAsync()
     {
         currentMatch = await GameService.GetMatchById(Id);
+        currentMatch.Games = await GameService.GetMatchGames(Id);
         connection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/match-score-hub")).Build();
 
-        connection.On<GameModel?>("UpdateMatchScore", this.ReceiveMessage);
-
+        
+        connection.On<List<GameModel>>("UpdateMatchScore", this.ReceiveMessage);
         await connection.StartAsync();
 
-
-
-        //// Real-time updating of match scores from server
-        //var connection = new Microsoft.AspNetCore.SignalR.HubConnectionBuilder()
-        //    .WithUrl("/match-score-hub")
-        //    .Build();
-
-        //connection.On<MatchModel>("UpdateMatchScore", match =>
-        //{
-        //    currentMatch = match;
-        //});
-
-        //connection.Start().Wait();
     }
-    Task ReceiveMessage(GameModel? model)
+    Task ReceiveMessage(List<GameModel> games)
     {
-        Console.WriteLine("Haha");
+        Console.WriteLine(games.Count);
+        currentMatch.Games = games;
         StateHasChanged();
         return Task.CompletedTask;
     }
@@ -108,5 +120,29 @@ else
             team2Score = currentMatch.Games.Last().Team2Score;
         }
         return $"{team1Score} - {team2Score}";
+    }
+    private int DisplayTeam1Score()
+    {
+        return currentMatch.Games.Last().Team1Score;
+    }
+
+    private int DisplayTeam2Score()
+    {
+        return currentMatch.Games.Last().Team2Score;
+    }
+
+    private string ShortenString(string input)
+    {
+        // Check if the input string is longer than 14 characters.
+        if (input.Length > 12)
+        {
+            // If it is, return the first 12 characters followed by an ellipsis (...).
+            return input.Substring(0, 12);
+        }
+        else
+        {
+            // If the input string is 12 characters or less, return it as-is.
+            return input;
+        }
     }
 }

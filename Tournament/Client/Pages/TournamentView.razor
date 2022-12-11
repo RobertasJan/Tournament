@@ -38,10 +38,13 @@
                                     @{
                                         var url = $"tournament/{Id}/match/{match.Id}";
                                         var url2 = $"tournament/{Id}/match/{match.Id}/result";
+                                        var url3 = $"tournament/{Id}/match/{match.Id}/live";
                                     }
                                     <MudLink Href="@url"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Calculate" Size="Size.Small" Color="Color.Primary">@Loc["Label_Scorer"]</MudButton></MudLink>
                                     <MudLink Href="@url2"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Secondary">@Loc["Label_SetScore"]</MudButton></MudLink>
                                     <span class="bold-14">@match.Team1.Player1Name @match.Team1.Player2Name vs. @match.Team2.Player1Name @match.Team2.Player2Name</span>
+
+                                    <MudLink Href="@url3" Style="float: right;"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.RemoveRedEye" Size="Size.Small" Color="Color.Info">@Loc["Label_WatchLive"]</MudButton></MudLink>
                                 </MudItem>
                             </MudGrid>
                         }

@@ -81,6 +81,17 @@ namespace Tournament.Client.Services
             throw new NotImplementedException("No error handling");
         }
 
+        public async Task DeleteGame(Guid gameId, Guid matchId)
+        {
+            var cancellationToken = new CancellationTokenSource().Token;
+            var httpResponse = await _client.DeleteAsync($"api/matches/{matchId}/games/{gameId}", cancellationToken).ConfigureAwait(false);
+            if (httpResponse.StatusCode == HttpStatusCode.OK)
+            {
+                return;
+            }
+            throw new NotImplementedException("No error handling");
+        }
+
         public async Task UpdateGame(GameModel model, Guid matchId)
         {
             var cancellationToken = new CancellationTokenSource().Token;

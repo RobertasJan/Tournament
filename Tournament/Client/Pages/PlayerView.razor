@@ -1,4 +1,5 @@
 ﻿@page "/players/{Id:guid}"
+@using Tournament.Domain.Calculation;
 @using Tournament.Shared.Players
 @using Tournament.Shared.Results;
 
@@ -11,6 +12,8 @@
             <MudPaper Class="pa-2" Elevation="3">
                 <MudText Typo="Typo.h5" GutterBottom="true">@player.FullName</MudText>
                 <MudText Typo="Typo.body1" GutterBottom="true">@Loc[$"Enum_Gender_{player.Gender}"]</MudText>
+                <MudText Typo="Typo.body1" GutterBottom="true">@Loc[$"Age_{Calculations.DisplayPlayerAgeGroup(player.BirthDate)}"]</MudText>
+                <MudText Typo="Typo.body1" GutterBottom="true">@player.BirthDate.ToString("yyyy-MM-dd")</MudText>
             </MudPaper>
         </MudItem>
         <MudItem xs="12">

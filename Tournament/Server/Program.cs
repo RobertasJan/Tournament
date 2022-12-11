@@ -63,9 +63,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddSignalR().AddHubOptions<MatchScoreHub>(options =>
 {
     options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
-}).AddJsonProtocol(options =>
-{
-    options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+
 });
 builder.Services.AddResponseCompression(options => {
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream"});    

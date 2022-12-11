@@ -7,9 +7,9 @@ namespace Tournament.Server.Hubs
 {
     public class MatchScoreHub : Hub
     {
-        public async Task UpdateMatchScore(GameModel match)
+        public async Task UpdateMatchScore(List<GameModel> games)
         {
-            await Clients.All.SendAsync("UpdateMatchScore", match);
+            await Clients.All.SendAsync("UpdateMatchScore", games);
         }
     }
 }

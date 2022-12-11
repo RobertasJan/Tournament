@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,6 +51,45 @@ namespace Tournament.Domain.Calculation
             }
 
             return RecursiveSeedMatch(newList);
+        }
+
+        public static string DisplayPlayerAgeGroup(DateTime birthDate)
+        {
+
+            var age = DateTime.Now.Year - birthDate.Year;
+            if (birthDate > DateTime.Now.AddYears(-age))
+            {
+                age--;
+            }
+
+            if (age < 11)
+            {
+                return "U11";
+            }
+            else if (age >= 11 && age < 13)
+            {
+                return "U13";
+            }
+            else if (age >= 13 && age < 15)
+            {
+                return "U15";
+            }
+            else if (age >= 15 && age < 17)
+            {
+                return "U17";
+            }
+            else if (age >= 17 && age < 19)
+            {
+                return "U19";
+            }
+            else if (age >= 19 && age < 35)
+            {
+                return "Adult";
+            }
+            else
+            {
+                return "Veteran";
+            }
         }
     }
 }

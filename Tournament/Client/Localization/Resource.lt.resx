@@ -117,6 +117,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Age_Adult" xml:space="preserve">
+    <value>Suaugusieji</value>
+  </data>
+  <data name="Age_U11" xml:space="preserve">
+    <value>U11</value>
+  </data>
+  <data name="Age_U13" xml:space="preserve">
+    <value>U13</value>
+  </data>
+  <data name="Age_U15" xml:space="preserve">
+    <value>U15</value>
+  </data>
+  <data name="Age_U17" xml:space="preserve">
+    <value>U17</value>
+  </data>
+  <data name="Age_U19" xml:space="preserve">
+    <value>U19</value>
+  </data>
+  <data name="Age_Veteran" xml:space="preserve">
+    <value>Veteranai</value>
+  </data>
   <data name="Calendar_DayAbr_0" xml:space="preserve">
     <value>Se</value>
   </data>
@@ -396,6 +417,9 @@
   <data name="Label_Rating_Singles" xml:space="preserve">
     <value>Vienetų reitingas</value>
   </data>
+  <data name="Label_Record" xml:space="preserve">
+    <value>Įrašas</value>
+  </data>
   <data name="Label_Register" xml:space="preserve">
     <value>Registruoti</value>
   </data>
@@ -407,6 +431,9 @@
   </data>
   <data name="Label_RepeatPassword" xml:space="preserve">
     <value>Pakartoti slaptažodį</value>
+  </data>
+  <data name="Label_Result" xml:space="preserve">
+    <value>Rezultatas</value>
   </data>
   <data name="Label_RoundOf1" xml:space="preserve">
     <value>Finalas</value>
@@ -453,8 +480,20 @@
   <data name="Label_Team1" xml:space="preserve">
     <value>1-a komanda</value>
   </data>
+  <data name="Label_Team1Score" xml:space="preserve">
+    <value>1-os komandos taškai</value>
+  </data>
+  <data name="Label_Team1Victory" xml:space="preserve">
+    <value>1-os komandos pergalė</value>
+  </data>
   <data name="Label_Team2" xml:space="preserve">
     <value>2-a komanda</value>
+  </data>
+  <data name="Label_Team2Score" xml:space="preserve">
+    <value>2-os komandos taškai</value>
+  </data>
+  <data name="Label_Team2Victory" xml:space="preserve">
+    <value>2-os komandos pergalė</value>
   </data>
   <data name="Label_Tournament" xml:space="preserve">
     <value>Turnyras</value>
@@ -473,6 +512,9 @@
   </data>
   <data name="Label_UpcomingMatches" xml:space="preserve">
     <value>Būsimi susitikimai</value>
+  </data>
+  <data name="Label_WatchLive" xml:space="preserve">
+    <value>Stebėti gyvai</value>
   </data>
   <data name="MatchButton_ChangeServer" xml:space="preserve">
     <value>Pakeisti padavėją</value>

@@ -1,4 +1,5 @@
-﻿using Tournament.Domain.Games;
+﻿using System.Text.Json;
+using Tournament.Domain.Games;
 
 namespace Tournament.Shared.Games
 {
@@ -13,6 +14,12 @@ namespace Tournament.Shared.Games
         public bool Team1LeftSide { get; set; }
         public bool Team1Switched { get; set; }
         public bool Team2Switched { get; set; }
+
+        public Point? GetLastPoint()
+        {
+            var pointList = JsonSerializer.Deserialize<Stack<Point>?>(Scores);
+            return pointList.LastOrDefault();
+        }
 
     }
 }

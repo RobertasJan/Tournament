@@ -73,7 +73,12 @@ namespace Tournament.Server.Controllers
             model.Id = gameId;
             model.MatchId = id;
             await gameService.Update(Mapper.Map<GameEntity>(model), cancellationToken);
-            var match = Mapper.Map<MatchModel>(await matchService.GetById(id, cancellationToken));
+        }
+
+        [HttpDelete("{id:Guid}/games/{gameId:Guid}")]
+        public async Task DeleteGame([FromRoute] Guid id, [FromRoute] Guid gameId, CancellationToken cancellationToken)
+        {
+            await gameService.Delete(gameId, cancellationToken);
         }
 
         [HttpPut("{id:Guid}")]

@@ -27,8 +27,8 @@
                            ++i
                            ) @Loc["Label_Game"]</MudText>
                        </MudItem>
-                    <MudItem xs="6"><MudNumericField @bind-Value="game.Team1Score" Label="Team 1 score" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
-                    <MudItem xs="6"><MudNumericField @bind-Value="game.Team2Score" Label="Team 2 score" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
+                    <MudItem xs="6"><MudNumericField @bind-Value="game.Team1Score" Label="@Loc["Label_Team1Score"]" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
+                    <MudItem xs="6"><MudNumericField @bind-Value="game.Team2Score" Label="@Loc["Label_Team2Score"]" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
                 }
                 @if (Games.Count < MaxGameCount)
                 {
@@ -46,13 +46,13 @@
                 <MudText Typo="Typo.subtitle2">@Loc["Label_MatchEnding"]</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6">
-                        <MudSelect @bind-Value="Match.Result" Label="Result" Variant="Variant.Outlined">
-                            <MudSelectItem Value="MatchResult.Team1Victory">Team 1 victory</MudSelectItem>
-                            <MudSelectItem Value="MatchResult.Team2Victory">Team 2 victory</MudSelectItem>
+                        <MudSelect @bind-Value="Match.Result" Label="@Loc["Label_Result"]" Variant="Variant.Outlined">
+                            <MudSelectItem Value="MatchResult.Team1Victory">@Loc["Label_Team1Victory"]</MudSelectItem>
+                            <MudSelectItem Value="MatchResult.Team2Victory">@Loc["Label_Team2Victory"]</MudSelectItem>
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <MudSelect @bind-Value="Match.Record" Label="Record" Variant="Variant.Outlined">
+                        <MudSelect @bind-Value="Match.Record" Label="@Loc["Label_Record"]" Variant="Variant.Outlined">
                             <MudSelectItem Value="MatchRecord.Played">@Loc["Enum_MatchRecord_Played"]</MudSelectItem>
                             <MudSelectItem Value="MatchRecord.Disqualified">@Loc["Enum_MatchRecord_Disqualified"]</MudSelectItem>
                             <MudSelectItem Value="MatchRecord.Walkover">@Loc["Enum_MatchRecord_Walkover"]</MudSelectItem>
@@ -132,6 +132,11 @@
 
         if (form.IsValid)
         {
+            var currentGames = await GameService.GetMatchGames(Match.Id);
+            foreach (var game in currentGames)
+            {
+                await GameService.DeleteGame(game.Id.Value, Match.Id);
+            }
             foreach (var game in Games)
             {
                 await GameService.CreateGame(game, Match.Id);
