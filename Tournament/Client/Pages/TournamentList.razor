@@ -35,8 +35,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Tournaments = await TournamentService.GetTournaments(false);
-        PreviousTournaments = await TournamentService.GetTournaments(true);
+        Tournaments = (await TournamentService.GetTournaments(false)).Data;
+        PreviousTournaments = (await TournamentService.GetTournaments(true)).Data;
     }
     [Inject] PlayerService PlayerService { get; set; }
 }

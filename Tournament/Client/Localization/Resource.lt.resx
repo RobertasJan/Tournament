@@ -258,6 +258,27 @@
   <data name="Enum_MatchType_WomensSingles" xml:space="preserve">
     <value>Moterų vienetai</value>
   </data>
+  <data name="ERROR_INVALID_PASSWORD" xml:space="preserve">
+    <value>Neteisingas slaptažodis</value>
+  </data>
+  <data name="ERROR_MISSING_BIRTHDATE" xml:space="preserve">
+    <value>Prašau įveskite gimtadienį</value>
+  </data>
+  <data name="ERROR_MISSING_DESCRIPTION" xml:space="preserve">
+    <value>Prašau įveskite aprašymą</value>
+  </data>
+  <data name="ERROR_MISSING_FIRSTNAME" xml:space="preserve">
+    <value>Prašau įveskite vardą</value>
+  </data>
+  <data name="ERROR_MISSING_LASTNAME" xml:space="preserve">
+    <value>Prašau įveskite pavardę</value>
+  </data>
+  <data name="ERROR_MISSING_NAME" xml:space="preserve">
+    <value>Prašau įveskite pavadinimą</value>
+  </data>
+  <data name="ERROR_MISSING_PASSWORD" xml:space="preserve">
+    <value>Prašau įveskite slaptažodį</value>
+  </data>
   <data name="Header_CreateMatch" xml:space="preserve">
     <value>Sukurti susitikimą</value>
   </data>

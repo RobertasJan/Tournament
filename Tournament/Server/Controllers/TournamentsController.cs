@@ -1,13 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tournament.Client.Pages;
+using Tournament.Domain;
+using Tournament.Domain.Errors;
 using Tournament.Domain.Games;
 using Tournament.Domain.Players;
+using Tournament.Domain.Players.Exceptions;
 using Tournament.Domain.Services.Games;
 using Tournament.Domain.Services.Players;
 using Tournament.Domain.Services.Tournament;
 using Tournament.Domain.Tournaments;
 using Tournament.Server.Models;
+using Tournament.Shared;
 using Tournament.Shared.Games;
 using Tournament.Shared.Players;
 using Tournament.Shared.Tournaments;
@@ -40,22 +44,31 @@ namespace Tournament.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ICollection<TournamentModel>> Get(bool? finished = null, CancellationToken cancellationToken = default)
+        public async Task<ResponseModel<ICollection<TournamentModel>>> Get(bool? finished = null, CancellationToken cancellationToken = default)
         {
-            return Mapper.Map<ICollection<TournamentModel>>(await tournamentService.Get(finished, cancellationToken));
+            var zz = new ResponseModel<ICollection<TournamentModel>>(Mapper.Map<ICollection<TournamentModel>>(await tournamentService.Get(finished, cancellationToken)));
+            return zz;
         }
 
         [HttpPost]
-        public async Task<Guid> Create(TournamentModel model, CancellationToken cancellationToken)
+        public async Task<ResponseModel<Guid>> Create(TournamentModel model, CancellationToken cancellationToken)
         {
-            var id = await tournamentService.Create(Mapper.Map<TournamentEntity>(model), cancellationToken);
-            var tournamentGroups = Mapper.Map<ICollection<TournamentGroupEntity>>(model.Groups);
-            foreach (var group in tournamentGroups)
+            try
             {
-                group.TournamentId = id;
-                await tournamentGroupService.Create(group, cancellationToken);
+                var id = await tournamentService.Create(Mapper.Map<TournamentEntity>(model), cancellationToken);
+                var tournamentGroups = Mapper.Map<ICollection<TournamentGroupEntity>>(model.Groups);
+                foreach (var group in tournamentGroups)
+                {
+                    group.TournamentId = id;
+                    await tournamentGroupService.Create(group, cancellationToken);
+                }
+
+                return new ResponseModel<Guid>(id);
+            } catch (APIException exception)
+            {
+                return new ResponseModel<Guid>(exception.ErrorCodeModel);
             }
-            return id;
+
         }
 
         [HttpPost("{id:Guid}/groups/{tournamentGroupId:Guid}/register")]

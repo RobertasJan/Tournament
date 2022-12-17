@@ -1,7 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.Identity
 @using Tournament.Client.Components.Culture
+@using Tournament.Client.Components;
 @using Tournament.Domain.User
+@inject ISnackbar Snackbar
+@implements IErrorComponent
 @inherits LayoutComponentBase
 
 <MudThemeProvider />
@@ -54,9 +57,12 @@
     </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
-            @Body
+            <CascadingValue Value="this" Name="ErrorComponent">
+                @Body
+            </CascadingValue>
         </MudContainer>
     </MudMainContent>
+
 </MudLayout>
 
 @code {
@@ -69,4 +75,13 @@
         _drawerOpen = !_drawerOpen;
     }
 
+    public void ShowError(string message)
+    {
+        if (message is not null)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add(Loc[message].Value, Severity.Error);
+            StateHasChanged();
+        }
+    }
 }

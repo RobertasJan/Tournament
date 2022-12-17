@@ -24,6 +24,7 @@ namespace Tournament.Client.Services
         {
             var cancellationToken = new CancellationTokenSource().Token;
             var httpResponse = await _client.PostAsJsonAsync($"authentication/login", model, cancellationToken);
+            await httpResponse.ReadResponseAsync();
             if (httpResponse.StatusCode != HttpStatusCode.OK)
                 throw new NotImplementedException("No error handling");
         }

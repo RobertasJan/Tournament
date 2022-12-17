@@ -5,6 +5,7 @@ using Tournament.Client.Pages;
 using Tournament.Domain.Players;
 using Tournament.Domain.Tournaments;
 using Tournament.Server.Models;
+using Tournament.Shared;
 using Tournament.Shared.Games;
 using Tournament.Shared.Players;
 using Tournament.Shared.Tournaments;
@@ -30,18 +31,14 @@ namespace Tournament.Client.Services
             throw new NotImplementedException("No error handling");
         }
 
-        public async Task<ICollection<TournamentModel>> GetTournaments(bool? finished = null)
+        public async Task<ResponseModel<ICollection<TournamentModel>>> GetTournaments(bool? finished = null)
         {
             var cancellationToken = new CancellationTokenSource().Token;
             QueryString queryString = new QueryString();
             queryString = queryString.Add(nameof(finished), finished.ToString());
             var httpResponse = await _client.GetAsync($"api/tournaments/{queryString}", cancellationToken).ConfigureAwait(false);
-            if (httpResponse.StatusCode == HttpStatusCode.OK)
-            {
-                var tournaments = await httpResponse.Content.ReadAsAsync<ICollection<TournamentModel>>(cancellationToken).ConfigureAwait(false);
-                return tournaments;
-            }
-            throw new NotImplementedException("No error handling");
+            var tournaments = await httpResponse.Content.ReadAsAsync<ResponseModel<ICollection<TournamentModel>>>(cancellationToken).ConfigureAwait(false);
+            return tournaments;
         }
 
 

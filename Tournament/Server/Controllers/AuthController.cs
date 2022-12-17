@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Tournament.Domain.Players;
+using Tournament.Domain.Players.Exceptions;
 using Tournament.Domain.Services.Players;
 using Tournament.Domain.Services.User;
 using Tournament.Domain.User;
@@ -109,7 +110,7 @@ namespace Tournament.Server.Controllers
                 }
                 return new LoginResult { Message = "Login successful.", JwtBearer = CreateJWT(user), Email = login.Email, Player = Mapper.Map<PlayerModel>(player), Role = role, Success = true };
             }
-            return new LoginResult { Message = "User/password not found.", Success = false };
+            throw new InvalidPasswordException();
         }
     }
 

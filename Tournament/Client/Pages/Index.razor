@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Tournament.Client.Components;
 @using Tournament.Shared.Tournaments
 
 <PageTitle>@Loc["Label_Badminton"]</PageTitle>
@@ -22,8 +23,16 @@
 
     ICollection<TournamentModel>? Tournaments { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    [CascadingParameter(Name = "ErrorComponent")]
+    protected IErrorComponent ErrorComponent { get; set; }
+
+
+
+    protected override async Task OnParametersSetAsync()
     {
-        Tournaments = await TournamentService.GetTournaments(false);
+        var response = (await TournamentService.GetTournaments(false));
+        ErrorComponent.ShowError(response.Error?.ErrorMessage);
+        Tournaments = response.Data;
     }
+
 }

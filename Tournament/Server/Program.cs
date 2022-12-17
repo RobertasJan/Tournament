@@ -19,8 +19,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllersWithViews().AddJsonOptions(x =>
-    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddControllersWithViews().AddJsonOptions(x => {
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    x.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+});
 builder.Services.AddRazorPages();
 string connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext(connectionString);
