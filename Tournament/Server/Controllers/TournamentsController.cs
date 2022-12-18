@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 using Tournament.Client.Pages;
 using Tournament.Domain;
 using Tournament.Domain.Errors;
@@ -10,6 +11,7 @@ using Tournament.Domain.Services.Games;
 using Tournament.Domain.Services.Players;
 using Tournament.Domain.Services.Tournament;
 using Tournament.Domain.Tournaments;
+using Tournament.Domain.Tournaments.Exceptions;
 using Tournament.Server.Models;
 using Tournament.Shared;
 using Tournament.Shared.Games;
@@ -46,8 +48,7 @@ namespace Tournament.Server.Controllers
         [HttpGet]
         public async Task<ResponseModel<ICollection<TournamentModel>>> Get(bool? finished = null, CancellationToken cancellationToken = default)
         {
-            var zz = new ResponseModel<ICollection<TournamentModel>>(Mapper.Map<ICollection<TournamentModel>>(await tournamentService.Get(finished, cancellationToken)));
-            return zz;
+            return new ResponseModel<ICollection<TournamentModel>>(Mapper.Map<ICollection<TournamentModel>>(await tournamentService.Get(finished, cancellationToken)));
         }
 
         [HttpPost]
@@ -55,6 +56,7 @@ namespace Tournament.Server.Controllers
         {
             try
             {
+                ValidateTournament(model);
                 var id = await tournamentService.Create(Mapper.Map<TournamentEntity>(model), cancellationToken);
                 var tournamentGroups = Mapper.Map<ICollection<TournamentGroupEntity>>(model.Groups);
                 foreach (var group in tournamentGroups)
@@ -64,20 +66,75 @@ namespace Tournament.Server.Controllers
                 }
 
                 return new ResponseModel<Guid>(id);
-            } catch (APIException exception)
+            } catch (APIException ex)
             {
-                return new ResponseModel<Guid>(exception.ErrorCodeModel);
+                return new ResponseModel<Guid>(ex.ErrorCodeModel);
             }
 
         }
 
-        [HttpPost("{id:Guid}/groups/{tournamentGroupId:Guid}/register")]
-        public async Task CreateRegisteredPlayers([FromRoute] Guid id, [FromRoute] Guid tournamentGroupId, RegisteredPlayersModel model, CancellationToken cancellationToken)
+        private void ValidateTournament(TournamentModel tournament)
         {
-            var registeredPlayerEntity = Mapper.Map<RegisteredPlayersEntity>(model);
-            registeredPlayerEntity.TournamentGroupId = tournamentGroupId;
-            // registeredPlayerEntity.Id = id;
-            await tournamentGroupService.AddRegistration(registeredPlayerEntity, cancellationToken);
+            if (string.IsNullOrEmpty(tournament.Name))
+            {
+                throw new NoNameException();
+            }
+
+            if (string.IsNullOrEmpty(tournament.Description))
+            {
+                throw new NoDescriptionException();
+            }
+
+            if (string.IsNullOrEmpty(tournament.Address))
+            {
+                throw new NoAddressException();
+            }
+
+            if (string.IsNullOrEmpty(tournament.LongDescription))
+            {
+                throw new NoLongDescriptionException();
+            }
+
+            if (!tournament.StartDate.HasValue)
+            {
+                throw new InvalidDatesException();
+            }
+
+            if (!tournament.EndDate.HasValue)
+            {
+                throw new InvalidDatesException();
+            }
+
+            if (tournament.EndDate.Value < tournament.StartDate.Value)
+            {
+                throw new InvalidDatesException();
+            }
+
+            if (tournament.StartDate.Value < DateTime.Now.AddDays(-1))
+            {
+                throw new DatesInThePastException();
+            }
+
+            if (tournament.Groups is null || tournament.Groups.Count < 1)
+            {
+                throw new NoGroupsException();
+            }
+        }
+
+        [HttpPost("{id:Guid}/groups/{tournamentGroupId:Guid}/register")]
+        public async Task<ResponseModel> CreateRegisteredPlayers([FromRoute] Guid id, [FromRoute] Guid tournamentGroupId, RegisteredPlayersModel model, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var registeredPlayerEntity = Mapper.Map<RegisteredPlayersEntity>(model);
+                registeredPlayerEntity.TournamentGroupId = tournamentGroupId;
+                // registeredPlayerEntity.Id = id;
+                await tournamentGroupService.AddRegistration(registeredPlayerEntity, cancellationToken);
+                return new ResponseModel();
+            } catch (APIException ex)
+            {
+                return new ResponseModel<Guid>(ex.ErrorCodeModel);
+            }
         }
 
         [HttpGet("{id:Guid}/players")]

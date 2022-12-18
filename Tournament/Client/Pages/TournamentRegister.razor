@@ -1,6 +1,7 @@
 ﻿@page "/tournament/{Id:guid}/register"
 @using Microsoft.AspNetCore.WebUtilities
 @using Tournament.Client.Components.Player
+@using Tournament.Client.Components;
 @using Tournament.Domain.Games
 @using Tournament.Domain.Tournaments
 @using Tournament.Shared.Games
@@ -179,6 +180,9 @@
     [Inject] GameService GameService { get; set; }
     [Inject] UserService UserService { get; set; }
 
+    [CascadingParameter(Name = "ErrorComponent")]
+    protected IErrorComponent ErrorComponent { get; set; }
+
     TournamentViewModel? model = null;
     public PlayerModel? Player { get; set;} = null;
 
@@ -206,36 +210,61 @@
 
     async Task AddMatch()
     {
-        await RegisterPlayers(Partner1?.Id, MatchType1, Group1);
+        var unsuccessfulRegistrations = 0;
+
+        if (!await RegisterPlayers(Partner1, MatchType1, Group1)) unsuccessfulRegistrations++;
         if (AddedGroup2)
         {
-            await RegisterPlayers(Partner2?.Id, MatchType2, Group2);
+            if (!await RegisterPlayers(Partner2, MatchType2, Group2)) unsuccessfulRegistrations++;
         }
 
         if (AddedGroup3)
         {
-            await RegisterPlayers(Partner3?.Id, MatchType3, Group3);
+            if (!await RegisterPlayers(Partner3, MatchType3, Group3)) unsuccessfulRegistrations++;
         }
-        NavigationManager.NavigateTo($"/tournament/{model.Data.Id}", false);
+
+        if (unsuccessfulRegistrations == 0)
+        {
+            NavigationManager.NavigateTo($"/tournament/{model.Data.Id}", false);
+        }
     }
 
-    async Task RegisterPlayers(Guid? partnerId, MatchType type, TournamentGroupTypes tourneyGroupType)
+    async Task<bool> RegisterPlayers(PlayerModel? partnerModel, MatchType type, TournamentGroupTypes tourneyGroupType)
     {
-        await TournamentService.RegisterPlayer(model.Data.Id.Value,
+        var response = await TournamentService.RegisterPlayer(model.Data.Id.Value,
             model.Data.Groups.First(x => x.MatchType == type && x.Type == tourneyGroupType).Id.Value, new RegisteredPlayersModel()
                 {
                     Player1Id = Player.Id,
-                    Player2Id = partnerId
+                    Player2Id = partnerModel?.Id
                 });
+        if (response.Error != null)
+        {
+            if (response.Error?.ErrorCode == 26)
+            {
+                ErrorComponent.ShowError(Loc[response.Error?.ErrorMessage].Value.Replace("{names}", $"{Player.FullName} {partnerModel?.FullName ?? ""}"));
+            }
+            else
+            {
+                ErrorComponent.ShowError(response.Error?.ErrorMessage);
+            }
+            return false;
+        }
+        return true;
     }
 
     protected override async Task OnInitializedAsync()
     {
-        CanRegisterOthers = await UserService.IsAdmin();
-        if (!CanRegisterOthers) {
-            Player = await PlayerService.GetCurrent();
+        var tournament = await TournamentService.GetTournamentById(Id);
+        var currentPlayer = await PlayerService.GetCurrent();
+        if (currentPlayer is null) {
+            NavigationManager.NavigateTo($"/login", false);
+            return;
         }
-        model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
+        CanRegisterOthers = await UserService.IsAdmin() || tournament.TournamentCreatorId == currentPlayer.Id;
+        if (!CanRegisterOthers) {
+            Player = currentPlayer;
+        }
+        model = new TournamentViewModel(TournamentService, tournament);
         Group1 = model.Data.GetGroupTypes().First();
         Group2 = model.Data.GetGroupTypes().First();
         Group3 = model.Data.GetGroupTypes().First();

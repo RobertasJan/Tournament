@@ -258,11 +258,23 @@
   <data name="Enum_MatchType_WomensSingles" xml:space="preserve">
     <value>Women's singles</value>
   </data>
+  <data name="ERROR_ALREADY_REGISTERED" xml:space="preserve">
+    <value>{names} already registered</value>
+  </data>
   <data name="ERROR_BIRTH_DATE_IN_THE_FUTURE" xml:space="preserve">
     <value>Incorrect birthdate provided</value>
   </data>
+  <data name="ERROR_DATES_IN_THE_PAST" xml:space="preserve">
+    <value>Invalid dates</value>
+  </data>
+  <data name="ERROR_INVALID_DATES" xml:space="preserve">
+    <value>Invalid dates</value>
+  </data>
   <data name="ERROR_INVALID_PASSWORD" xml:space="preserve">
     <value>Incorrect password</value>
+  </data>
+  <data name="ERROR_MISSING_ADDRESS" xml:space="preserve">
+    <value>Please provide address</value>
   </data>
   <data name="ERROR_MISSING_BIRTHDATE" xml:space="preserve">
     <value>Please provide birthdate</value>
@@ -279,8 +291,14 @@
   <data name="ERROR_MISSING_FIRSTNAME" xml:space="preserve">
     <value>Please provide name</value>
   </data>
+  <data name="ERROR_MISSING_GROUPS" xml:space="preserve">
+    <value>Please select groups</value>
+  </data>
   <data name="ERROR_MISSING_LASTNAME" xml:space="preserve">
     <value>Please provide last name</value>
+  </data>
+  <data name="ERROR_MISSING_LONG_DESCRIPTION" xml:space="preserve">
+    <value>Please provide full description</value>
   </data>
   <data name="ERROR_MISSING_NAME" xml:space="preserve">
     <value>Please provide name</value>
@@ -457,6 +475,9 @@
     <value>Record</value>
   </data>
   <data name="Label_Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Label_RegisterYourself" xml:space="preserve">
     <value>Register</value>
   </data>
   <data name="Label_RemoveGame" xml:space="preserve">

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tournament.Domain.Errors;
+﻿using Tournament.Domain.Errors;
 
 namespace Tournament.Domain.Players.Exceptions
 {
@@ -67,5 +62,10 @@ namespace Tournament.Domain.Players.Exceptions
         public BirthDateInTheFutureException() : base(new ErrorCodeModel(18, "ERROR_BIRTH_DATE_IN_THE_FUTURE"))
         {
         }
+    }
+
+    public class PlayerAlreadyRegisteredException : APIException
+    {
+        public PlayerAlreadyRegisteredException() : base(new ErrorCodeModel(26, "ERROR_ALREADY_REGISTERED")) { }
     }
 }

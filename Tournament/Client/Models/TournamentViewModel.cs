@@ -4,6 +4,7 @@ using Tournament.Domain.Games;
 using Tournament.Domain.Players;
 using Tournament.Domain.Tournaments;
 using Tournament.Server.Models;
+using Tournament.Shared;
 using Tournament.Shared.Games;
 using Tournament.Shared.Players;
 using Tournament.Shared.Tournaments;
@@ -29,8 +30,9 @@ namespace Tournament.Client.Models
             this.service = service;
         }
 
-        public async Task<Guid> Save()
+        public async Task<ResponseModel<Guid>> Save(Guid tournamentCreatorId)
         {
+            this.Data.TournamentCreatorId = tournamentCreatorId;
             return await service.CreateTournament(this.Data);
         }
     }

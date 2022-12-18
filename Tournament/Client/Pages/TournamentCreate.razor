@@ -1,113 +1,119 @@
 ﻿@page "/tournament/create"
 @using System.Globalization
 @using System.Reflection
+@using Tournament.Client.Components;
 @using Tournament.Domain.Tournaments
 @using Tournament.Shared.Games
 @using Tournament.Shared.Tournaments
 @using MatchType = Tournament.Domain.Games.MatchType
 
 <PageTitle>Tournament</PageTitle>
-
-<MudForm @ref="@form" @bind-IsValid="@success">
-    <MudGrid>
-        <MudItem xs="12">
-            <MudPaper Class="pa-2" Elevation="3">
-                <MudText Typo="Typo.subtitle2">@Loc["Label_TournamentInfo"]</MudText>
-                <MudGrid>
-                    <MudItem xs="12" sm="6">
-                        <MudTextField @bind-Value="model.Data.Name" Label="@Loc["Label_TournamentName"]" Variant="Variant.Text" Required="true" RequiredError="Tournament name is required!"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="12" sm="6">
-                        <MudTextField @bind-Value="model.Data.Description" Label="@Loc["Label_ShortDescription"]" Variant="Variant.Text" Required="true" RequiredError="Tournament short description is required!"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="12" sm="6">
-                        <MudTextField @bind-Value="model.Data.Address" Label="@Loc["Label_Address"]" Variant="Variant.Text" Required="true" RequiredError="Tournament address is required!"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="12" sm="6">
-                        <MudDatePicker Label="@Loc["Label_StartDate"]" @bind-Date="model.Data.StartDate" Culture="@GetCultureInfo()" TitleDateFormat="yyyy-MM-dd" />
-                    </MudItem>
-                    <MudItem xs="12" sm="6">
-                        <MudDatePicker Label="@Loc["Label_EndDate"]" @bind-Date="model.Data.EndDate" Culture="@GetCultureInfo()" TitleDateFormat="yyyy-MM-dd" />
-                    </MudItem>
-    @*                <MudItem xs="12" sm="6">
+@if (model != null)
+{
+    <MudForm @ref="@form" @bind-IsValid="@success">
+        <MudGrid>
+            <MudItem xs="12">
+                <MudPaper Class="pa-2" Elevation="3">
+                    <MudText Typo="Typo.subtitle2">@Loc["Label_TournamentInfo"]</MudText>
+                    <MudGrid>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="model.Data.Name" Label="@Loc["Label_TournamentName"]" Variant="Variant.Text"></MudTextField>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="model.Data.Description" Label="@Loc["Label_ShortDescription"]" Variant="Variant.Text"></MudTextField>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="model.Data.Address" Label="@Loc["Label_Address"]" Variant="Variant.Text"></MudTextField>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudDatePicker Label="@Loc["Label_StartDate"]" @bind-Date="model.Data.StartDate" Culture="@GetCultureInfo()" TitleDateFormat="yyyy-MM-dd" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudDatePicker Label="@Loc["Label_EndDate"]" @bind-Date="model.Data.EndDate" Culture="@GetCultureInfo()" TitleDateFormat="yyyy-MM-dd" />
+                        </MudItem>
+                        @*                <MudItem xs="12" sm="6">
                         <MudTimePicker Label="Average match time" @bind-Time="model.Data.AverageTimePerMatch" TimeEditMode="TimeEditMode.OnlyMinutes" />
                     </MudItem>
                     <MudItem xs="12" sm="6">
                         <MudNumericField @bind-Value="model.Data.CourtsAvailable" Label="Courts count" Min="1" Max="100" Step="1" />
                     </MudItem>*@
-                    <MudItem xs="12">
-                        <MudCheckBox @bind-Checked="@model.Data.Public" Label="@Loc["Label_Public"]" Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox @bind-Checked="@model.Data.Rated" Label="@Loc["Label_Rated"]" Color="Color.Primary"></MudCheckBox>
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudTextField Lines="8" @bind-Value="model.Data.LongDescription" Label="@Loc["Label_Description"]" Variant="Variant.Text" Required="true" RequiredError="Tournament full description is required!"></MudTextField>
-                    </MudItem>
-                </MudGrid>
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-    <MudGrid>
-        <MudItem xs="12" sm="7">
-            <MudPaper Class="pa-2" Elevation="3">
-                <MudText Typo="Typo.subtitle2">@Loc["Label_MatchRules"]</MudText>
-                <MudGrid>
-                    <MudItem xs="12" sm="6" md="4">
-                        <MudSelect @bind-Value="model.Data.PointsToWin" Label="@Loc["Label_PointsToWin"]" Variant="Variant.Outlined">
-                            <MudSelectItem Value="11">11 (deuce 15)</MudSelectItem>
-                            <MudSelectItem Value="15">15 (deuce 17)</MudSelectItem>
-                            <MudSelectItem Value="21">21 (deuce 30)</MudSelectItem>
-                        </MudSelect>
-                    </MudItem>
-                    <MudItem xs="12" sm="6" md="4">
-                        <MudSelect @bind-Value="model.Data.GamesToWin" Label="@Loc["Label_GamesToWin"]" Variant="Variant.Outlined">
-                            <MudSelectItem Value="1">@Loc["Label_BestOf1"]</MudSelectItem>
-                            <MudSelectItem Value="2">@Loc["Label_BestOf3"]</MudSelectItem>
-                            <MudSelectItem Value="3">@Loc["Label_BestOf5"]</MudSelectItem>
-                        </MudSelect>
-                    </MudItem>
-                </MudGrid>
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-    <MudGrid Class="pt-4">
-        <MudItem xs="12">
-            <MudPaper Class="pa-2" Elevation="3">
-                <MudText Typo="Typo.subtitle2">@Loc["Label_TournamentGroups"]</MudText>
-                <MudGrid>
-                    <MudItem xs=12 sm="6">
-                        <MudSelect SelectedValuesChanged="OnMatchSelected" T="MatchType" Label="@Loc["Label_MatchTypes"]" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))" Variant="Variant.Outlined" MultiSelection="true">
-                            @foreach (MatchType type in Enum.GetValues(typeof(Tournament.Domain.Games.MatchType)))
-                            {
-                                <MudSelectItem Value="@type">@Loc[$"Enum_MatchType_{type}"]</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
-                    <MudItem xs="12" sm="6">
-                        <MudSelect SelectedValuesChanged="OnGroupSelected" T="TournamentGroupTypes" Label="@Loc["Label_TournamentGroups"]" Variant="Variant.Outlined" MultiSelection="true">
-                            @foreach (TournamentGroupTypes type in Enum.GetValues(typeof(TournamentGroupTypes)))
-                            {
-                                <MudSelectItem Value="@type">@type</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
-                    <MudItem xs="12" sm="6">
-                        <TournamentTable Groups="model.Data.Groups"></TournamentTable>
-                    </MudItem>
-                </MudGrid>
-            </MudPaper>
-        </MudItem>
-        <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" FullWidth="true">@Loc["Label_CreateTournament"]</MudButton>
-    </MudGrid>
-</MudForm>
-
+                        <MudItem xs="12">
+                            <MudCheckBox @bind-Checked="@model.Data.Public" Label="@Loc["Label_Public"]" Color="Color.Primary"></MudCheckBox>
+                            <MudCheckBox @bind-Checked="@model.Data.Rated" Label="@Loc["Label_Rated"]" Color="Color.Primary"></MudCheckBox>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField Lines="8" @bind-Value="model.Data.LongDescription" Label="@Loc["Label_Description"]" Variant="Variant.Text"></MudTextField>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+        <MudGrid>
+            <MudItem xs="12" sm="7">
+                <MudPaper Class="pa-2" Elevation="3">
+                    <MudText Typo="Typo.subtitle2">@Loc["Label_MatchRules"]</MudText>
+                    <MudGrid>
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudSelect @bind-Value="model.Data.PointsToWin" Label="@Loc["Label_PointsToWin"]" Variant="Variant.Outlined">
+                                <MudSelectItem Value="11">11 (deuce 15)</MudSelectItem>
+                                <MudSelectItem Value="15">15 (deuce 17)</MudSelectItem>
+                                <MudSelectItem Value="21">21 (deuce 30)</MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudSelect @bind-Value="model.Data.GamesToWin" Label="@Loc["Label_GamesToWin"]" Variant="Variant.Outlined">
+                                <MudSelectItem Value="1">@Loc["Label_BestOf1"]</MudSelectItem>
+                                <MudSelectItem Value="2">@Loc["Label_BestOf3"]</MudSelectItem>
+                                <MudSelectItem Value="3">@Loc["Label_BestOf5"]</MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+        <MudGrid Class="pt-4">
+            <MudItem xs="12">
+                <MudPaper Class="pa-2" Elevation="3">
+                    <MudText Typo="Typo.subtitle2">@Loc["Label_TournamentGroups"]</MudText>
+                    <MudGrid>
+                        <MudItem xs=12 sm="6">
+                            <MudSelect SelectedValuesChanged="OnMatchSelected" T="MatchType" Label="@Loc["Label_MatchTypes"]" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))" Variant="Variant.Outlined" MultiSelection="true">
+                                @foreach (MatchType type in Enum.GetValues(typeof(Tournament.Domain.Games.MatchType)))
+                                {
+                                    <MudSelectItem Value="@type">@Loc[$"Enum_MatchType_{type}"]</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSelect SelectedValuesChanged="OnGroupSelected" T="TournamentGroupTypes" Label="@Loc["Label_TournamentGroups"]" Variant="Variant.Outlined" MultiSelection="true">
+                                @foreach (TournamentGroupTypes type in Enum.GetValues(typeof(TournamentGroupTypes)))
+                                {
+                                    <MudSelectItem Value="@type">@type</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <TournamentTable Groups="model.Data.Groups"></TournamentTable>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </MudItem>
+            <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" FullWidth="true">@Loc["Label_CreateTournament"]</MudButton>
+        </MudGrid>
+    </MudForm>
+}
 @code {
     [Inject] TournamentService TournamentService { get; set; }
+    [Inject] PlayerService PlayerService { get; set; }
 
     bool success = false;
     MudForm? form = new MudForm();
     TournamentViewModel model;
     IEnumerable<MatchType> MatchTypes { get; set; } = new HashSet<MatchType>();
     IEnumerable<TournamentGroupTypes> Groups { get; set; } = new HashSet<TournamentGroupTypes>();
+
+    [CascadingParameter(Name = "ErrorComponent")]
+    protected IErrorComponent ErrorComponent { get; set; }
 
     public CultureInfo GetCultureInfo()
     {
@@ -147,6 +153,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var currentPlayer = await PlayerService.GetCurrent();
+        if (currentPlayer is null) {
+            NavigationManager.NavigateTo($"/login", false);
+            return;
+        }
         model = new TournamentViewModel(TournamentService, new TournamentModel
             {
                 PointsToWin = 21,
@@ -215,8 +226,16 @@
 
         if (form.IsValid)
         {
-            var id = await model.Save();
-            NavigationManager.NavigateTo($"/tournament/{id}", false);
+            var creator = await PlayerService.GetCurrent();
+            var response = await model.Save(creator.Id);
+            if (response.Error != null)
+            {
+                ErrorComponent.ShowError(response.Error?.ErrorMessage);
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"/tournament/{response.Data}", false);
+            }
         }
     }
 }

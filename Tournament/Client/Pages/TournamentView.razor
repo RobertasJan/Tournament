@@ -41,7 +41,10 @@
                                         var url3 = $"tournament/{Id}/match/{match.Id}/live";
                                     }
                                     <MudLink Href="@url"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Calculate" Size="Size.Small" Color="Color.Primary">@Loc["Label_Scorer"]</MudButton></MudLink>
-                                    <MudLink Href="@url2"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Secondary">@Loc["Label_SetScore"]</MudButton></MudLink>
+                                    @if (IsMaster) 
+                                    {
+                                        <MudLink Href="@url2"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Secondary">@Loc["Label_SetScore"]</MudButton></MudLink>
+                                    }
                                     <span class="bold-14">@match.Team1.Player1Name @match.Team1.Player2Name vs. @match.Team2.Player1Name @match.Team2.Player2Name</span>
 
                                     <MudLink Href="@url3" Style="float: right;"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.RemoveRedEye" Size="Size.Small" Color="Color.Info">@Loc["Label_WatchLive"]</MudButton></MudLink>
@@ -61,12 +64,12 @@
                 <MudLink Href="@href">
                     <MudButton Variant="Variant.Filled"
                             Color="Color.Primary">
-                        @Loc["Label_Register"].Value.ToUpper()
+                        @(IsMaster ? Loc["Label_Register"].Value.ToUpper() : Loc["Label_RegisterYourself"].Value.ToUpper())
                     </MudButton>
                 </MudLink>
             </MudItem>
         }
-        @if ((model.Data.State == Domain.Tournaments.TournamentState.Registration || model.Data.State == Domain.Tournaments.TournamentState.Created) && IsAdmin)
+        @if ((model.Data.State == Domain.Tournaments.TournamentState.Registration || model.Data.State == Domain.Tournaments.TournamentState.Created) && IsMaster)
         {
             <MudItem xs="12">
                 <MudButton Variant="Variant.Filled"
@@ -75,7 +78,7 @@
                 </MudButton>
             </MudItem>
         }
-        else if (model.Data.State == Domain.Tournaments.TournamentState.Draws && IsAdmin) 
+        else if (model.Data.State == Domain.Tournaments.TournamentState.Draws && IsMaster) 
         {
             <MudItem xs="12">
                 <MudButton Variant="Variant.Filled"
@@ -84,7 +87,7 @@
                 </MudButton>
             </MudItem>
         }
-        else if (model.Data.State == Domain.Tournaments.TournamentState.Ongoing && IsAdmin)
+        else if (model.Data.State == Domain.Tournaments.TournamentState.Ongoing && IsMaster)
         {
             <MudItem xs="12">
                 <MudButton Variant="Variant.Filled"
@@ -99,17 +102,21 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    public bool IsAdmin { get; set; }
+    public bool IsMaster { get; set; }
 
     [Inject] TournamentService TournamentService { get; set; }
     [Inject] UserService UserService { get; set; }
+    [Inject] PlayerService PlayerService { get; set; }
 
     TournamentViewModel model;
 
     protected override async Task OnInitializedAsync()
     {
-        IsAdmin = await UserService.IsAdmin();
-        model = new TournamentViewModel(TournamentService, await TournamentService.GetTournamentById(Id));
+        var tournament = await TournamentService.GetTournamentById(Id);
+        var isAdmin = await UserService.IsAdmin();
+        var isCreator = tournament.TournamentCreatorId == (await PlayerService.GetCurrent())?.Id;
+        IsMaster = isAdmin || isCreator;
+        model = new TournamentViewModel(TournamentService, tournament);
         model.Players = await TournamentService.GetRegisteredPlayers(Id);
         model.TournamentPlayers = await TournamentService.GetAggregatedRegisteredPlayers(Id);
         model.UpcomingMatches = await TournamentService.GetUpcomingMatches(Id);

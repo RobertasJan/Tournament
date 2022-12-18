@@ -12,8 +12,8 @@ namespace Tournament.Server.Models
         public int PointsToWin { get; set; } // 21
         public int PointsToFinalize { get; set; } // 30
         public MatchType Type { get; set; }
-        public MatchRecord? Record { get; set; } = MatchRecord.ToBePlayed;
-        public MatchResult? Result { get; set; } = MatchResult.Undetermined;
+        public MatchRecord Record { get; set; } = MatchRecord.ToBePlayed;
+        public MatchResult Result { get; set; } = MatchResult.Undetermined;
 
         public Guid? TournamentGroupId { get; set; }
 

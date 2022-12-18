@@ -25,6 +25,7 @@ namespace Tournament.Infrastructure.Data
             builder.Property(x => x.Address).IsRequired().HasDefaultValue("");
             builder.Property(x => x.StartDate).IsRequired();
             builder.Property(x => x.EndDate);
+            builder.Property(x => x.TournamentCreatorId).HasDefaultValue(Guid.Empty);
             builder.Property(x => x.Name).IsRequired().HasMaxLength(128);
             builder.Property(x => x.Description).IsRequired().HasMaxLength(256);
             builder.Property(x => x.LongDescription).IsRequired();

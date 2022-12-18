@@ -258,11 +258,23 @@
   <data name="Enum_MatchType_WomensSingles" xml:space="preserve">
     <value>Moterų vienetai</value>
   </data>
+  <data name="ERROR_ALREADY_REGISTERED" xml:space="preserve">
+    <value>{names} jau registruotas (-a)</value>
+  </data>
   <data name="ERROR_BIRTH_DATE_IN_THE_FUTURE" xml:space="preserve">
     <value>Prašau įveskite gimtadienį</value>
   </data>
+  <data name="ERROR_DATES_IN_THE_PAST" xml:space="preserve">
+    <value>Neteisingos datos</value>
+  </data>
+  <data name="ERROR_INVALID_DATES" xml:space="preserve">
+    <value>Neteisingos datos</value>
+  </data>
   <data name="ERROR_INVALID_PASSWORD" xml:space="preserve">
     <value>Neteisingas slaptažodis</value>
+  </data>
+  <data name="ERROR_MISSING_ADDRESS" xml:space="preserve">
+    <value>Prašau įveskite adresą</value>
   </data>
   <data name="ERROR_MISSING_BIRTHDATE" xml:space="preserve">
     <value>Prašau įveskite gimtadienį</value>
@@ -279,8 +291,14 @@
   <data name="ERROR_MISSING_FIRSTNAME" xml:space="preserve">
     <value>Prašau įveskite vardą</value>
   </data>
+  <data name="ERROR_MISSING_GROUPS" xml:space="preserve">
+    <value>Prašau pasirinkite grupes</value>
+  </data>
   <data name="ERROR_MISSING_LASTNAME" xml:space="preserve">
     <value>Prašau įveskite pavardę</value>
+  </data>
+  <data name="ERROR_MISSING_LONG_DESCRIPTION" xml:space="preserve">
+    <value>Prašau įveskite ilgąjį aprašymą</value>
   </data>
   <data name="ERROR_MISSING_NAME" xml:space="preserve">
     <value>Prašau įveskite pavadinimą</value>
@@ -459,6 +477,9 @@
   <data name="Label_Register" xml:space="preserve">
     <value>Registruoti</value>
   </data>
+  <data name="Label_RegisterYourself" xml:space="preserve">
+    <value>Registruotis</value>
+  </data>
   <data name="Label_RemoveGame" xml:space="preserve">
     <value>Ištrinti žaidimą</value>
   </data>
@@ -572,9 +593,6 @@
   </data>
   <data name="Placeholder_EnterPlayerName" xml:space="preserve">
     <value>Žaidėjo vardas</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value />
   </data>
   <data name="Text_PleaseLogin" xml:space="preserve">
     <value>Prašau prisijunkite</value>

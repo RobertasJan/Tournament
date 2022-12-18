@@ -21,6 +21,7 @@
         public TournamentState State { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public Guid TournamentCreatorId { get; set; }
         public ICollection<TournamentGroupEntity> Groups { get; set; }
     }
 
