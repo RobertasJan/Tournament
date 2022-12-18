@@ -56,6 +56,28 @@
 .tourney-skeleton .mud-grid-item {
     border-right: 1px dashed #ccc;
 }
+
+#loading-screen {
+    display: block;
+    height: 100vh;
+    background-color: #ffffff;
+    margin-top: 20vh;
+}
+
+
+#loading-screen > div {
+    font-size: 32px;
+    color: #000000;
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#loading-logo {
+    display: block;
+    margin: 0 auto;
+}
+
 /* Tournament tree */
 
 

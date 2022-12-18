@@ -3,11 +3,11 @@
 <p>
 	@if (string.IsNullOrEmpty(username))
 	{
-			<span><a href="/register">@Loc["Header_Register"]</a> <a href="/login">@Loc["Header_Login"]</a></span>
+		<span><a href="/register" style="color:black;">@Loc["Header_Register"]</a> <a href="/login" style="color:black;">@Loc["Header_Login"]</a></span>
 	}
 	else
 	{
-			<span>@Loc["Label_Hello"], @username <a href="/logout">(@Loc["Label_Logout"])</a></span>
+		<span style="color:black;">@Loc["Label_Hello"], @username <a href="/logout" style="color:black;">(@Loc["Label_Logout"])</a></span>
 	}
 </p>
 

@@ -66,7 +66,7 @@ namespace Tournament.Client.Models
                     {
                         currentCourt++;
                     }
-                    lastRound = x.Round;
+                    lastRound = x.Round.Value;
                 }
             });
             

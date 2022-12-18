@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Transactions;
 using Tournament.Client.Services;
+using Tournament.Domain;
 using Tournament.Domain.Games;
+using Tournament.Domain.Players.Exceptions;
 using Tournament.Domain.Services.Games;
 using Tournament.Server.Hubs;
 using Tournament.Server.Models;
@@ -55,9 +57,45 @@ namespace Tournament.Server.Controllers
         }
 
         [HttpPost()]
-        public async Task<Guid> Create(MatchModel model, CancellationToken cancellationToken)
+        public async Task<ResponseModel<Guid>> Create(MatchModel model, CancellationToken cancellationToken)
         {
-            return await matchService.Create(Mapper.Map<MatchEntity>(model), cancellationToken);
+            try
+            {
+                var matchEntity = Mapper.Map<MatchEntity>(model);
+                ValidateMatchModel(model);
+
+                matchEntity.Player1Name = model.Player1Name;
+                matchEntity.Player2Name = model.Player2Name;
+                matchEntity.Player3Name = model.Player3Name;
+                matchEntity.Player4Name = model.Player4Name;
+                return new ResponseModel<Guid>(await matchService.Create(matchEntity, cancellationToken));
+            } catch (APIException ex)
+            {
+                return new ResponseModel<Guid>(ex.ErrorCodeModel);
+            }
+        }
+
+        private void ValidateMatchModel(MatchModel model)
+        {
+            if (model.Team1 is not null || model.Team2 is not null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(model.Player1Name) ||
+                string.IsNullOrEmpty(model.Player3Name))
+            {
+                throw new NoFirstnameException();
+            }
+
+            if (model.Type != Domain.Games.MatchType.MensSingles && model.Type != Domain.Games.MatchType.WomensSingles)
+            {
+                if (string.IsNullOrEmpty(model.Player2Name) ||
+                    string.IsNullOrEmpty(model.Player4Name))
+                {
+                    throw new NoFirstnameException();
+                }
+            }
         }
 
         [HttpPost("{id:Guid}/games")]

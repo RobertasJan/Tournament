@@ -258,14 +258,23 @@
   <data name="Enum_MatchType_WomensSingles" xml:space="preserve">
     <value>Moterų vienetai</value>
   </data>
+  <data name="ERROR_BIRTH_DATE_IN_THE_FUTURE" xml:space="preserve">
+    <value>Prašau įveskite gimtadienį</value>
+  </data>
   <data name="ERROR_INVALID_PASSWORD" xml:space="preserve">
     <value>Neteisingas slaptažodis</value>
   </data>
   <data name="ERROR_MISSING_BIRTHDATE" xml:space="preserve">
     <value>Prašau įveskite gimtadienį</value>
   </data>
+  <data name="ERROR_MISSING_CONFIRM_PASSWORD" xml:space="preserve">
+    <value>Prašau pakartoti slaptažodį</value>
+  </data>
   <data name="ERROR_MISSING_DESCRIPTION" xml:space="preserve">
     <value>Prašau įveskite aprašymą</value>
+  </data>
+  <data name="ERROR_MISSING_EMAIL" xml:space="preserve">
+    <value>Prašau įveskite el. paštą</value>
   </data>
   <data name="ERROR_MISSING_FIRSTNAME" xml:space="preserve">
     <value>Prašau įveskite vardą</value>
@@ -278,6 +287,9 @@
   </data>
   <data name="ERROR_MISSING_PASSWORD" xml:space="preserve">
     <value>Prašau įveskite slaptažodį</value>
+  </data>
+  <data name="ERROR_PASSWORDS_DO_NOT_MATCH" xml:space="preserve">
+    <value>Slaptažodžiai nesutampa</value>
   </data>
   <data name="Header_CreateMatch" xml:space="preserve">
     <value>Sukurti susitikimą</value>
@@ -368,6 +380,9 @@
   </data>
   <data name="Label_Hello" xml:space="preserve">
     <value>Sveiki</value>
+  </data>
+  <data name="Label_LastName" xml:space="preserve">
+    <value>Pavardė</value>
   </data>
   <data name="Label_Login" xml:space="preserve">
     <value>Prisijungimas</value>
@@ -557,5 +572,11 @@
   </data>
   <data name="Placeholder_EnterPlayerName" xml:space="preserve">
     <value>Žaidėjo vardas</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Text_PleaseLogin" xml:space="preserve">
+    <value>Prašau prisijunkite</value>
   </data>
 </root>

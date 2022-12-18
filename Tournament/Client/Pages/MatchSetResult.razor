@@ -132,17 +132,17 @@
 
         if (form.IsValid)
         {
-            var currentGames = await GameService.GetMatchGames(Match.Id);
+            var currentGames = await GameService.GetMatchGames(Match.Id.Value);
             foreach (var game in currentGames)
             {
-                await GameService.DeleteGame(game.Id.Value, Match.Id);
+                await GameService.DeleteGame(game.Id.Value, Match.Id.Value);
             }
             foreach (var game in Games)
             {
-                await GameService.CreateGame(game, Match.Id);
+                await GameService.CreateGame(game, Match.Id.Value);
             }
             await GameService.UpdateMatch(Match);
-            await GameService.SetNextMatch(Match.Id);
+            await GameService.SetNextMatch(Match.Id.Value);
             NavigationManager.NavigateTo($"/tournament/{TourneyId}", false);
 
         }

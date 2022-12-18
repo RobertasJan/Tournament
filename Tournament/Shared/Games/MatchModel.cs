@@ -7,13 +7,13 @@ namespace Tournament.Server.Models
 {
     public class MatchModel
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public int GamesToWin { get; set; } // 2
         public int PointsToWin { get; set; } // 21
         public int PointsToFinalize { get; set; } // 30
         public MatchType Type { get; set; }
-        public MatchRecord Record { get; set; } = MatchRecord.ToBePlayed;
-        public MatchResult Result { get; set; } = MatchResult.Undetermined;
+        public MatchRecord? Record { get; set; } = MatchRecord.ToBePlayed;
+        public MatchResult? Result { get; set; } = MatchResult.Undetermined;
 
         public Guid? TournamentGroupId { get; set; }
 
@@ -82,11 +82,18 @@ namespace Tournament.Server.Models
 
         public int? GroupPosition { get; set; }
         public int? GroupName { get; set; }
-        public int Round { get; set; }
+        public int? Round { get; set; }
         public DateTime? MatchDate { get; set; }
 
         // from entity
         public ICollection<PlayerMatchEntity>? PlayersMatches { get; set; }
+
+        /* Temporary match names */
+        public string? Player1Name { get; set; }
+        public string? Player2Name { get; set; }
+
+        public string? Player3Name { get; set; }
+        public string? Player4Name { get; set; }
     }
 
     public class MatchTeamModel

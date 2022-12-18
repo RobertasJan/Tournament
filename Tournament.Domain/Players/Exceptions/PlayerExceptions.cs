@@ -40,4 +40,32 @@ namespace Tournament.Domain.Players.Exceptions
         {
         }
     }
+
+    public class NoEmailException : APIException
+    {
+        public NoEmailException() : base(new ErrorCodeModel(15, "ERROR_MISSING_EMAIL"))
+        {
+        }
+    }
+
+    public class NoConfirmPasswordException : APIException
+    {
+        public NoConfirmPasswordException() : base(new ErrorCodeModel(16, "ERROR_MISSING_CONFIRM_PASSWORD"))
+        {
+        }
+    }
+
+    public class PasswordsDoNotMatchException : APIException
+    {
+        public PasswordsDoNotMatchException() : base(new ErrorCodeModel(17, "ERROR_PASSWORDS_DO_NOT_MATCH"))
+        {
+        }
+    }
+
+    public class BirthDateInTheFutureException : APIException
+    {
+        public BirthDateInTheFutureException() : base(new ErrorCodeModel(18, "ERROR_BIRTH_DATE_IN_THE_FUTURE"))
+        {
+        }
+    }
 }

@@ -37,8 +37,7 @@ namespace Tournament.Client.Services
             QueryString queryString = new QueryString();
             queryString = queryString.Add(nameof(finished), finished.ToString());
             var httpResponse = await _client.GetAsync($"api/tournaments/{queryString}", cancellationToken).ConfigureAwait(false);
-            var tournaments = await httpResponse.Content.ReadAsAsync<ResponseModel<ICollection<TournamentModel>>>(cancellationToken).ConfigureAwait(false);
-            return tournaments;
+            return await httpResponse.Content.ReadAsAsync<ResponseModel<ICollection<TournamentModel>>>(cancellationToken).ConfigureAwait(false);
         }
 
 

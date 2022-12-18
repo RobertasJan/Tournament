@@ -258,14 +258,23 @@
   <data name="Enum_MatchType_WomensSingles" xml:space="preserve">
     <value>Women's singles</value>
   </data>
+  <data name="ERROR_BIRTH_DATE_IN_THE_FUTURE" xml:space="preserve">
+    <value>Incorrect birthdate provided</value>
+  </data>
   <data name="ERROR_INVALID_PASSWORD" xml:space="preserve">
     <value>Incorrect password</value>
   </data>
   <data name="ERROR_MISSING_BIRTHDATE" xml:space="preserve">
     <value>Please provide birthdate</value>
   </data>
+  <data name="ERROR_MISSING_CONFIRM_PASSWORD" xml:space="preserve">
+    <value>Please repeat password</value>
+  </data>
   <data name="ERROR_MISSING_DESCRIPTION" xml:space="preserve">
     <value>Please provide description</value>
+  </data>
+  <data name="ERROR_MISSING_EMAIL" xml:space="preserve">
+    <value>Please provide email</value>
   </data>
   <data name="ERROR_MISSING_FIRSTNAME" xml:space="preserve">
     <value>Please provide name</value>
@@ -278,6 +287,9 @@
   </data>
   <data name="ERROR_MISSING_PASSWORD" xml:space="preserve">
     <value>Please provide password</value>
+  </data>
+  <data name="ERROR_PASSWORDS_DO_NOT_MATCH" xml:space="preserve">
+    <value>Passwords do not match</value>
   </data>
   <data name="Header_CreateMatch" xml:space="preserve">
     <value>Create match</value>
@@ -368,6 +380,9 @@
   </data>
   <data name="Label_Hello" xml:space="preserve">
     <value>Hello</value>
+  </data>
+  <data name="Label_LastName" xml:space="preserve">
+    <value>Last name</value>
   </data>
   <data name="Label_Login" xml:space="preserve">
     <value>Login</value>
@@ -557,5 +572,8 @@
   </data>
   <data name="Placeholder_EnterPlayerName" xml:space="preserve">
     <value>Enter player name</value>
+  </data>
+  <data name="Text_PleaseLogin" xml:space="preserve">
+    <value>Please login to continue</value>
   </data>
 </root>

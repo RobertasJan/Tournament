@@ -18,6 +18,11 @@ namespace Tournament.Infrastructure.Data
             builder.Property(x => x.Court);
             builder.Property(x => x.MatchEnd);
 
+            builder.Property(x => x.Player1Name).HasMaxLength(64);
+            builder.Property(x => x.Player2Name).HasMaxLength(64);
+            builder.Property(x => x.Player3Name).HasMaxLength(64);
+            builder.Property(x => x.Player4Name).HasMaxLength(64);
+
             builder
              .HasMany(x => x.Games)
              .WithOne(x => x.Match)

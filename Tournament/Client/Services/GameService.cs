@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using System.Net;
 using Tournament.Domain.Players;
 using Tournament.Server.Models;
+using Tournament.Shared;
 using Tournament.Shared.Games;
 using Tournament.Shared.Players;
 
@@ -112,13 +113,11 @@ namespace Tournament.Client.Services
             }
         }
 
-        public async Task<Guid> CreateMatch(MatchModel model)
+        public async Task<ResponseModel<Guid>> CreateMatch(MatchModel model)
         {
             var cancellationToken = new CancellationTokenSource().Token;
             var httpResponse = await _client.PostAsJsonAsync($"api/matches", model, cancellationToken);
-            if (httpResponse.StatusCode == HttpStatusCode.OK)
-                return await httpResponse.Content.ReadAsAsync<Guid>(cancellationToken).ConfigureAwait(false);
-            throw new NotImplementedException("No error handling");
+            return await httpResponse.Content.ReadAsAsync<ResponseModel<Guid>>(cancellationToken).ConfigureAwait(false);
         }
 
 

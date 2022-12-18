@@ -21,6 +21,14 @@ namespace Tournament.Domain.Games
         public int? Court { get; set; }
         public DateTime? MatchDate { get; set; }
         public DateTime? MatchEnd { get; set; }
+
+
+        /* Temporary match names */
+        public string? Player1Name { get; set; }
+        public string? Player2Name { get; set; }
+
+        public string? Player3Name { get; set; }
+        public string? Player4Name { get; set; }
     }
 
     public enum MatchType : byte

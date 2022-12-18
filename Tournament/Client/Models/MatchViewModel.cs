@@ -56,10 +56,7 @@ namespace Tournament.Client.Models
                     {
                         ServeLocation = CourtLocation.SW;
                     }
-                    Player1 = matchModel.Team1?.Player1Name;
-                    Player2 = matchModel.Team1?.Player2Name;
-                    Player3 = matchModel.Team2?.Player1Name;
-                    Player4 = matchModel.Team2?.Player2Name;
+                    AssignNames(matchModel);
 
                     if (IsSingles)
                     {
@@ -89,12 +86,10 @@ namespace Tournament.Client.Models
                     CurrentGame = new GameModel()
                     {
                         Team1LeftSide = true,
-                        MatchId = matchModel.Id,
+                        MatchId = matchModel.Id.Value,
                     };
-                    Player1 = matchModel.Team1?.Player1Name;
-                    Player2 = matchModel.Team1?.Player2Name;
-                    Player3 = matchModel.Team2?.Player1Name;
-                    Player4 = matchModel.Team2?.Player2Name;
+                    AssignNames(matchModel);
+ 
                     ServeLocation = CourtLocation.SW;
                     GameList = new List<GameModel>() { CurrentGame };
                     FirstGame = true;
@@ -102,6 +97,24 @@ namespace Tournament.Client.Models
             }
             this.service = service;
 
+        }
+
+        private void AssignNames(MatchModel matchModel)
+        {
+            if (matchModel.Team1 is null && matchModel.Team2 is null)
+            {
+                Player1 = matchModel.Player1Name;
+                Player2 = matchModel.Player2Name;
+                Player3 = matchModel.Player3Name;
+                Player4 = matchModel.Player4Name;
+            }
+            else
+            {
+                Player1 = matchModel.Team1?.Player1Name;
+                Player2 = matchModel.Team1?.Player2Name;
+                Player3 = matchModel.Team2?.Player1Name;
+                Player4 = matchModel.Team2?.Player2Name;
+            }
         }
 
         public async Task AddTeam1Score()
@@ -214,13 +227,13 @@ namespace Tournament.Client.Models
                     Team1Switched = CurrentGame.Team1Switched,
                     Team2Switched = CurrentGame.Team2Switched,
                     Team1LeftSide = CurrentGame.Team1LeftSide,
-                }, Data.Id);
+                }, Data.Id.Value);
                 Request = false;
             }
             else
             {
                 Request = true;
-                CurrentGame.Id = await service.CreateGame(new GameModel(), Data.Id);
+                CurrentGame.Id = await service.CreateGame(new GameModel(), Data.Id.Value);
                 Request = false;
             }
             await connection.SendAsync("UpdateMatchScore", GameList.ToList());
@@ -318,7 +331,7 @@ namespace Tournament.Client.Models
             Data.Record = MatchRecord.Played;
             Data.Result = GameList.Last().Result == GameResult.Team1Victory ? MatchResult.Team1Victory : MatchResult.Team2Victory; 
             await service.UpdateMatch(Data);
-            await service.SetNextMatch(Data.Id);
+            await service.SetNextMatch(Data.Id.Value);
         }
 
         public void SwitchTeam1Players()

@@ -1,12 +1,13 @@
 ﻿@page "/login"
 @page "/login/{redirectUrl}"
 @using System.Text.Json
+@using Tournament.Client.Components;
 @using Tournament.Shared
 @inject HttpClient Http
 @inject IJSRuntime jsr
 @inject NavigationManager nav
 
-<PageTitle>Login</PageTitle>
+<PageTitle>@Loc["Header_Login"]</PageTitle>
 <MudGrid>
     <MudItem xs="0" sm="3"></MudItem>
     <MudItem xs="12" sm="6">
@@ -14,10 +15,10 @@
             <MudText Typo="Typo.subtitle2">@Loc["Header_Login"]</MudText>
             <MudGrid>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="user.Email" Label="@Loc["Label_Email"]" Variant="Variant.Text" InputType="InputType.Email" Required="true" RequiredError="Email is required!"></MudTextField>
+                    <MudTextField @bind-Value="user.Email" Label="@Loc["Label_Email"]" Variant="Variant.Text" InputType="InputType.Email"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="user.Password" Label="@Loc["Label_Password"]" Variant="Variant.Text" InputType="InputType.Password" Required="true" RequiredError="Password is required!"></MudTextField>
+                    <MudTextField @bind-Value="user.Password" Label="@Loc["Label_Password"]" Variant="Variant.Text" InputType="InputType.Password"></MudTextField>
                 </MudItem>
               
                 <MudItem xs="12">
@@ -38,29 +39,38 @@
     [Parameter]
     public string redirectUrl { get; set; }
 
+    [CascadingParameter(Name = "ErrorComponent")]
+    protected IErrorComponent ErrorComponent { get; set; }
+
+    [Inject] UserService UserService { get; set; }
+
     private async Task DoLogin()
     {
         isDisabled = true;
-        using (var msg = await HttpClientJsonExtensions.PostAsJsonAsync<LoginModel>(Http, "/api/auth/login", user, System.Threading.CancellationToken.None))
+
+        var response = await UserService.Login(user);
+        if (response.Error != null)
         {
-            if (msg.IsSuccessStatusCode)
+            var result = response.Data;
+            ErrorComponent.ShowError(response.Error?.ErrorMessage);
+            isDisabled = false;
+        }
+        else
+        {
+            var result = response.Data;
+
+            if (result.Success)
             {
-                LoginResult result = await msg.Content.ReadFromJsonAsync<LoginResult>();
-                message = result.Message;
-                isDisabled = false;
-                if (result.Success)
-                {
-                    await jsr.InvokeVoidAsync("localStorage.setItem", "user", $"{result.Email};{result.JwtBearer};{result.Role}").ConfigureAwait(false);
-                    await jsr.InvokeVoidAsync("localStorage.setItem", "player", JsonSerializer.Serialize(result.Player)).ConfigureAwait(false);
-                }
-                if (!string.IsNullOrEmpty(redirectUrl))
-                {
-                    nav.NavigateTo($"/{redirectUrl}", true);
-                }
-                else
-                {
-                    nav.NavigateTo("/", true);
-                }
+                await jsr.InvokeVoidAsync("localStorage.setItem", "user", $"{result.Email};{result.JwtBearer};{result.Role}").ConfigureAwait(false);
+                await jsr.InvokeVoidAsync("localStorage.setItem", "player", JsonSerializer.Serialize(result.Player)).ConfigureAwait(false);
+            }
+            if (!string.IsNullOrEmpty(redirectUrl))
+            {
+                nav.NavigateTo($"/{redirectUrl}", true);
+            }
+            else
+            {
+                nav.NavigateTo("/", true);
             }
         }
     }

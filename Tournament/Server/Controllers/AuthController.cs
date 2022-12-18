@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Tournament.Domain;
 using Tournament.Domain.Players;
 using Tournament.Domain.Players.Exceptions;
 using Tournament.Domain.Services.Players;
@@ -50,67 +51,120 @@ namespace Tournament.Server.Controllers
 
         [HttpPost]
         [Route("api/auth/register")]
-        public async Task<LoginResult> Register([FromBody] RegistrationModel reg)
+        public async Task<ResponseModel<LoginResult>> Register([FromBody] RegistrationModel reg)
         {
-            if (string.IsNullOrWhiteSpace(reg.Email) || string.IsNullOrWhiteSpace(reg.Password))
+            try
             {
-                string errorMessage = string.Empty;
-                if (string.IsNullOrWhiteSpace(reg.Email))
-                    errorMessage += " Email address is empty;";
-                if (string.IsNullOrWhiteSpace(reg.Password))
-                    errorMessage += " Password is empty;";
-                return new LoginResult { Message = errorMessage, Success = false };
+                ValidateRegistrationModel(reg);
+
+                var user = await userDb.Create(new Domain.User.ApplicationUserEntity()
+                {
+                    Email = reg.Email,
+                    EmailConfirmed = true,
+                    UserName = reg.Email
+                }, reg.Password);
+                var playerId = await playerService.Create(new PlayerEntity()
+                {
+                    FirstName = reg.FirstName,
+                    LastName = reg.LastName,
+                    UserId = user.Id,
+                    BirthDate = reg.BirthDate.Value,
+                    Gender = reg.Gender
+                }, CancellationToken.None);
+                var player = await playerService.GetById(playerId, CancellationToken.None);
+                if (user != null)
+                    return new ResponseModel<LoginResult>(new LoginResult { Message = "Registration successful.", JwtBearer = CreateJWT(user), Email = reg.Email, Player = Mapper.Map<PlayerModel>(player), Success = true });
+
             }
-
-            if (reg.Password != reg.ConfirmPassword)
-                return new LoginResult { Message = "Password and confirm password do not match.", Success = false };
-
-            var user = await userDb.Create(new Domain.User.ApplicationUserEntity()
+            catch (APIException ex)
             {
-                Email = reg.Email,
-                EmailConfirmed = true,
-                UserName = reg.Email
-            }, reg.Password);
-            var playerId = await playerService.Create(new PlayerEntity()
-            {
-                FirstName = reg.FirstName,
-                LastName = reg.LastName,
-                UserId = user.Id,
-                BirthDate = reg.BirthDate.Value,
-                Gender = reg.Gender
-            }, CancellationToken.None);
-            var player = await playerService.GetById(playerId, CancellationToken.None);
-            if (user != null)
-                return new LoginResult { Message = "Registration successful.", JwtBearer = CreateJWT(user), Email = reg.Email, Player = Mapper.Map<PlayerModel>(player), Success = true };
-            return new LoginResult { Message = "User already exists.", Success = false };
+                return new ResponseModel<LoginResult>(ex.ErrorCodeModel);
+            }
+            return new ResponseModel<LoginResult>(new LoginResult { Message = "User already exists.", Success = false });
         }
 
         [HttpPost]
         [Route("api/auth/login")]
-        public async Task<LoginResult> Login([FromBody] LoginModel login)
+        public async Task<ResponseModel<LoginResult>> Login([FromBody] LoginModel login)
         {
-            if (string.IsNullOrWhiteSpace(login.Email) || string.IsNullOrWhiteSpace(login.Password))
+            try
             {
-                string errorMessage = string.Empty;
-                if (string.IsNullOrWhiteSpace(login.Email))
-                    errorMessage += " Email address is empty;";
-                if (string.IsNullOrWhiteSpace(login.Password))
-                    errorMessage += " Password is empty;";
-                return new LoginResult { Message = errorMessage, Success = false };
-            }
-            var user = await userDb.Login(login.Email, login.Password);
-            var player = await playerService.GetByUserId(user.Id, CancellationToken.None);
+                ValidateLoginModel(login);
+                var user = await userDb.Login(login.Email, login.Password);
+                if (user is null)
+                {
+                    throw new InvalidPasswordException();
+                }
+                var player = await playerService.GetByUserId(user.Id, CancellationToken.None);
 
-            if (user != null)
-            {
                 var role = "";
                 if (user.IsAdmin)
                 {
                     role = "Admin";
                 }
-                return new LoginResult { Message = "Login successful.", JwtBearer = CreateJWT(user), Email = login.Email, Player = Mapper.Map<PlayerModel>(player), Role = role, Success = true };
+                return new ResponseModel<LoginResult>(new LoginResult { Message = "Login successful.", JwtBearer = CreateJWT(user), Email = login.Email, Player = Mapper.Map<PlayerModel>(player), Role = role, Success = true });
             }
-            throw new InvalidPasswordException();
+            catch (APIException ex)
+            {
+                return new ResponseModel<LoginResult>(ex.ErrorCodeModel);
+            }
+
+        }
+
+        private void ValidateRegistrationModel(RegistrationModel model)
+        {
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                throw new NoEmailException();
+            }
+
+            if (string.IsNullOrEmpty(model.Password))
+            {
+                throw new NoPasswordException();
+            }
+
+            if (string.IsNullOrEmpty(model.ConfirmPassword))
+            {
+                throw new NoConfirmPasswordException();
+            }
+
+            if (string.IsNullOrEmpty(model.FirstName))
+            {
+                throw new NoFirstnameException();
+            }
+
+            if (string.IsNullOrEmpty(model.LastName))
+            {
+                throw new NoLastnameException();
+            }
+
+            if (!model.BirthDate.HasValue)
+            {
+                throw new NoBirthdateException();
+            }
+
+            if (model.BirthDate.Value.Date > DateTime.Today)
+            {
+                throw new BirthDateInTheFutureException();
+            }
+
+
+            if (model.Password != model.ConfirmPassword)
+            {
+                throw new PasswordsDoNotMatchException();
+            }
+        }
+        private void ValidateLoginModel(LoginModel model)
+        {
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                throw new NoEmailException();
+            }
+
+            if (string.IsNullOrEmpty(model.Password))
+            {
+                throw new NoPasswordException();
+            }
         }
     }
 

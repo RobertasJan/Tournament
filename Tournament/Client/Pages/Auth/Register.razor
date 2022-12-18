@@ -1,48 +1,49 @@
 ﻿@page "/register"
+@using Tournament.Client.Components;
 @using Tournament.Domain.Players
 @using Tournament.Shared
 @inject HttpClient Http
 
-<p>@message</p>
-<p><a href="/login">@login</a></p>
+<p><a style="font-weight: bold;" href="/login">@message</a></p>
+<p><a style="font-weight: bold;" href="/login">@login</a></p>
 
-<PageTitle>Register</PageTitle>
+<PageTitle>@Loc["Header_Register"]</PageTitle>
 <MudGrid>
     <MudItem xs="0" sm="3"></MudItem>
     <MudItem xs="12" sm="6">
         <MudPaper Class="pa-2" Elevation="3">
-            <MudText Typo="Typo.subtitle2">Register</MudText>
+            <MudText Typo="Typo.subtitle2">@Loc["Header_Register"]</MudText>
             <MudGrid>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="reg.Email" Label="Enter email" Variant="Variant.Text" InputType="InputType.Email" Required="true" RequiredError="Email is required!"></MudTextField>
+                    <MudTextField @bind-Value="reg.Email" Label="@Loc["Label_Email"]" Variant="Variant.Text" InputType="InputType.Email"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="reg.Password" Label="Enter password" Variant="Variant.Text" InputType="InputType.Password" Required="true" RequiredError="Password is required!"></MudTextField>
+                    <MudTextField @bind-Value="reg.Password" Label="@Loc["Label_Password"]" Variant="Variant.Text" InputType="InputType.Password"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="reg.ConfirmPassword" Label="Repeat password" Variant="Variant.Text" InputType="InputType.Password" Required="true" RequiredError="Repeated password is required!"></MudTextField>
+                    <MudTextField @bind-Value="reg.ConfirmPassword" Label="@Loc["Label_RepeatPassword"]" Variant="Variant.Text" InputType="InputType.Password"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="reg.FirstName" Label="Enter first name" Variant="Variant.Text" Required="true" RequiredError="First name is required!"></MudTextField>
+                    <MudTextField @bind-Value="reg.FirstName" Label="@Loc["Label_Name2"]" Variant="Variant.Text"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
-                <MudTextField @bind-Value="reg.LastName" Label="Enter last name" Variant="Variant.Text" Required="true" RequiredError="Last name is required!"></MudTextField>
+                <MudTextField @bind-Value="reg.LastName" Label="@Loc["Label_LastName"]" Variant="Variant.Text"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
-                    <MudSelect T="Gender" @bind-Value="reg.Gender" Label="Gender" Variant="Variant.Outlined">
-                        <MudSelectItem Value="Gender.Male">Male</MudSelectItem>
-                        <MudSelectItem Value="Gender.Female">Female</MudSelectItem>
+                    <MudSelect T="Gender" @bind-Value="reg.Gender" Label="@Loc["Label_Gender"]" Variant="Variant.Outlined">
+                        <MudSelectItem Value="Gender.Male">@Loc["Enum_Gender_Male"]</MudSelectItem>
+                        <MudSelectItem Value="Gender.Female">@Loc["Enum_Gender_Female"]</MudSelectItem>
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="12">
-                    <MudDatePicker Label="Birth date" @bind-Date="reg.BirthDate" TitleDateFormat="dddd, dd MMMM" />
+                    <MudDatePicker Label="@Loc["Label_BirthDate"]" @bind-Date="reg.BirthDate" TitleDateFormat="dddd, dd MMMM" />
                 </MudItem>
                 <MudItem xs="12">
-                    <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="@(async () => await DoRegister())">Register</MudButton>
+                    <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="@(async () => await DoRegister())">@Loc["Label_Register"]</MudButton>
                 </MudItem>
             </MudGrid>
-            <p>@message</p>
-            <p><a href="/login">@login</a></p>
+            <p><a style="font-weight: bold;" href="/login">@message</a></p>
+            <p><a style="font-weight: bold;" href="/login">@login</a></p>
         </MudPaper>
     </MudItem>
     <MudItem xs="0" sm="3"></MudItem>
@@ -53,25 +54,25 @@
     string message = string.Empty, login = string.Empty;
     bool isDisabled = false;
 
+    [CascadingParameter(Name = "ErrorComponent")]
+    protected IErrorComponent ErrorComponent { get; set; }
+
+    [Inject] UserService UserService { get; set; }
 
 
     private async Task DoRegister()
     {
         isDisabled = true;
-        using (var msg = await HttpClientJsonExtensions.PostAsJsonAsync<RegistrationModel>(Http, "/api/auth/register", reg, System.Threading.CancellationToken.None))
+        var response =  await UserService.Register(reg);
+        if (response.Error is null)
         {
-            if (msg.IsSuccessStatusCode)
-            {
-                LoginResult result = await msg.Content.ReadFromJsonAsync<LoginResult>();
-                message = result.Message;
-                if (result.Success)
-                {
-                    message += " Please LOGIN to continue.";
-                    login = "Click here to LOGIN.";
-                }
-                else
-                    isDisabled = false;
-            }
+            message += Loc["Text_PleaseLogin"];
+            login = Loc["Header_Login"];
+        }
+        else
+        {
+            ErrorComponent.ShowError(response.Error?.ErrorMessage);
+            isDisabled = false;
         }
     }
 }

@@ -2,6 +2,7 @@
 
 @using MatchType = Tournament.Domain.Games.MatchType;
 @using System.ComponentModel.DataAnnotations
+@using Tournament.Client.Components;
 @using Tournament.Domain.Games
 @using Tournament.Shared.Games
 
@@ -44,12 +45,12 @@
                 <MudText Typo="Typo.subtitle2">@Loc["Label_Team1"]</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6">
-                        <MudTextField @bind-Value="model.Player1Name" Label="@Loc["Placeholder_EnterPlayerName"]" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
+                        <MudTextField @bind-Value="model.Player1Name" Label="@Loc["Placeholder_EnterPlayerName"]" Variant="Variant.Text"></MudTextField>
                     </MudItem>
                     @if (model.Type != MatchType.MensSingles && model.Type != MatchType.WomensSingles)
                     {
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="model.Player2Name" Label="@Loc["Placeholder_EnterPlayerName"]" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
+                            <MudTextField @bind-Value="model.Player2Name" Label="@Loc["Placeholder_EnterPlayerName"]" Variant="Variant.Text"></MudTextField>
                         </MudItem>
                     }
                 </MudGrid>
@@ -60,12 +61,12 @@
                 <MudText Typo="Typo.subtitle2">@Loc["Label_Team2"]</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6">
-                        <MudTextField @bind-Value="model.Player3Name" Label="@Loc["Placeholder_EnterPlayerName"]" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
+                        <MudTextField @bind-Value="model.Player3Name" Label="@Loc["Placeholder_EnterPlayerName"]" Variant="Variant.Text"></MudTextField>
                     </MudItem>
                     @if (model.Type != MatchType.MensSingles && model.Type != MatchType.WomensSingles)
                     {
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="model.Player4Name" Label="@Loc["Placeholder_EnterPlayerName"]" Variant="Variant.Text" Required="true" RequiredError="Player name is required!"></MudTextField>
+                            <MudTextField @bind-Value="model.Player4Name" Label="@Loc["Placeholder_EnterPlayerName"]" Variant="Variant.Text"></MudTextField>
                         </MudItem>
                     }
                 </MudGrid>
@@ -77,6 +78,9 @@
 
 @code {
     [Inject] GameService GameService { get; set; }
+
+    [CascadingParameter(Name = "ErrorComponent")]
+    protected IErrorComponent ErrorComponent { get; set; }
 
     bool success = false;
     MudForm? form = new MudForm();
@@ -93,16 +97,27 @@
 
         if (form.IsValid)
         {
-            Guid id = await GameService.CreateMatch(new Server.Models.MatchModel()
-                {
-                    GamesToWin = model.GamesToWin,
-                    PointsToFinalize = Deuces.DeucesList[model.PointsToWin],
-                    PointsToWin = model.PointsToWin,
-                    Record = MatchRecord.ToBePlayed,
-                    Result = MatchResult.Undetermined,
-                    Type = model.Type
-                });
-            NavigationManager.NavigateTo($"/match/{id}", false);
+            var response = await GameService.CreateMatch(new Server.Models.MatchModel()
+            {
+                GamesToWin = model.GamesToWin,
+                PointsToFinalize = Deuces.DeucesList[model.PointsToWin],
+                PointsToWin = model.PointsToWin,
+                Record = MatchRecord.ToBePlayed,
+                Result = MatchResult.Undetermined,
+                Type = model.Type,
+                Player1Name = model.Player1Name,
+                Player2Name = model.Player2Name,
+                Player3Name = model.Player3Name,
+                Player4Name = model.Player4Name
+            });
+            if (response.Error != null)
+            {
+                ErrorComponent.ShowError(response.Error?.ErrorMessage);
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"/match/{response.Data}", false);
+            }
         }
     }
 }

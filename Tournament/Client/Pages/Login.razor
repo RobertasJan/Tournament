@@ -29,11 +29,6 @@
 
     private async Task Submit()
     {
-        await UserService.Login(new UserModel()
-            {
-                Login = Name,
-                Password = Password
-            });
         NavigationManager.NavigateTo($"/", false);
     }
 }
