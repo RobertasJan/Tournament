@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Text.Json.Serialization;
 using Tournament.Domain.Services.Games;
 using Tournament.Domain.Services.Players;
@@ -82,6 +83,11 @@ builder.Services.AddScoped<IResultService, ResultService>();
 builder.Services.AddScoped<MatchScoreHub>();
 
 builder.WebHost.UseStaticWebAssets();
+builder.Host.UseSerilog();
+Log.Logger = new LoggerConfiguration()
+.Enrich.FromLogContext()
+.WriteTo.File(@"C:\logs\log.txt")
+.CreateLogger();
 
 var app = builder.Build();
 
