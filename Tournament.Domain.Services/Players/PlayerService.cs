@@ -1,11 +1,4 @@
-﻿using IdentityModel;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tournament.Domain.Games;
+﻿using Microsoft.EntityFrameworkCore;
 using Tournament.Domain.Players;
 using Tournament.Infrastructure.Data;
 using MatchType = Tournament.Domain.Games.MatchType;

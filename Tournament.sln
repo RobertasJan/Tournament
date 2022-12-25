@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tournament.Domain", "Tourna
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tournament.Domain.Services", "Tournament.Domain.Services\Tournament.Domain.Services.csproj", "{D1D8124E-D112-43A4-83B4-F0C1DE2F9585}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tournament.Tests", "Tournament.Tests\Tournament.Tests.csproj", "{06DFB7E7-AF20-4978-B259-51A682DE2D32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{D1D8124E-D112-43A4-83B4-F0C1DE2F9585}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1D8124E-D112-43A4-83B4-F0C1DE2F9585}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1D8124E-D112-43A4-83B4-F0C1DE2F9585}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06DFB7E7-AF20-4978-B259-51A682DE2D32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06DFB7E7-AF20-4978-B259-51A682DE2D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06DFB7E7-AF20-4978-B259-51A682DE2D32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06DFB7E7-AF20-4978-B259-51A682DE2D32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
