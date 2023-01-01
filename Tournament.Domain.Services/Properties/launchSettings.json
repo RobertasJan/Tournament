@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Tournament.Domain.Services": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:57158;http://localhost:57161"
+    }
+  }
+}

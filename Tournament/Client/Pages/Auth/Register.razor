@@ -4,8 +4,6 @@
 @using Tournament.Shared
 @inject HttpClient Http
 
-<p><a style="font-weight: bold;" href="/login">@message</a></p>
-<p><a style="font-weight: bold;" href="/login">@login</a></p>
 
 <PageTitle>@Loc["Header_Register"]</PageTitle>
 <MudGrid>
@@ -42,8 +40,8 @@
                     <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="@(async () => await DoRegister())">@Loc["Label_Register"]</MudButton>
                 </MudItem>
             </MudGrid>
+            <MudLink Href="/login">@Loc["Header_Login"]</MudLink>
             <p><a style="font-weight: bold;" href="/login">@message</a></p>
-            <p><a style="font-weight: bold;" href="/login">@login</a></p>
         </MudPaper>
     </MudItem>
     <MudItem xs="0" sm="3"></MudItem>

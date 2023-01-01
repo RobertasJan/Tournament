@@ -11,6 +11,10 @@
             <MudPaper Class="justify-center">
                 <TournamentTable Groups="model.Data.Groups" RegisteredPlayers="model.Players" TournamentId="Id"></TournamentTable>
             </MudPaper>
+            <br />
+            <MudText Typo="Typo.h6" GutterBottom="true">@Loc["Label_Address"]: @model.Data.Address</MudText>
+            <MudText Typo="Typo.h6" GutterBottom="true">@Loc["Label_StartDate"]: @model.Data.StartDate.Value.ToString("yyyy-MM-dd")</MudText>
+            <MudText Typo="Typo.h6" GutterBottom="true">@Loc["Label_EndDate"]: @model.Data.EndDate.Value.ToString("yyyy-MM-dd")</MudText>
         </MudItem>
         <MudItem xs="12">
             <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
@@ -22,7 +26,14 @@
                 <MudTabPanel Text="@Loc["Label_Players"]">
                     <MudDataGrid T="TournamentPlayerModel" Items="model.TournamentPlayers" Filterable="true">
                         <Columns>
-                            <Column T="TournamentPlayerModel" Field="PlayerName" Title="@Loc["Label_Player"]"/>
+                            <Column T="TournamentPlayerModel" Field="PlayerName" Title="@Loc["Label_Player"]">
+                                <CellTemplate>
+                                    @{
+                                        var href = $"players/{@context.Item.PlayerId}";
+                                    }
+                                    <MudLink Href="@href">@context.Item.PlayerName</MudLink>
+                                </CellTemplate>
+                            </Column>
                             <Column T="TournamentPlayerModel" Field="PartnerDoublesName" Title="@Loc["Label_DoublesPartner"]" />
                             <Column T="TournamentPlayerModel" Field="PartnerMixedName" Title="@Loc["Label_MixedPartner"]" />
                         </Columns>
@@ -33,23 +44,46 @@
                     <MudTabPanel Text="@Loc["Label_UpcomingMatches"]">
                         @foreach (var match in model.UpcomingMatches)
                         {
+                            var url = $"tournament/{Id}/match/{match.Id}";
+                            var url2 = $"tournament/{Id}/match/{match.Id}/result";
+                            var url3 = $"tournament/{Id}/match/{match.Id}/live";
+                            <MudHidden Breakpoint="Breakpoint.LgAndUp" Invert="true">
                             <MudGrid>
                                 <MudItem Class="upcoming-match" xs="12">
-                                    @{
-                                        var url = $"tournament/{Id}/match/{match.Id}";
-                                        var url2 = $"tournament/{Id}/match/{match.Id}/result";
-                                        var url3 = $"tournament/{Id}/match/{match.Id}/live";
-                                    }
-                                    <MudLink Href="@url"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Calculate" Size="Size.Small" Color="Color.Primary">@Loc["Label_Scorer"]</MudButton></MudLink>
-                                    @if (IsMaster) 
-                                    {
-                                        <MudLink Href="@url2"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Secondary">@Loc["Label_SetScore"]</MudButton></MudLink>
-                                    }
-                                    <span class="bold-14">@match.Team1.Player1Name @match.Team1.Player2Name vs. @match.Team2.Player1Name @match.Team2.Player2Name</span>
-
-                                    <MudLink Href="@url3" Style="float: right;"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.RemoveRedEye" Size="Size.Small" Color="Color.Info">@Loc["Label_WatchLive"]</MudButton></MudLink>
+                                        <MudLink Href="@url"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Calculate" Size="Size.Small" Color="Color.Primary">@Loc["Label_Scorer"]</MudButton>&nbsp;</MudLink>
+                                        @if (IsMaster) 
+                                        {
+                                            <MudLink Href="@url2"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Secondary">@Loc["Label_SetScore"]</MudButton></MudLink>
+                                        }
+                                        <span class="bold-14">&nbsp;@match.Team1.Player1Name @match.Team1.Player2Name vs. @match.Team2.Player1Name @match.Team2.Player2Name</span>
+                                        <MudLink Href="@url3" Style="float: right;"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.RemoveRedEye" Size="Size.Small" Color="Color.Info">@Loc["Label_WatchLive"]</MudButton></MudLink>
                                 </MudItem>
                             </MudGrid>
+                            </MudHidden>
+                            <MudHidden Breakpoint="Breakpoint.MdAndDown" Invert="true">
+                            <MudGrid>
+                                <MudItem Class="upcoming-match" xs="12">
+                                    <MudGrid>
+                                        <MudItem xs="12">
+                                            <span class="bold-14">@match.Team1.Player1Name @match.Team1.Player2Name vs. @match.Team2.Player1Name @match.Team2.Player2Name</span>
+                                        </MudItem>
+                                        <MudItem xs="12">
+                                            <MudLink Href="@url"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Calculate" Size="Size.Small" Color="Color.Primary">@Loc["Label_Scorer"]</MudButton></MudLink>
+                                        </MudItem>
+                                        @if (IsMaster)
+                                        {
+                                            <MudItem xs="12">
+                                                <MudLink Href="@url2"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Secondary">@Loc["Label_SetScore"]</MudButton></MudLink>
+                                            </MudItem>
+                                        }
+                                        <MudItem xs="12">
+                                            <MudLink Href="@url3"><MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.RemoveRedEye" Size="Size.Small" Color="Color.Info">@Loc["Label_WatchLive"]</MudButton></MudLink>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudItem>
+                            </MudGrid>
+                            </MudHidden>
+
                         }
                     </MudTabPanel>
                 }

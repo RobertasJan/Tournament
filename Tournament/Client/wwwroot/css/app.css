@@ -15,11 +15,6 @@
     height: 900px;
 }
 
-.team-item {
-    line-height: 14px !important;
-    height: 65px !important;
-}
-
 .upcoming-match {
     border-top: 1px solid;
     margin-bottom: 4px !important;
@@ -80,6 +75,29 @@
 
 /* Tournament tree */
 
+.team-item {
+    line-height: 14px !important;
+    height: 80px !important;
+    min-width: 250px;
+}
+
+.tournament-container {
+    overflow: auto;
+    min-width: 900px;
+}
+
+.seeding-item {
+    padding: 6px !important;
+}
+
+.float-left .table-player-name {
+    float: left;
+    clear: both;
+}
+.float-right .table-player-name {
+    float: right;
+    clear: both;
+}
 
 
 /* end tournament tree*/

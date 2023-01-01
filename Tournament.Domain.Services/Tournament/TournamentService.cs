@@ -300,16 +300,15 @@ namespace Tournament.Domain.Services.Tournament
                     {
                         position += 1;
                     }
-
                     _db.Results.Add(new ResultEntity()
                     {
                         CreatedAt = DateTime.UtcNow,
                         ModifiedAt = DateTime.UtcNow,
-                        RatingPoints = 256 / (position+2),
+                        RatingPoints = tournament.Rated ? 256 / (position + 2) : 0,
                         PlayerId = player.PlayerId,
                         Position = position,
                         TournamentGroupId = group.Id.Value
-                    });
+                    }); 
                 }
 
             }

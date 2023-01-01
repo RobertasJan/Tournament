@@ -122,12 +122,12 @@ else
     }
     private int DisplayTeam1Score()
     {
-        return currentMatch.Games.Last().Team1Score;
+        return currentMatch.Games.LastOrDefault()?.Team1Score ?? 0;
     }
 
     private int DisplayTeam2Score()
     {
-        return currentMatch.Games.Last().Team2Score;
+        return currentMatch.Games.LastOrDefault()?.Team2Score ?? 0;
     }
 
     private string ShortenString(string input)

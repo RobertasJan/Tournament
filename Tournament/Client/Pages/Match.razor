@@ -86,8 +86,15 @@
                     }
                     else if (match.FirstGame)
                     {
-                        <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.ChangeServeSide">@Loc["MatchButton_ChangeServer"]</MudButton>
-                        <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchTeams">@Loc["MatchButton_ChangeSides"]</MudButton>
+                        <MudGrid>
+                            <MudItem md="3"></MudItem>
+                            <MudItem xs="12" md="3">
+                                <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.ChangeServeSide">@Loc["MatchButton_ChangeServer"]</MudButton>
+                            </MudItem>
+                            <MudItem xs="12" md="3">
+                                <MudButton Class="py-2" Color="Color.Secondary" Variant="Variant.Filled" @onclick="match.SwitchTeams">@Loc["MatchButton_ChangeSides"]</MudButton>
+                            </MudItem>
+                        </MudGrid>
                     }
                 </MudElement>
             </MudItem>

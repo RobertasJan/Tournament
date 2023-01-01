@@ -411,6 +411,9 @@
   <data name="Label_Match" xml:space="preserve">
     <value>Susitikimas</value>
   </data>
+  <data name="Label_MatchAlreadyPlayed" xml:space="preserve">
+    <value>Susitikimo rezultatas jau užfiksuotas</value>
+  </data>
   <data name="Label_MatchEnding" xml:space="preserve">
     <value>Susitikimo pabaiga</value>
   </data>
@@ -526,7 +529,7 @@
     <value>Vienetai</value>
   </data>
   <data name="Label_StartDate" xml:space="preserve">
-    <value>Pradžios laikas</value>
+    <value>Pradžios data</value>
   </data>
   <data name="Label_StartDraws" xml:space="preserve">
     <value>Pradėti traukimą</value>

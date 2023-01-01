@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 using Tournament.Domain.Players;
+using Tournament.Domain.Results;
 using Tournament.Infrastructure.Data;
 using MatchType = Tournament.Domain.Games.MatchType;
 
@@ -34,6 +36,7 @@ namespace Tournament.Domain.Services.Players
         public async Task<ICollection<PlayerEntity>> Get(Guid? tournamentId, string? searchText, Gender? gender, CancellationToken cancellationToken)
         {
             var query = _db.Players.AsQueryable();
+            
             if (tournamentId != null)
             {
                 query = query.Where(x => x.PlayerMatches.Any(x => x.Match.MatchesGroup.TournamentGroup.TournamentId == tournamentId));
@@ -46,7 +49,9 @@ namespace Tournament.Domain.Services.Players
             {
                 query = query.Where(x => x.Gender == gender);
             }
-            return query.ToList();
+            var result = query.ToList();
+            result.ForEach(x => x.CalculateRatings(_db.Results));
+            return result;
         }
 
         public async Task<ICollection<RegisteredPlayersEntity>> GetTournamentPlayers(Guid tournamentId, Guid? tournamentGroupId, CancellationToken cancellationToken)
@@ -60,7 +65,7 @@ namespace Tournament.Domain.Services.Players
         }
 
         public async Task<PlayerEntity> GetById(Guid id, CancellationToken cancellationToken)
-            => (await _db.Players.FirstOrDefaultAsync(x => x.Id == id)) ?? throw new Exception($"Player {id} not found.");
+            => (await _db.Players.FirstOrDefaultAsync(x => x.Id == id)).CalculateRatings(_db.Results) ?? throw new Exception($"Player {id} not found.");
 
         public async Task<PlayerEntity> GetByUserId(string userId, CancellationToken cancellationToken)
             => (await _db.Players.FirstOrDefaultAsync(x => x.UserId == userId)) ?? throw new Exception($"Player by user id {userId} not found.");
@@ -138,6 +143,16 @@ namespace Tournament.Domain.Services.Players
             return list;
 
 
+        }
+    }
+    internal static class PlayerExtensions
+    {
+        public static PlayerEntity CalculateRatings(this PlayerEntity? player, IQueryable<ResultEntity> results)
+        {
+            player.RatingSingles = results.Where(x => x.PlayerId == player.Id && (x.TournamentGroup.MatchType == MatchType.MensSingles || x.TournamentGroup.MatchType == MatchType.WomensSingles)).OrderByDescending(x => x.RatingPoints).Take(12).Sum(x => x.RatingPoints);
+            player.RatingDoubles = results.Where(x => x.PlayerId == player.Id && (x.TournamentGroup.MatchType == MatchType.MensDoubles || x.TournamentGroup.MatchType == MatchType.WomensDoubles)).OrderByDescending(x => x.RatingPoints).Take(12).Sum(x => x.RatingPoints);
+            player.RatingMixed = results.Where(x => x.PlayerId == player.Id && (x.TournamentGroup.MatchType == MatchType.MixedDoubles)).OrderByDescending(x => x.RatingPoints).Take(12).Sum(x => x.RatingPoints);
+            return player;
         }
     }
 }

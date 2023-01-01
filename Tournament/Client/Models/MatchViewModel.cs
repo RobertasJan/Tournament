@@ -346,6 +346,7 @@ namespace Tournament.Client.Models
         public void SwitchTeams()
         {
             Team1LeftSide = !Team1LeftSide;
+            CurrentGame.Team1LeftSide = Team1LeftSide;
         }
 
         public void ChangeServeSide()

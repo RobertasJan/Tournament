@@ -261,14 +261,16 @@
             return;
         }
         CanRegisterOthers = await UserService.IsAdmin() || tournament.TournamentCreatorId == currentPlayer.Id;
-        if (!CanRegisterOthers) {
-            Player = currentPlayer;
-        }
+   
         model = new TournamentViewModel(TournamentService, tournament);
         Group1 = model.Data.GetGroupTypes().First();
         Group2 = model.Data.GetGroupTypes().First();
         Group3 = model.Data.GetGroupTypes().First();
-
+        if (!CanRegisterOthers)
+        {
+            ///  Player = currentPlayer;
+            OnPlayerChanged(currentPlayer);
+        }
         StateHasChanged();
     }
 

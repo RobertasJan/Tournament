@@ -1,0 +1,18 @@
+﻿@using Tournament.Shared.Tournaments;
+@{
+    var href = $"tournament/{Tournament.Id}";
+}
+<MudPaper Class="mb-4 px-2">
+    <MudLink Href="@href">
+        <MudText Typo="Typo.h4" GutterBottom="true">@Tournament.Name</MudText>
+    </MudLink>
+    <MudText Typo="Typo.caption" GutterBottom="true">@Tournament.Description</MudText>
+    <MudText Typo="Typo.caption" GutterBottom="true"><b>@Loc["Label_Address"]:</b> @Tournament.Address</MudText>
+    <MudText Typo="Typo.caption" GutterBottom="true"><b>@Loc["Label_StartDate"]:</b> @Tournament.StartDate.Value.ToString("yyyy-MM-dd")</MudText>
+    <MudText Typo="Typo.caption" GutterBottom="true"><b>@Loc["Label_EndDate"]:</b> @Tournament.EndDate.Value.ToString("yyyy-MM-dd")</MudText>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public TournamentModel Tournament { get; set; }
+}

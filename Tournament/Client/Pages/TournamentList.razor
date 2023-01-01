@@ -8,21 +8,13 @@
     <MudTabPanel Text="@Loc["Header_UpcomingTournaments"]">
         @foreach (var tourney in Tournaments)
         {
-            var href = $"tournament/{tourney.Id}";
-            <MudLink Href="@href">
-                <MudText Typo="Typo.h4" GutterBottom="true">@tourney.Name</MudText>
-                <MudText Typo="Typo.caption" GutterBottom="true">@tourney.Description</MudText>
-            </MudLink>
+            <TournamentListItem Tournament="tourney"></TournamentListItem>
         }
     </MudTabPanel>
     <MudTabPanel Text="@Loc["Header_PreviousTournaments"]">
         @foreach (var tourney in PreviousTournaments)
         {
-            var href = $"tournament/{tourney.Id}";
-            <MudLink Href="@href">
-                <MudText Typo="Typo.h4" GutterBottom="true">@tourney.Name</MudText>
-                <MudText Typo="Typo.caption" GutterBottom="true">@tourney.Description</MudText>
-            </MudLink>
+            <TournamentListItem Tournament="tourney"></TournamentListItem>
         }
     </MudTabPanel>
 </MudTabs>

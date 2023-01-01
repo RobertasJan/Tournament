@@ -84,7 +84,10 @@ namespace Tournament.Domain.Services.Games
                 if (await CanAdvanceToNextGroup(match.MatchesGroupId.Value))
                 {
                     var playerMatch = match.PlayersMatches.FirstOrDefault();
-     
+                    if (playerMatch is null)
+                    {
+                        continue;
+                    }
                     match.Result = playerMatch.Team == Team.Team1 || playerMatch is null ? MatchResult.Team1Victory : MatchResult.Team2Victory;
                     match.Record = MatchRecord.Bye;
                     match.ModifiedAt = DateTime.UtcNow;

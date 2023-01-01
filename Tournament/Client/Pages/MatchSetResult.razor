@@ -8,28 +8,55 @@
 
 <PageTitle>@Loc["Label_Match"]</PageTitle>
 <MudForm @ref="@form" @bind-IsValid="@success">
+
     @if (Match is not null)
     {
+        if (Match.Result != MatchResult.Undetermined)
+        {
+            <h4>@Loc["Label_MatchAlreadyPlayed"]</h4>
+        }
+        else {}
         <MudGrid>
         <MudItem xs="12">
         <MudPaper Class="pa-2" Elevation="3">
             <MudText Typo="Typo.subtitle1">@Loc["Label_Games"]</MudText>
             <MudGrid>
-                <MudItem xs="6">@Loc["Label_Team1"] @Match.Team1.Player1Name @Match.Team1.Player2Name</MudItem>
-                <MudItem xs="6">@Loc["Label_Team2"] @Match.Team2.Player1Name @Match.Team2.Player2Name</MudItem>
-                @{
-                    var i = 0;
-                }
-                @foreach (var game in Games)
-                {
-                    <MudItem xs="12">
-                        <MudText Typo="Typo.subtitle2">@(
-                           ++i
-                           ) @Loc["Label_Game"]</MudText>
-                       </MudItem>
-                    <MudItem xs="6"><MudNumericField @bind-Value="game.Team1Score" Label="@Loc["Label_Team1Score"]" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
-                    <MudItem xs="6"><MudNumericField @bind-Value="game.Team2Score" Label="@Loc["Label_Team2Score"]" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
-                }
+                <MudItem xs="12" sm="6">
+                    <MudItem>@Loc["Label_Team1"] @Match.Team1.Player1Name @Match.Team1.Player2Name</MudItem>
+                    @{
+                        var i = 0;
+                    }
+                    @foreach (var game in Games)
+                    {
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.subtitle2">
+                                @(
+                                    ++i
+                                    ) @Loc["Label_Game"]
+                            </MudText>
+                        </MudItem>
+                        <MudItem><MudNumericField @bind-Value="game.Team1Score" Label="@Loc["Label_Team1Score"]" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
+                    }
+
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudItem>@Loc["Label_Team2"] @Match.Team2.Player1Name @Match.Team2.Player2Name</MudItem>
+                    @{
+                        var j = 0;
+                    }
+                    @foreach (var game in Games)
+                    {
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.subtitle2">
+                                @(
+                                    ++j
+                                    ) @Loc["Label_Game"]
+                            </MudText>
+                        </MudItem>
+                        <MudItem><MudNumericField @bind-Value="game.Team2Score" Label="@Loc["Label_Team2Score"]" Min="0" Max="Match.PointsToFinalize" Step="1" /></MudItem>
+                    }
+                </MudItem>
+
                 @if (Games.Count < MaxGameCount)
                 {
                     <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await AddGame())" FullWidth="true">@Loc["Label_AddGame"]</MudButton>
