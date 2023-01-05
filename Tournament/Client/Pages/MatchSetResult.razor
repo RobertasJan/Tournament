@@ -11,11 +11,11 @@
 
     @if (Match is not null)
     {
-        if (Match.Result != MatchResult.Undetermined)
+        if (matchIsPlayed)
         {
             <h4>@Loc["Label_MatchAlreadyPlayed"]</h4>
         }
-        else {}
+        else {
         <MudGrid>
         <MudItem xs="12">
         <MudPaper Class="pa-2" Elevation="3">
@@ -93,6 +93,7 @@
         </MudItem>
             <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" FullWidth="true">@Loc["Label_SetScore"]</MudButton>
         </MudGrid>
+        }
     }
 </MudForm>
 
@@ -107,6 +108,7 @@
     [Inject] GameService GameService { get; set; }
 
     bool success = false;
+    bool matchIsPlayed = false;
     MudForm? form = new MudForm();
     ICollection<GameModel> Games { get; set; }
     MatchModel Match { get; set; }
@@ -115,6 +117,10 @@
     protected override async Task OnInitializedAsync()
     {
         Match = await GameService.GetMatchById(Id);
+        if (Match.Result != MatchResult.Undetermined)
+        {
+            matchIsPlayed = true;
+        }
         Match.Result = MatchResult.Team1Victory;
         Match.Record = MatchRecord.Played;
         MaxGameCount = Match.GamesToWin * 2 - 1;

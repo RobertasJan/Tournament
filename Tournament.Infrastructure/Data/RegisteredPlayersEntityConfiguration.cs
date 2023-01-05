@@ -15,6 +15,8 @@ namespace Tournament.Infrastructure.Data
         {
             builder.ToTable("RegisteredPlayers");
 
+            builder.Ignore(x => x.Rating);
+
             builder
                 .HasOne(x => x.Player1)
                 .WithMany()

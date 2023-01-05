@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System.Transactions;
-using Tournament.Client.Services;
 using Tournament.Domain;
 using Tournament.Domain.Games;
 using Tournament.Domain.Players.Exceptions;
@@ -21,14 +18,12 @@ namespace Tournament.Server.Controllers
         private readonly ILogger<MatchesController> _logger;
         private readonly IMatchService matchService;
         private readonly IGameService gameService;
-        private readonly IHubContext<MatchScoreHub> hub;
 
-        public MatchesController(ILogger<MatchesController> logger, IMatchService matchService, IGameService gameService, IHubContext<MatchScoreHub> hub)
+        public MatchesController(ILogger<MatchesController> logger, IMatchService matchService, IGameService gameService)
         {
             _logger = logger;
             this.matchService = matchService;
             this.gameService = gameService;
-            this.hub = hub;
         }
 
         [HttpGet("{id:Guid}")]

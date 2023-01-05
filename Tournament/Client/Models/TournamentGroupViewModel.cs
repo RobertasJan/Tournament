@@ -33,6 +33,10 @@ namespace Tournament.Client.Models
         public List<MatchModel> GroupAsList()
         {
             var list = new List<MatchModel>();
+            if (TournamentRounds.LosersGroup is null && TournamentRounds.WinnersGroup is null)
+            {
+                return list;
+            }
             RecursiveTake(list, TournamentRounds);
           //  SetTimes(list);
             return list;
@@ -121,7 +125,11 @@ namespace Tournament.Client.Models
             {
                // var matches = await gameService.GetMatches(TournamentGroup.Id.Value);
                 var matchesGroups = await gameService.GetMatchesGroups(TournamentGroup.Id.Value);
-                var firstGroup = matchesGroups.First(x => x.Round == 0 && x.GroupName == 0);
+                var firstGroup = matchesGroups.FirstOrDefault(x => x.Round == 0 && x.GroupName == 0);
+                if (firstGroup is null)
+                {
+                    return;
+                }
                 var sortedSeeds = Calculations.SortSeeds(firstGroup.Matches.Count * 2);
                 var i = 0;
                 foreach (var match in firstGroup.Matches.OrderBy(x => x.GroupPosition))

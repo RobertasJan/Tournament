@@ -7,9 +7,13 @@ namespace Tournament.Server.Hubs
 {
     public class MatchScoreHub : Hub
     {
-        public async Task UpdateMatchScore(List<GameModel> games)
+        public Task AddToGroup(string matchId)
         {
-            await Clients.All.SendAsync("UpdateMatchScore", games);
+            return Groups.AddToGroupAsync(Context.ConnectionId, matchId);
+        }
+        public async Task UpdateMatchScore(List<GameModel> games, string matchId)
+        {
+            await Clients.Group(matchId).SendAsync("UpdateMatchScore", games);
         }
     }
 }

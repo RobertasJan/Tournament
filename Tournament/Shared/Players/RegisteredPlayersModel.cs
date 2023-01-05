@@ -15,19 +15,7 @@ namespace Tournament.Shared.Players
         public string? Player2Name { get; set; }
         public TournamentGroupModel? TournamentGroup { get; set; }
 
-        private int rating = 0;
-        public int? Rating
-        {
-            get
-            {
-                if (rating == 0)
-                {
-                    Random rnd = new Random();
-                    rating = rnd.Next(1, 1000);
-                }
-                return rating;
-            }
-        }
+        public int Rating { get; set; }
 
     }
 }

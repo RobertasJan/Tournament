@@ -39,7 +39,7 @@
                     </MudItem>*@
                         <MudItem xs="12">
                             <MudCheckBox @bind-Checked="@model.Data.Public" Label="@Loc["Label_Public"]" Color="Color.Primary"></MudCheckBox>
-                            <MudCheckBox @bind-Checked="@model.Data.Rated" Label="@Loc["Label_Rated"]" Color="Color.Primary"></MudCheckBox>
+                            <MudCheckBox @bind-Checked="@model.Data.Rated" Disabled="!isAdmin" Label="@Loc["Label_Rated"]" Color="Color.Primary"></MudCheckBox>
                         </MudItem>
                         <MudItem xs="12">
                             <MudTextField Lines="8" @bind-Value="model.Data.LongDescription" Label="@Loc["Label_Description"]" Variant="Variant.Text"></MudTextField>
@@ -105,7 +105,9 @@
 @code {
     [Inject] TournamentService TournamentService { get; set; }
     [Inject] PlayerService PlayerService { get; set; }
+    [Inject] UserService UserService { get; set; }
 
+    bool isAdmin = false;
     bool success = false;
     MudForm? form = new MudForm();
     TournamentViewModel model;
@@ -158,6 +160,7 @@
             NavigationManager.NavigateTo($"/login", false);
             return;
         }
+        isAdmin = await UserService.IsAdmin();
         model = new TournamentViewModel(TournamentService, new TournamentModel
             {
                 PointsToWin = 21,

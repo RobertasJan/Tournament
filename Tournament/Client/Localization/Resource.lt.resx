@@ -438,6 +438,9 @@
   <data name="Label_Name2" xml:space="preserve">
     <value>Vardas</value>
   </data>
+  <data name="Label_NoPlayers" xml:space="preserve">
+    <value>Nėra/neužtenka užsiregistravusių žaidėjų</value>
+  </data>
   <data name="Label_Partner" xml:space="preserve">
     <value>Porininkas</value>
   </data>

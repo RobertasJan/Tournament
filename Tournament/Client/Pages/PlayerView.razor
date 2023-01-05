@@ -14,8 +14,11 @@
                 <MudText Typo="Typo.body1" GutterBottom="true">@Loc[$"Enum_Gender_{player.Gender}"]</MudText>
                 <MudText Typo="Typo.body1" GutterBottom="true">@Loc[$"Age_{Calculations.DisplayPlayerAgeGroup(player.BirthDate)}"]</MudText>
                 <MudText Typo="Typo.body1" GutterBottom="true">@player.BirthDate.ToString("yyyy-MM-dd")</MudText>
+                <MudText Typo="Typo.body1" GutterBottom="true">@Loc[$"Label_Rating_Singles"]: @player.RatingSingles</MudText>
+                <MudText Typo="Typo.body1" GutterBottom="true">@Loc[$"Label_Rating_Doubles"]: @player.RatingDoubles</MudText>
+                <MudText Typo="Typo.body1" GutterBottom="true">@Loc[$"Label_Rating_Mixed"]: @player.RatingMixed</MudText>
             </MudPaper>
-        </MudItem>
+        </MudItem>  
         <MudItem xs="12">
             <MudPaper Class="pa-2" Elevation="3">
                 <MudGrid>

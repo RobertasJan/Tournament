@@ -96,9 +96,9 @@ else
         currentMatch.Games = await GameService.GetMatchGames(Id);
         connection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/match-score-hub")).Build();
 
-        
         connection.On<List<GameModel>>("UpdateMatchScore", this.ReceiveMessage);
         await connection.StartAsync();
+        await connection.SendAsync("AddToGroup", Id.ToString());
 
     }
     Task ReceiveMessage(List<GameModel> games)

@@ -17,5 +17,6 @@ namespace Tournament.Domain.Players
 
         public Guid? Player2Id { get; set; }
         public PlayerEntity? Player2 { get; set; }
+        public int Rating { get; set; } = 0;
     }
 }

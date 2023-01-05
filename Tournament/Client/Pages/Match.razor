@@ -116,7 +116,6 @@
     protected override async Task OnInitializedAsync()
     {
         connection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/match-score-hub")).Build();
-
         match = new MatchViewModel(GameService, await GameService.GetMatchById(Id), await GameService.GetMatchGames(Id), connection);
     }
 

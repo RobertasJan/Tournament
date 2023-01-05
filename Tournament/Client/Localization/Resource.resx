@@ -438,6 +438,9 @@
   <data name="Label_Name2" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="Label_NoPlayers" xml:space="preserve">
+    <value>There is no/too few players registered in a group</value>
+  </data>
   <data name="Label_Partner" xml:space="preserve">
     <value>Partner</value>
   </data>

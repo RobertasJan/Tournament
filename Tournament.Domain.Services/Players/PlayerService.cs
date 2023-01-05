@@ -61,7 +61,11 @@ namespace Tournament.Domain.Services.Players
             {
                 query = query.Where(x => x.TournamentGroupId == tournamentGroupId.Value);
             }
-            return query.Where(x => x.TournamentGroup.TournamentId == tournamentId).ToList();
+            var result = query.Where(x => x.TournamentGroup.TournamentId == tournamentId).ToList();
+            if (tournamentGroupId != null) {
+                result.ForEach(x => x.CalculateRatings(_db.Results, _db.TournamentGroups.First(x => x.Id == tournamentGroupId.Value).MatchType));
+            }
+            return result;
         }
 
         public async Task<PlayerEntity> GetById(Guid id, CancellationToken cancellationToken)
@@ -152,6 +156,14 @@ namespace Tournament.Domain.Services.Players
             player.RatingSingles = results.Where(x => x.PlayerId == player.Id && (x.TournamentGroup.MatchType == MatchType.MensSingles || x.TournamentGroup.MatchType == MatchType.WomensSingles)).OrderByDescending(x => x.RatingPoints).Take(12).Sum(x => x.RatingPoints);
             player.RatingDoubles = results.Where(x => x.PlayerId == player.Id && (x.TournamentGroup.MatchType == MatchType.MensDoubles || x.TournamentGroup.MatchType == MatchType.WomensDoubles)).OrderByDescending(x => x.RatingPoints).Take(12).Sum(x => x.RatingPoints);
             player.RatingMixed = results.Where(x => x.PlayerId == player.Id && (x.TournamentGroup.MatchType == MatchType.MixedDoubles)).OrderByDescending(x => x.RatingPoints).Take(12).Sum(x => x.RatingPoints);
+            return player;
+        }
+
+        public static RegisteredPlayersEntity CalculateRatings(this RegisteredPlayersEntity? player, IQueryable<ResultEntity> results, MatchType matchType)
+        {
+            var player1Rating = results.Where(x => x.PlayerId == player.Player1Id && (x.TournamentGroup.MatchType == matchType)).OrderByDescending(x => x.RatingPoints).Take(12).Sum(x => x.RatingPoints);
+            var player2Rating = results.Where(x => x.PlayerId == player.Player2Id && (x.TournamentGroup.MatchType == matchType)).OrderByDescending(x => x.RatingPoints).Take(12).Sum(x => x.RatingPoints);
+            player.Rating = player1Rating + player2Rating;
             return player;
         }
     }

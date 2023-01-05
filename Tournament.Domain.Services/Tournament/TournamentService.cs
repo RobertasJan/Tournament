@@ -105,22 +105,7 @@ namespace Tournament.Domain.Services.Tournament
             var countOfRounds = Calculations.GetCountOfRounds(playerCount);
             var matchesCount = (int)Math.Pow(2, countOfRounds - 1);
             var maxPlayerCount = matchesCount * 2;
-            var playersOrdered = players.ToList();
-            switch (group.MatchType)
-            {
-                case Domain.Games.MatchType.MensSingles:
-                case Domain.Games.MatchType.WomensSingles:
-                    playersOrdered = playersOrdered.OrderByDescending(x => x.Player1.RatingSingles).ToList();
-                    break;
-                case Domain.Games.MatchType.MensDoubles:
-                case Domain.Games.MatchType.WomensDoubles:
-                    playersOrdered = playersOrdered.OrderByDescending(x => x.Player1.RatingDoubles).ToList();
-                    break;
-                case Domain.Games.MatchType.MixedDoubles:
-                    playersOrdered = playersOrdered.OrderByDescending(x => x.Player1.RatingMixed).ToList();
-                    break;
-
-            }
+            var playersOrdered = players.OrderByDescending(x => x.Rating).ToList();
 
             var seeds = Enumerable.Range(1, maxPlayerCount);
             var roundGroup = new MatchesGroupEntity()

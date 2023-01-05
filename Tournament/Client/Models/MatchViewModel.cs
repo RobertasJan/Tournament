@@ -236,7 +236,7 @@ namespace Tournament.Client.Models
                 CurrentGame.Id = await service.CreateGame(new GameModel(), Data.Id.Value);
                 Request = false;
             }
-            await connection.SendAsync("UpdateMatchScore", GameList.ToList());
+            await connection.SendAsync("UpdateMatchScore", GameList.ToList(), Data.Id.Value.ToString());
         }
 
         private async Task CheckEndGame()
