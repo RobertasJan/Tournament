@@ -50,13 +50,13 @@
         </AuthorizeView>*@
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">Badminton!</MudText>
+        <MudDrawerHeader Style="padding: 12px 0 0 80px;">
+            <MudText Typo="Typo.h6"><image src="images/logo2.png" width="70" height="40"></image></MudText>
         </MudDrawerHeader>
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16">
             <CascadingValue Value="this" Name="ErrorComponent">
                 @Body
             </CascadingValue>

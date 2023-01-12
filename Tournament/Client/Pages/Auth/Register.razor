@@ -37,7 +37,7 @@
                     <MudDatePicker Label="@Loc["Label_BirthDate"]" @bind-Date="reg.BirthDate" TitleDateFormat="dddd, dd MMMM" />
                 </MudItem>
                 <MudItem xs="12">
-                    <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="@(async () => await DoRegister())">@Loc["Label_Register"]</MudButton>
+                    <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="@(async () => await DoRegister())">@Loc["Header_Register"]</MudButton>
                 </MudItem>
             </MudGrid>
             <MudLink Href="/login">@Loc["Header_Login"]</MudLink>
